@@ -29,6 +29,8 @@ module ODDB
         "dijit/TooltipDialog"
       ]
       DOJO_PARSE_WIDGETS = false
+      DARK_MODE_CSS = "/resources/dark.css"
+      DARK_MODE_JS = "darkmode.js"
       CONTENT = nil
       CSS_CLASS = "composite"
       COMPONENTS = {
@@ -91,6 +93,28 @@ module ODDB
           end
           link
         end
+      end
+
+      # Der Dunkelmodus haengt hier und nicht an javascripts, obwohl das die
+      # naheliegende Stelle waere: centeredsearchform, patinfo, fachinfo und
+      # der interaction_chooser ueberschreiben javascripts ohne super
+      # aufzurufen - sie beginnen mit scripts = "". Ein Haken dort ginge also
+      # ausgerechnet auf den meistbesuchten Seiten verloren. css_links wird
+      # dagegen nirgends im Baum ueberschrieben und steht als letztes im
+      # <head>, was der Ueberlagerung genau die Reihenfolge gibt, die sie
+      # braucht: nach dem eigentlichen oddb.css.
+      #
+      # dark.css wirkt nur unter html[data-theme="dark"]. Wer nie umschaltet,
+      # sieht die Seite unveraendert.
+      def css_links(context, path = @lookandfeel.resource(:css))
+        links = super
+        links << css_link(context, DARK_MODE_CSS)
+        links << context.script(
+          "type" => "text/javascript",
+          "language" => "JavaScript",
+          "src" => @lookandfeel.resource_global(:javascript, DARK_MODE_JS)
+        )
+        links
       end
 
       def dynamic_html_headers(context)

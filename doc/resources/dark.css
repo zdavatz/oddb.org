@@ -1,0 +1,272 @@
+/* Dunkelmodus fuer oddb.org
+ *
+ * Eine Ueberlagerung, kein zweites Stylesheet. Das eigentliche oddb.css bleibt
+ * unangetastet: es hat 1099 Zeilen, 88 Farbwerte und keine einzige CSS-Variable,
+ * und es existiert acht Mal - einmal je Flavor, als Kopie mit anderen
+ * Akzentfarben. Von 253 Selektoren teilen sich gcc und generika 249, gcc und
+ * mobile 248. Deshalb reicht diese eine Datei fuer alle: sie greift ueber die
+ * Klassennamen, die alle Kopien gemeinsam haben.
+ *
+ * Alles haengt an html[data-theme="dark"]. Ohne dieses Attribut ist die Datei
+ * wirkungslos, das helle Aussehen also unveraendert - wer nie umschaltet,
+ * merkt von hier nichts.
+ *
+ * Gesetzt wird das Attribut von darkmode.js, vor dem ersten Zeichnen.
+ */
+
+:root {
+  --dark-bg:          #15181b;  /* Seitengrund */
+  --dark-surface:     #1e2328;  /* Tabellen, Kaesten */
+  --dark-surface-2:   #262c33;  /* abgesetzte Zeilen */
+  --dark-text:        #d7dde3;
+  --dark-text-dim:    #9aa4ae;
+  --dark-border:      #333b44;
+  --dark-link:        #7ab8ff;
+  --dark-link-hover:  #9ed0a0;
+  --dark-accent:      #3fbb8a;  /* aus #2ba476 aufgehellt, sonst zu dunkel */
+  --dark-accent-bg:   #1c3b2e;  /* Ersatz fuer #ccff99 */
+  --dark-accent-bg-2: #234836;  /* Ersatz fuer #dbffc3 / #ecffe6 */
+  --dark-red:         #ff8a80;
+  --dark-yellow:      #ffd77a;
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] {
+  background: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* Die Tabellen tragen das Layout. Sie duerfen den Grund nicht ueberdecken. */
+html[data-theme="dark"] table,
+html[data-theme="dark"] table.composite,
+html[data-theme="dark"] td,
+html[data-theme="dark"] tr {
+  background-color: transparent;
+  color: inherit;
+  border-color: var(--dark-border);
+}
+
+/* --- Flaechen, die im Hellen gruen oder weiss sind --- */
+html[data-theme="dark"] td.subheading,
+html[data-theme="dark"] th.subheading,
+html[data-theme="dark"] table.tabnavigation,
+html[data-theme="dark"] a.tabnavigation,
+html[data-theme="dark"] table.explain,
+html[data-theme="dark"] td.explain,
+html[data-theme="dark"] td.atc,
+html[data-theme="dark"] td.tab,
+html[data-theme="dark"] td.chapter-tab,
+html[data-theme="dark"] a.chapter-tab,
+html[data-theme="dark"] a.chapter-tab:link,
+html[data-theme="dark"] a.chapter-tab:visited {
+  background: var(--dark-accent-bg);
+  color: var(--dark-text);
+}
+
+html[data-theme="dark"] td.seq,
+html[data-theme="dark"] td.bg,
+html[data-theme="dark"] td.confirm,
+html[data-theme="dark"] td.wait,
+html[data-theme="dark"] td.sidebar div {
+  background-color: var(--dark-surface);
+  color: var(--dark-text);
+}
+
+html[data-theme="dark"] th,
+html[data-theme="dark"] td.th,
+html[data-theme="dark"] td.navigation,
+html[data-theme="dark"] a.navigation,
+html[data-theme="dark"] table.navigation-foot,
+html[data-theme="dark"] div.just-medical,
+html[data-theme="dark"] body.appdown h1 {
+  background: #17503c;
+  color: var(--dark-text);
+}
+
+html[data-theme="dark"] th a,
+html[data-theme="dark"] td.th a,
+html[data-theme="dark"] th a:visited,
+html[data-theme="dark"] td.th a:visited,
+html[data-theme="dark"] a.navigation:link,
+html[data-theme="dark"] a.navigation:visited,
+html[data-theme="dark"] a.fbpager {
+  color: #eaf3ee;
+}
+
+html[data-theme="dark"] tr.expired td,
+html[data-theme="dark"] td.expired {
+  background-color: var(--dark-surface-2);
+  color: var(--dark-text-dim);
+}
+
+/* --- Verweise --- */
+html[data-theme="dark"] a,
+html[data-theme="dark"] span.link,
+html[data-theme="dark"] a.small,
+html[data-theme="dark"] a.text,
+html[data-theme="dark"] a.welcome,
+html[data-theme="dark"] a.powerlink,
+html[data-theme="dark"] a.pager:link,
+html[data-theme="dark"] a.pager:visit,
+html[data-theme="dark"] a.legal-note:link,
+html[data-theme="dark"] a.legal-note:visited,
+html[data-theme="dark"] a.list:link,
+html[data-theme="dark"] a.list:visited,
+html[data-theme="dark"] a.subheading:link,
+html[data-theme="dark"] a.subheading:visited,
+html[data-theme="dark"] a.tabnavigation:link,
+html[data-theme="dark"] a.tabnavigation:visited,
+html[data-theme="dark"] td.edit,
+html[data-theme="dark"] td.edit a,
+html[data-theme="dark"] a.atcchooser1,
+html[data-theme="dark"] a.atcchooser2,
+html[data-theme="dark"] a.atcchooser3,
+html[data-theme="dark"] a.atcchooser4,
+html[data-theme="dark"] a.atcchooser5 {
+  color: var(--dark-link);
+}
+
+html[data-theme="dark"] a:hover,
+html[data-theme="dark"] a.list,
+html[data-theme="dark"] a.small:hover,
+html[data-theme="dark"] a.welcome:hover,
+html[data-theme="dark"] a.text:hover,
+html[data-theme="dark"] a.legal-note:hover,
+html[data-theme="dark"] a.atclink2,
+html[data-theme="dark"] a.atclink3,
+html[data-theme="dark"] a.atclink4,
+html[data-theme="dark"] a.atclink5 {
+  color: var(--dark-link-hover);
+}
+
+html[data-theme="dark"] a.subheading,
+html[data-theme="dark"] a.tabnavigation,
+html[data-theme="dark"] a.tabnavigation:hover,
+html[data-theme="dark"] a.create-infos,
+html[data-theme="dark"] a.list:active,
+html[data-theme="dark"] .personal,
+html[data-theme="dark"] table.navigation a.subheading:link,
+html[data-theme="dark"] table.navigation a.subheading:visited {
+  color: var(--dark-text);
+}
+
+/* --- Bedeutungstragende Farben. Rot bleibt rot, nur heller. --- */
+html[data-theme="dark"] td.original,
+html[data-theme="dark"] a.original,
+html[data-theme="dark"] td.error,
+html[data-theme="dark"] label.error,
+html[data-theme="dark"] td.processingerror,
+html[data-theme="dark"] a.pager:hover,
+html[data-theme="dark"] a.powerlink:hover,
+html[data-theme="dark"] a.navigation:active,
+html[data-theme="dark"] a.th:active,
+html[data-theme="dark"] a.subheading:link:hover,
+html[data-theme="dark"] a.subheading:visited:hover {
+  color: var(--dark-red);
+}
+
+html[data-theme="dark"] td.error {
+  background: #3a2028;
+}
+
+html[data-theme="dark"] td.generic,
+html[data-theme="dark"] a.generic {
+  color: var(--dark-accent);
+}
+
+html[data-theme="dark"] td.info {
+  color: #7ddba0;
+}
+
+html[data-theme="dark"] td.warning {
+  color: #ffab5e;
+}
+
+html[data-theme="dark"] td.unknown,
+html[data-theme="dark"] .sponsor {
+  color: var(--dark-text-dim);
+}
+
+/* Die farbigen Abzeichen (Impfstoff, Homoeopathie, Parallelimport …) tragen
+   Bedeutung und stehen auf gesaettigtem Grund mit weisser Schrift. Sie
+   funktionieren im Dunkeln unveraendert - nur der gelbe braucht dunkle Schrift. */
+html[data-theme="dark"] a.infos,
+html[data-theme="dark"] td.bg a.infos,
+html[data-theme="dark"] td.atc a.infos,
+html[data-theme="dark"] td.migel-group a.infos,
+html[data-theme="dark"] span.deductible_o,
+html[data-theme="dark"] span.deductible_g,
+html[data-theme="dark"] span.highlight {
+  color: #14171a;
+}
+
+/* --- Eingabefelder --- */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background-color: var(--dark-surface);
+  color: var(--dark-text);
+  border: 1px solid var(--dark-border);
+}
+
+html[data-theme="dark"] input.button {
+  background: var(--dark-surface-2);
+  color: var(--dark-text);
+}
+
+/* --- Vervollstaendigung der Suche --- */
+html[data-theme="dark"] .ac-dropdown,
+html[data-theme="dark"] form#prescription_form label,
+html[data-theme="dark"] .dijitTooltipContainer {
+  background: var(--dark-surface);
+  color: var(--dark-text);
+  border-color: var(--dark-border);
+}
+
+html[data-theme="dark"] .ac-dropdown .ac-item:hover,
+html[data-theme="dark"] .ac-dropdown .ac-item.ac-active,
+html[data-theme="dark"] #searchbar_popup .dijitMenuItemHover,
+html[data-theme="dark"] #searchbar_popup .dijitMenuItemSelected {
+  background-color: var(--dark-accent-bg);
+  color: var(--dark-text);
+}
+
+/* Das Logo ist auf Weiss gezeichnet. Ein wenig gedaempft, damit es im
+   Dunkeln nicht blendet - nicht invertiert, das wuerde die Marke entstellen. */
+html[data-theme="dark"] img.logo {
+  filter: brightness(0.92);
+}
+
+/* --- Der Umschalter selbst --- */
+#dark-mode-toggle {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 10000;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  line-height: 32px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid #b8c4b0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #333333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+}
+
+#dark-mode-toggle:hover {
+  border-color: #2ba476;
+}
+
+html[data-theme="dark"] #dark-mode-toggle {
+  background: var(--dark-surface-2);
+  color: var(--dark-yellow);
+  border-color: var(--dark-border);
+}
+
+@media print {
+  #dark-mode-toggle { display: none; }
+}
