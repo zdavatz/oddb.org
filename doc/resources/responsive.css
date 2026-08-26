@@ -179,7 +179,16 @@
      Ohne das :not() gewinnt diese Regel mit (0,1,3) gegen
      tr:has(> td.col-name_base) mit (0,1,2), und die Karten fallen wieder in
      Einzelzeilen auseinander. Genau das ist am 26.08.2026 zweimal passiert. */
-  table.composite > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)) {
+  /* AUSNAHMEN, und die Liste ist der Punkt: jedes :not() hier hebt die
+     Spezifitaet dieser Regel, und jede Zeile, die weiter unten ein anderes
+     display braucht, muss deshalb HIER ausgenommen werden statt dort
+     dagegenzuhalten. Dreimal an einem Tag habe ich es andersherum versucht
+     und dreimal das Layout zerlegt: Karten, Kopfzeilen, Kapitelnavigation.
+       - td.col-name_base : die Packungszeilen, die Karten werden
+       - td.chapter-tab   : die Kapitelnavigation, die ein Chip-Band wird
+       - th               : Kopfzeilen, die verschwinden
+       - td.subheading    : die Fusszeile, die ihre Reihenfolge umdreht */
+  table.composite > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> th)):not(:has(> td.subheading)) {
     display: block;
     width: auto;
   }
@@ -873,14 +882,59 @@
      Tabelle kann nicht schmaler werden als ihr breitester Inhalt. In den
      Fachinfos stehen Namen wie "Hydroxypropylmethylcellulose-Phthalat", die
      die Seite auf 536px zogen. */
+  /* anywhere nur dort, wo wirklich lange Woerter stehen: Wirkstoffnamen,
+     GTINs, der Fliesstext der Fachinfo. NICHT auf Ueberschriften - dort hat
+     es aus "Staerke" ein "St / aer / k / e" gemacht, weil anywhere auch
+     mitten in einem kurzen Wort trennt, sobald die Spalte eng wird. */
   td.list,
   td.infos,
-  td.th,
-  td.subheading,
-  th,
   div:has(> h3) > p,
   div:has(> h3) > p > span {
     overflow-wrap: anywhere;
+  }
+
+  td.th,
+  td.subheading,
+  th {
+    overflow-wrap: break-word;
+  }
+
+  /* Die Wirkstofftabellen der Packungsbestandteile stecken zwei Ebenen tief
+     in einer Tabelle, deren erste Spalte nur ein &nbsp; als Einzug enthaelt.
+     Auf 390px blieb fuer die eigentliche Tabelle zu wenig uebrig. */
+  /* Packungsbestandteile: die Wirkstofftabelle und die des BAG stehen in
+     EINER Zeile nebeneinander, mit einer Zelle davor, die nur ein &nbsp; als
+     Einzug enthaelt. Auf 390px blieb fuer jede der beiden ein Drittel der
+     Breite - daher "St / aer / k / e". Untereinander, und der Einzug faellt
+     weg. Der Einzug ist daran zu erkennen, dass er kein Element enthaelt;
+     die Zeilen mit Beschriftung haben dort ein LABEL. */
+  td.list > div > table,
+  td.list > div > table > tbody,
+  td.list > div > table > tbody > tr,
+  td.list > div > table > tbody > tr > td {
+    display: block;
+    width: auto;
+  }
+
+  td.list > div > table > tbody > tr > td:first-child:not(:has(*)) {
+    display: none;
+  }
+
+  table.left {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  table.left th.subheading,
+  table.left td {
+    padding: 3px 6px;
+  }
+
+  /* Die Staerke braucht nur so viel Platz, wie "1000 mg" breit ist. */
+  table.left th.subheading:last-child,
+  table.left tr > td:last-child {
+    width: 5.5em;
+    white-space: nowrap;
   }
 }
 
