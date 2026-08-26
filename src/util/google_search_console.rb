@@ -27,6 +27,7 @@ require "net/http"
 require "openssl"
 require "base64"
 require "uri"
+require "cgi"
 require "util/logfile"
 
 module ODDB
@@ -36,6 +37,7 @@ module ODDB
     TOKEN_URI = "https://oauth2.googleapis.com/token"
     INSPECT_URI = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
     SITES_URI = "https://searchconsole.googleapis.com/webmasters/v3/sites"
+    SEARCH_ANALYTICS_URI = "https://searchconsole.googleapis.com/webmasters/v3/sites/%s/searchAnalytics/query".freeze
     SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
     JWT_GRANT = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 
@@ -76,6 +78,43 @@ module ODDB
       Array(response["siteEntry"]).collect { |entry|
         [entry["siteUrl"], entry["permissionLevel"]]
       }
+    end
+
+    # Search Analytics: impressions, clicks, ctr and average position, grouped
+    # by whatever dimensions you ask for ("date", "query", "page", "country",
+    # "device", "searchAppearance").
+    #
+    # This is one of only four things the API still offers - the Page Indexing
+    # report has no API at all, urlcrawlerrorssamples was shut down in 2019 and
+    # never replaced. So this is the whole of what can be read about how the
+    # site performs in search.
+    #
+    # Google lags two to three days: asking for today returns nothing, and a
+    # range ending today simply stops earlier. Not an error, just how it is.
+    def search_analytics(site_url, start_date, end_date, dimensions: [], row_limit: 25, filters: nil)
+      body = {
+        "startDate" => start_date.to_s,
+        "endDate" => end_date.to_s,
+        "rowLimit" => row_limit
+      }
+      body["dimensions"] = Array(dimensions).collect(&:to_s) unless Array(dimensions).empty?
+      body["dimensionFilterGroups"] = filters if filters
+      uri = URI(format(SEARCH_ANALYTICS_URI, CGI.escape(site_url.to_s)))
+      result = post_json(uri, body, "Authorization" => "Bearer #{access_token}")
+      Array(result["rows"]).collect { |row|
+        {
+          keys: Array(row["keys"]),
+          impressions: row["impressions"].to_i,
+          clicks: row["clicks"].to_i,
+          ctr: row["ctr"].to_f,
+          position: row["position"].to_f
+        }
+      }
+    end
+
+    # The totals for a range, as a single hash, or nil when there is no data.
+    def search_totals(site_url, start_date, end_date)
+      search_analytics(site_url, start_date, end_date, row_limit: 1).first
     end
 
     # Look one url up. Returns the indexStatusResult hash, or raises Error.

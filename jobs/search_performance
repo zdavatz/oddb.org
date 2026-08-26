@@ -1,0 +1,105 @@
+#!/usr/bin/env ruby
+#
+# Was Google ueber die Suchleistung der Properties hergibt: Impressionen,
+# Klicks, Klickrate und mittlere Position, aufgeschluesselt nach Tag,
+# Suchanfrage, Seite, Land und Geraet.
+#
+# Der Leistungsbericht ist einer von nur vier Bereichen, die die Search
+# Console API noch anbietet. Fuer den Indexierungsbericht gibt es gar keine
+# Schnittstelle (siehe jobs/check_indexing), urlcrawlerrorssamples wurde 2019
+# abgeschaltet und nie ersetzt.
+#
+# Google hinkt zwei bis drei Tage nach. Eine Abfrage, die heute endet, liefert
+# schlicht weniger Tage - das ist kein Fehler.
+#
+#   bundle exec ruby jobs/search_performance
+#   bundle exec ruby jobs/search_performance --days=90 --rows=25
+#   bundle exec ruby jobs/search_performance --site=sc-domain:oddb.org
+#   bundle exec ruby jobs/search_performance --from=2026-07-01 --to=2026-08-26
+#   bundle exec ruby jobs/search_performance --csv=log/search_performance.csv
+#
+$LOAD_PATH.unshift File.expand_path("../src", __dir__)
+$LOAD_PATH.unshift File.expand_path("..", __dir__)
+require "config"
+require "date"
+require "csv"
+require "util/google_search_console"
+
+def option(name, fallback = nil)
+  arg = ARGV.find { |a| a.start_with?("--#{name}=") }
+  arg ? arg.split("=", 2).last : fallback
+end
+
+days = option("days", "28").to_i
+to = Date.parse(option("to", Date.today.to_s))
+from = option("from") ? Date.parse(option("from")) : to - days
+rows = option("rows", "15").to_i
+csv_path = option("csv")
+
+client = ODDB::GoogleSearchConsole.new
+sites = if (only = option("site"))
+  [only]
+else
+  client.sites.collect(&:first)
+end
+
+DIMENSIONS = [
+  [:date, "Tage"],
+  [:query, "Suchanfragen"],
+  [:page, "Seiten"],
+  [:country, "Laender"],
+  [:device, "Geraete"]
+]
+
+records = []
+
+sites.each do |site|
+  puts "\n#{"=" * 72}\n#{site}   #{from} bis #{to}\n#{"=" * 72}"
+
+  total = begin
+    client.search_totals(site, from, to)
+  rescue ODDB::GoogleSearchConsole::Error => error
+    warn "  #{error.message}"
+    next
+  end
+
+  unless total
+    puts "  keine Daten in diesem Zeitraum"
+    next
+  end
+
+  puts format("  %d Impressionen, %d Klicks, Klickrate %.2f %%, mittlere Position %.1f",
+    total[:impressions], total[:clicks], total[:ctr] * 100, total[:position])
+
+  DIMENSIONS.each do |dimension, label|
+    result = begin
+      client.search_analytics(site, from, to, dimensions: [dimension], row_limit: rows)
+    rescue ODDB::GoogleSearchConsole::Error => error
+      warn "  #{label}: #{error.message}"
+      next
+    end
+    next if result.empty?
+
+    # Nach Impressionen sortiert, ausser bei den Tagen - dort ist die
+    # Reihenfolge selbst die Information.
+    result = result.sort_by { |row| -row[:impressions] } unless dimension == :date
+
+    puts "\n  #{label} (#{result.size}):"
+    result.each do |row|
+      key = row[:keys].first.to_s
+      key = key.sub(%r{\Ahttps?://[^/]+}, "") if dimension == :page
+      puts format("    %-52s %7d Impr. %5d Klicks  Pos %5.1f",
+        key[0, 52], row[:impressions], row[:clicks], row[:position])
+      records << [site, dimension, key, row[:impressions], row[:clicks],
+        (row[:ctr] * 100).round(2), row[:position].round(1)]
+    end
+  end
+end
+
+if csv_path && !records.empty?
+  CSV.open(csv_path, "w") do |csv|
+    csv << %w[site dimension key impressions clicks ctr_percent position]
+    records.each { |record| csv << record }
+  end
+  puts "\n#{records.size} Zeilen nach #{csv_path} geschrieben"
+end
