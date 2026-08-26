@@ -286,10 +286,32 @@
      deshalb eingerueckt in der Seitenmitte statt ueber die volle Breite, mit
      der linken Haelfte leer. Zeilen aufbrechen, Zellen auf volle Breite,
      nichts schwimmt mehr. */
-  tr:has(> td.subheading),
   tr:has(> td.navigation),
   tr:has(> td.tabnavigation) {
     display: block;
+  }
+
+  /* Die Fusszeile ist "links Copyright, rechts Navigation". Gestapelt gehoert
+     die Reihenfolge umgedreht: erst wohin man gehen kann, dann wer die Seite
+     macht. Bei den einspaltigen Abschnittsbaendern der Detailansicht, die
+     dieselbe Klasse tragen, aendert das nichts - ein einzelnes Kind hat keine
+     Reihenfolge. */
+  tr:has(> td.subheading) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  tr:has(> td.subheading) > td.subheading:not(.right) {
+    order: 2;
+    background: none;
+    text-align: center;
+    padding: 14px 8px 10px;
+  }
+
+  /* none, keine Farbe: so nimmt die Zeile den Seitengrund an - weiss im
+     hellen, dunkel im dunklen Modus - und responsive.css bleibt farbfrei. */
+  tr:has(> td.subheading) > td.subheading:not(.right) table.subheading {
+    background: none;
   }
 
   tr:has(> td.subheading) > td,
@@ -297,7 +319,16 @@
   tr:has(> td.tabnavigation) > td {
     display: block;
     width: auto;
-    text-align: left;
+    text-align: center;
+  }
+
+  /* Zentriert, und die Eintraege ruecken zusammen in die Mitte statt am
+     linken Rand zu kleben. */
+  table.tabnavigation > tbody > tr,
+  table.navigation > tbody > tr,
+  table.subheading > tbody > tr,
+  table.navigation-foot > tbody > tr {
+    justify-content: center;
   }
 
   td.subheading table,
@@ -318,20 +349,14 @@
     display: none;
   }
 
-  /* Die Balken sollen nicht dreimal so hoch sein wie ihr Inhalt: die Hoehe
-     kommt von den 44px der Verweise, nicht zusaetzlich von der Zelle. */
+  /* Die Balken sollen nicht dreimal so hoch sein wie ihr Inhalt - die Hoehe
+     kommt von den 44px der Verweise. Etwas Luft oben und unten braucht es
+     trotzdem: mit padding 0 stiess "©ywesee GmbH" oben direkt an den
+     dunkelgruenen Balken darueber. */
   td.navigation,
   td.subheading,
   td.tabnavigation {
-    padding: 0 8px;
-  }
-
-  /* Damit "2026 ©ywesee GmbH" und die Verweise darunter buendig beginnen -
-     der erste Verweis bringt sonst seine eigenen 8px mit. */
-  table.subheading > tbody > tr > td:first-child > a,
-  table.navigation > tbody > tr > td:first-child > a,
-  table.tabnavigation > tbody > tr > td:first-child > a {
-    padding-left: 0;
+    padding: 6px 8px;
   }
 
   /* Ohne row-gap standen die umgebrochenen Zeilen weit auseinander, weil
