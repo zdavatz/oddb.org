@@ -39,6 +39,23 @@
     }
     cards(narrow);
     spacers(narrow);
+    toggleUnderLogo(narrow);
+  }
+
+  // darkmode.js haengt den Umschalter ans Ende von document.body, weil er
+  // dort als position:fixed oben rechts steht. Auf dem Telefon gehoert er
+  // unter das Logo - dafuer muss er auch im Baum dorthin, sonst landet er
+  // beim Wechsel auf position:static am Fuss der Seite.
+  function toggleUnderLogo(narrow) {
+    var button = document.getElementById("dark-mode-toggle");
+    if (!button) { return; }
+    var logo = document.querySelector("img.welcomeleft, img.logo, img.welcomecenter");
+    var cell = logo && logo.closest("td");
+    if (narrow && cell) {
+      if (button.parentNode !== cell) { cell.appendChild(button); }
+    } else if (button.parentNode !== document.body) {
+      document.body.appendChild(button);
+    }
   }
 
   // Zellen, die nur ein &nbsp; enthalten und trotzdem eine Zeile kosten:

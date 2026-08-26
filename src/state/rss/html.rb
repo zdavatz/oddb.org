@@ -43,7 +43,21 @@ module ODDB
           wanted = @session.user_input(:year).to_i
           wanted = nil if wanted.zero?
 
-          if yearly_files.empty?
+          if !monthly_files.empty?
+            # Die Jahre kommen aus den Dateinamen, ohne eine Datei zu oeffnen.
+            years = monthly_files.keys.sort.reverse
+            year = years.include?(wanted) ? wanted : nil
+            paths = year ? monthly_files[year].sort.reverse : [File.join(rss_dir, @channel)]
+            items = []
+            paths.each do |path|
+              reader = ODDB::RssReader.new(path, year ? :all : LIMIT)
+              items.concat(reader.items)
+              break if !year && items.size >= LIMIT
+            end
+            items = items.first(LIMIT) unless year
+            reader = ODDB::RssReader.new(File.join(rss_dir, @channel), 0)
+            reader.items.replace(items)
+          elsif yearly_files.empty?
             # Ein einziger, kleiner Kanal (recall.rss: 188 KB, 226 Eintraege).
             # Einmal ganz lesen, daraus sowohl die Jahresliste als auch die
             # Eintraege - zweimal lesen waere die Datei zweimal.
@@ -92,6 +106,19 @@ module ODDB
             .each_with_object({}) { |path, memo|
               if (md = /-(\d{4})\.rss\z/.match(path))
                 memo[md[1].to_i] = path
+              end
+            }
+        end
+
+        # Monatsarchive, die jobs/split_rss_archives geschrieben hat:
+        # recall-2018-02.rss und so fort. Wo es sie gibt, kommt die
+        # Jahresliste daher und ein Jahr wird aus seinen Monaten
+        # zusammengesetzt - das erspart es, die grosse Datei zu lesen.
+        def monthly_files
+          @monthly_files ||= Dir.glob(File.join(rss_dir, "#{base_name}-[0-9][0-9][0-9][0-9]-[0-9][0-9].rss"))
+            .each_with_object({}) { |path, memo|
+              if (md = /-(\d{4})-(\d{2})\.rss\z/.match(path))
+                (memo[md[1].to_i] ||= []) << path
               end
             }
         end

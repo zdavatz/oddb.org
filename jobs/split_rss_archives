@@ -1,0 +1,101 @@
+#!/usr/local/bin/ruby
+# Zerlegt die vorhandenen RSS-Feeds in Monatsarchive.
+#
+#   bundle exec ruby jobs/split_rss_archives            # zeigt nur, was entstuende
+#   bundle exec ruby jobs/split_rss_archives --apply
+#   bundle exec ruby jobs/split_rss_archives --apply recall.rss
+#
+# Aus welchen Feeds das geht, haengt daran, ob sie Geschichte mit sich
+# fuehren. recall.rss reicht bis 02/2018 und hpc.rss bis 01/2024, weil beide
+# angesammelt werden; die fachinfo-Jahresdateien lassen sich in Monate
+# schneiden. sl_introduction.rss, price_cut.rss und price_rise.rss dagegen
+# werden von update_price_feeds bei jedem Lauf ueberschrieben und enthalten
+# immer nur den laufenden Monat - fuer die ist die Preishistorie in der
+# Datenbank die einzige Quelle, siehe jobs/build_price_archives.
+#
+# Zeilenweise gelesen und geschrieben, aus demselben Grund wie in
+# util/rss_reader.rb: fachinfo.rss ist 248 MB gross.
+
+require "fileutils"
+require "date"
+
+RSS_ROOT = File.expand_path("../data/rss", File.dirname(__FILE__))
+
+apply = ARGV.include?("--apply")
+wanted = ARGV.reject { |a| a.start_with?("--") }
+
+# Der Kopf des Kanals bis zum ersten <item>, und der Schluss danach.
+def head_and_tail(path)
+  head = +""
+  File.foreach(path, encoding: "UTF-8") do |line|
+    break if line.include?("<item>")
+    head << line
+  end
+  [head, "  </channel>\n</rss>\n"]
+end
+
+# Gibt jeden Eintrag als [jahr_monat, text] zurueck, ohne die Datei je ganz
+# im Speicher zu halten.
+def each_item(path)
+  buffer = nil
+  File.foreach(path, encoding: "UTF-8") do |line|
+    if line.include?("<item>")
+      buffer = +""
+    end
+    next unless buffer
+    buffer << line
+    next unless line.include?("</item>")
+    month = buffer[/<dc:date>(\d{4})-(\d{2})/, 0]&.sub("<dc:date>", "")
+    month ||= begin
+      raw = buffer[/<pubDate>([^<]+)</, 1]
+      raw && Time.rfc2822(raw).strftime("%Y-%m")
+    rescue
+      nil
+    end
+    yield(month, buffer) if month
+    buffer = nil
+  end
+end
+
+def feeds_in(dir, wanted)
+  names = Dir.glob(File.join(dir, "*.rss")).collect { |p| File.basename(p) }
+  # Was schon ein Archiv ist, wird nicht noch einmal geteilt.
+  names = names.reject { |n| /-\d{4}(-\d{2})?\.rss\z/.match?(n) }
+  names = names.reject { |n| /-(gcc|generika|just-medical|mobile|oekk)\.rss\z/.match?(n) }
+  wanted.empty? ? names.sort : names.select { |n| wanted.include?(n) }
+end
+
+total = 0
+Dir.glob(File.join(RSS_ROOT, "*")).select { |d| File.directory?(d) }.sort.each do |dir|
+  language = File.basename(dir)
+  feeds_in(dir, wanted).each do |name|
+    path = File.join(dir, name)
+    base = File.basename(name, ".rss")
+    months = Hash.new { |hash, key| hash[key] = +"" }
+    count = 0
+    each_item(path) do |month, item|
+      months[month] << item
+      count += 1
+    end
+    next if months.empty?
+    if months.size < 2
+      puts "  #{language}/#{name}: #{count} Eintraege in nur #{months.size} Monat " \
+           "(#{months.keys.first}) - nichts zu teilen"
+      next
+    end
+    head, tail = head_and_tail(path)
+    puts "  #{language}/#{name}: #{count} Eintraege in #{months.size} Monaten " \
+         "(#{months.keys.min} .. #{months.keys.max})"
+    months.each do |month, body|
+      target = File.join(dir, "#{base}-#{month}.rss")
+      total += 1
+      next unless apply
+      tmp = File.join(dir, ".#{base}-#{month}.rss")
+      File.open(tmp, "w:utf-8") { |fh| fh << head << body << tail }
+      FileUtils.mv(tmp, target)
+    end
+  end
+end
+
+puts
+puts(apply ? "#{total} Monatsarchive geschrieben" : "#{total} Monatsarchive waeren zu schreiben (ohne --apply nichts getan)")

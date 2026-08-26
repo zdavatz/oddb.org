@@ -261,7 +261,11 @@
      inline-block braucht. Ausnehmen statt die Spezifitaet hochzuschrauben:
      diese Regel hier hat mit dem :not(:has()) schon (0,2,4), und jede Antwort
      darauf wird eine Spirale. */
-  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.sidebar)) > td:not(.chapter-tab) {
+  /* :not(.oddb-empty-pair) ist die sechste Ausnahme desselben Musters: das
+     Skript blendet leere Zellen aus, und diese Regel hat es mit ihrer
+     Spezifitaet wieder eingeblendet - der dunkelgruene Balken der Fusszeile
+     war dadurch 49px hoeher als noetig. */
+  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.sidebar)) > td:not(.chapter-tab):not(.oddb-empty-pair) {
     display: block;
     width: auto;
   }
