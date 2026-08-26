@@ -184,7 +184,7 @@
      sich selbst, statt die Seite mitzunehmen. Sieben Spalten
      (Packungsnummer bis "In Refdata nicht gelistet") passen auf 390px nicht,
      und ihre Spalten sind die Information. */
-  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)) {
+  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)):not(:has(> tbody > tr > td.col-name_base)) {
     display: block;
     max-width: 100vw;
     overflow-x: auto;
@@ -193,23 +193,45 @@
 
   /* Eine scrollende Tabelle darf nicht zugleich width:100% haben - sonst
      quetscht sie sich in die Bildschirmbreite, statt zu scrollen, und aus
-     "4.13" werden drei Zeilen. max-content laesst sie ihre natuerliche
-     Breite nehmen, min-width:100% fuellt den Kasten, wenn sie schmaler ist. */
-  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)) > tbody {
+     "4.13" werden drei Zeilen.
+     Aber auch nicht max-content: dann bricht keine Zelle mehr um und die
+     Zeilen der Registrierungsansicht wurden 1049px breit. auto laesst die
+     Tabelle so breit werden, wie ihr Inhalt mit Umbruch braucht, und der
+     Kasten scrollt nur, wenn das immer noch mehr als der Bildschirm ist. */
+  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)):not(:has(> tbody > tr > td.col-name_base)) > tbody {
     display: table;
-    width: max-content;
+    width: auto;
     min-width: 100%;
+    table-layout: auto;
+  }
+
+  /* Und kompakter, damit weniger zu scrollen bleibt. */
+  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)):not(:has(> tbody > tr > td.col-name_base)) td,
+  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)):not(:has(> tbody > tr > td.col-name_base)) th {
+    padding: 5px 7px;
+    font-size: 13px;
   }
 
   /* Zahlen brechen nie. overflow-wrap:anywhere auf td.list ist fuer lange
      Wirkstoffnamen da und hat hier Preise in Einzelziffern zerlegt. */
-  td.right,
-  td.list.right,
-  td[class*="price"],
-  td.col-comparable_size {
+  /* Nicht td.right allgemein: das trifft auch td.explain.right, den Hinweis
+     unter der Trefferliste, und der stand dann als eine 710px lange Zeile da.
+     Nur die Spalten, in denen Zahlen stehen. */
+  td.col-price_public,
+  td.col-price_exfactory,
+  td.col-ddd_price,
+  td.col-price_difference,
+  td.col-comparable_size,
+  td.col-deductible {
     overflow-wrap: normal;
     word-break: keep-all;
     white-space: nowrap;
+  }
+
+  td.explain {
+    text-align: center;
+    padding: 10px 12px;
+    white-space: normal;
   }
 
   /* Die Packungszeilen sind ausgenommen - sie werden weiter unten Flexboxen.
@@ -476,13 +498,21 @@
     width: 100%;
   }
 
-  /* Die erste Zelle der Fusszeile ist ein reiner Platzhalter - ein DIV mit
-     nichts als &nbsp; darin, das im zweispaltigen Entwurf die linke Haelfte
-     fuellt. Gestapelt wurde daraus eine leere Zeile ueber den Verweisen, also
-     der dunkelgruene Balken mit dem Loch darin. Auf allen vier geprueften
-     Seiten enthaelt es nie etwas anderes. */
-  td.navigation:has(> div.navigation) {
-    display: none;
+  /* Die erste Zelle der Fusszeile ist bei abgemeldeten Nutzern ein reiner
+     Platzhalter - ein DIV mit nichts als &nbsp; darin - und gestapelt wurde
+     daraus eine leere Zeile im dunkelgruenen Balken. Bei angemeldeten
+     Nutzern steht in DERSELBEN Zelle die Begruessung. Ausgeblendet wird sie
+     deshalb von compactdetail.js, das den Textinhalt pruefen kann; eine
+     CSS-Regel auf die Klasse haette die Begruessung mitgenommen. */
+
+  /* Die Begruessung soll so gross sein wie die Verweise darunter. Sie haengt
+     an der Zelle und nicht an .personal: COMPONENT_CSS_MAP in
+     navigationfoot.rb legt die Klasse "navigation" auf das Element, weshalb
+     sie die 12px und das Weiss von td.navigation erbt statt der 11px von
+     .personal. */
+  td.navigation,
+  td.navigation > div {
+    font-size: 15px;
   }
 
   /* Die Balken sollen nicht dreimal so hoch sein wie ihr Inhalt - die Hoehe
@@ -520,13 +550,14 @@
      11px setzt - kleiner als die Verweise darunter und ohne Luft nach oben,
      also oben an den gruenen Balken geklebt. Gleiche Groesse wie die
      Navigation, mit Abstand. */
-  .personal {
+  .personal,
+  td.navigation > div {
     font-size: 15px;
-    /* oddb.css setzt hier margin-top: 40px, was im gruenen Balken
+    /* oddb.css setzt auf .personal margin-top: 40px, was im gruenen Balken
        zusammenfaellt und nichts bewirkt - der Abstand muss als padding
        kommen, sonst klebt die Zeile oben am Rand. */
     margin-top: 0;
-    padding: 14px 8px 6px;
+    padding: 12px 8px 4px;
     line-height: 1.4;
   }
 
@@ -807,7 +838,8 @@
   /* Feldpaare ohne Wert. compactdetail.js setzt die Klasse - ein Kasten mit
      nichts als einem &nbsp; darin ist fuer :empty nicht leer, und CSS kann
      Textinhalt nicht pruefen. */
-  td.oddb-empty-pair {
+  td.oddb-empty-pair,
+  td.navigation.oddb-empty-pair {
     display: none;
   }
 

@@ -38,6 +38,17 @@
       value.classList.toggle(HIDDEN, hide);
     }
     cards(narrow);
+    spacers(narrow);
+  }
+
+  // Die erste Zelle der Fusszeile: bei abgemeldeten Nutzern ein DIV mit nur
+  // einem &nbsp;, bei angemeldeten die Begruessung. Nur die leere Fassung
+  // darf weg - eine CSS-Regel auf die Klasse haette beide getroffen.
+  function spacers(narrow) {
+    var cells = document.querySelectorAll("td.navigation");
+    for (var i = 0; i < cells.length; i++) {
+      cells[i].classList.toggle(HIDDEN, narrow && blank(cells[i]));
+    }
   }
 
   // Dasselbe in den Karten der Trefferliste. Eine Packung ohne Preis hat dort
