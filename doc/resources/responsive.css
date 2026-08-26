@@ -179,7 +179,7 @@
      Ohne das :not() gewinnt diese Regel mit (0,1,3) gegen
      tr:has(> td.col-name_base) mit (0,1,2), und die Karten fallen wieder in
      Einzelzeilen auseinander. Genau das ist am 26.08.2026 zweimal passiert. */
-  table.composite > tbody > tr:not(:has(> td.col-name_base)) {
+  table.composite > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)) {
     display: block;
     width: auto;
   }
@@ -809,19 +809,29 @@
      ergeben - diese Fassung kann mit nichts kollidieren, weil sie nur setzt,
      was das Geruest ohnehin setzt. */
   table:has(> tbody > tr > td.chapter-tab),
-  table:has(> tbody > tr > td.chapter-tab) > tbody,
-  table:has(> tbody > tr > td.chapter-tab) > tbody > tr {
+  table:has(> tbody > tr > td.chapter-tab) > tbody {
     display: block;
+    width: auto;
+  }
+
+  /* Jede Zeile eine Flexbox, jede Zelle mit flex-grow: dann fuellen die
+     Zellen ihre Zeile bis zum Rand aus. Als inline-block blieb rechts jeweils
+     ein weisses Stueck stehen, weil eine Zeile nur so breit wurde wie ihre
+     Chips - der gruene Grund sitzt an den Zellen, nicht an der Zeile. */
+  table:has(> tbody > tr > td.chapter-tab) > tbody > tr {
+    display: flex;
+    flex-wrap: wrap;
     width: auto;
   }
 
   table.composite > tbody > tr > td.chapter-tab,
   td.chapter-tab {
-    display: inline-block;
+    display: block;
+    flex: 1 1 auto;
     width: auto;
     border: 0;
     padding: 0;
-    vertical-align: top;
+    text-align: center;
   }
 
   /* Die Fuellzellen mit nichts als einem &nbsp; darin. */
