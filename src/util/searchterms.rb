@@ -75,14 +75,39 @@ module ODDB
     "ž" => "z", "ź" => "z", "ẑ" => "z", "ż" => "z"
   }
   TERM_PTRN = /[#{TERM_PAIRS.keys.join}]/u
-  def self.search_term(term)
-    unless term.frozen?
-      if term.encoding == Encoding::ASCII_8BIT
-        term = term.force_encoding("UTF-8")
-      end
-      term = term.encode("UTF-8", invalid: :replace, undef: :replace, replace: "") unless term.valid_encoding?
+  # Bringt einen String nach UTF-8, damit die Regexps unten ihn anfassen koennen.
+  #
+  # Der Schutz, der hier bis August 2026 stand, prueft zwei Dinge, und bei
+  # ISO-8859-1 sagen beide "alles in Ordnung": es ist nicht ASCII_8BIT, und
+  # valid_encoding? ist true, weil in Latin-1 jede Bytefolge gueltig ist. Der
+  # String rutschte also ungeprueft durch und zerschellte an /[[:punct:]]/u mit
+  # "incompatible encoding regexp match (UTF-8 regexp with ISO-8859-1 string)".
+  # Das kostete jede Nacht vier Indizes: substance_index, substance_soundex_index,
+  # doctor_index und hospital_index.
+  #
+  # force_encoding wuerde hier nichts helfen - die Bytes sind Latin-1 und muessen
+  # umgerechnet, nicht umetikettiert werden. Nur bei ASCII_8BIT ist Umetikettieren
+  # richtig, weil dort UTF-8-Bytes ohne Etikett liegen.
+  #
+  # Arbeitet nie in place: force_encoding und gsub! mutieren, und ein eingefrorener
+  # String kam frueher gar nicht erst durch die Pruefung.
+  def self.to_utf8(term)
+    term = term.to_s
+    if term.encoding == Encoding::UTF_8
+      term.valid_encoding? ? term : term.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+    elsif term.encoding == Encoding::ASCII_8BIT
+      tagged = term.dup.force_encoding("UTF-8")
+      tagged.valid_encoding? ? tagged : tagged.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+    else
+      term.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
     end
-    term = term.to_s.gsub(/[[:punct:]]/u, "")
+  rescue EncodingError
+    term.to_s.dup.force_encoding("UTF-8").encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+  end
+
+  def self.search_term(term)
+    term = to_utf8(term)
+    term = term.gsub(/[[:punct:]]/u, "")
     term.gsub!(/[\/\s\-]+/u, " ")
     term.gsub! TERM_PTRN do |match| TERM_PAIRS.fetch match, match end
     term
@@ -94,12 +119,7 @@ module ODDB
       if opts[:downcase]
         term = term.downcase
       end
-      unless term.frozen?
-        if term.encoding == Encoding::ASCII_8BIT
-          term = term.force_encoding("UTF-8")
-        end
-        term = term.encode("UTF-8", invalid: :replace, undef: :replace, replace: "") unless term.valid_encoding?
-      end
+      term = to_utf8(term)
       parts = term.split(/[\/-]/u)
       if parts.size > 1
         terms.push(ODDB.search_term(parts.first))

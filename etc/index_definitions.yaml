@@ -71,7 +71,7 @@ origin_klass: 'ODDB::Substance'
 target_klass: 'ODDB::AtcClass'
 resolve_search_term: 'search_keys'
 resolve_target: 'sequences.collect { |seq| seq.atc_class }.uniq'
-resolve_origin: 'sequences.collect { |seq| seq.active_agents.collect { |agent| agent.substance }  if seq.active? }.uniq'
+resolve_origin: 'sequences.collect { |seq| seq.active_agents.collect { |agent| agent.substance if agent.respond_to?(:substance) }.compact if seq.active? }.compact.uniq'
 init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
@@ -229,8 +229,8 @@ index_name: 'substance_index_sequence'
 origin_klass: 'ODDB::Substance'
 target_klass: 'ODDB::Sequence'
 resolve_search_term: 'search_keys'
-resolve_target: 'active_sequences'
-resolve_origin: 'active_agents.collect { |act| act.substance }'
+resolve_target: 'sequences.select { |seq| seq.active? }'
+resolve_origin: 'active_agents.collect { |act| act.substance if act.respond_to?(:substance) }.compact'
 init_source: 'self.active_sequences'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 

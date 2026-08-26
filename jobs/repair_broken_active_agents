@@ -1,0 +1,160 @@
+#!/usr/bin/env ruby
+#
+# Findet Elemente in @active_agents, die kein ActiveAgent sind, und stellt sie
+# aus dem Text der Composition wieder her.
+#
+# Ein solches Element kostete sechs Indizes jede Nacht: substance_index_atc und
+# substance_index_sequence rufen .substance auf jedem Element von active_agents
+# auf, und ein Element, das zu einem leeren Array aufloest, laesst den ganzen
+# Indexaufbau scheitern - nicht nur diesen einen Eintrag. Seit mindestens dem
+# 01.01.2026 (weiter reichen die Protokolle nicht zurueck) und unbemerkt, weil
+# die Cron-Ausgabe bis zum 24.08.2026 nach /dev/null ging.
+#
+# Der Schaden tarnt sich: das Objekt ist als ODDB::ActiveAgent deklariert, und
+# ODBA::Stub#is_a? antwortet aus der Deklaration, ohne aufzuloesen. Erst
+# respond_to? loest auf und sagt die Wahrheit.
+#
+#   bundle exec ruby jobs/repair_broken_active_agents           # nur berichten
+#   bundle exec ruby jobs/repair_broken_active_agents --apply   # reparieren
+#
+$:.unshift File.expand_path("../src", __dir__)
+$:.unshift File.expand_path("..", __dir__)
+require "config"
+require "odba"
+require "util/oddbapp"
+require "etc/db_connection"
+
+apply = ARGV.include?("--apply")
+app = ODDB::App.new(auxiliary: true)
+undo = []
+gefunden = 0
+repariert = 0
+entfernt = 0
+
+rows = ODBA.storage.dbi.select_all(
+  "SELECT search_term, target_id FROM oddb_persistence_pointer " \
+  "WHERE search_term ~ '^:!registration,[0-9]+\\.$'"
+)
+puts "#{rows.size} Registrationen"
+
+rows.each_with_index do |(term, target_id), i|
+  print "  #{i}\r" if (i % 2000).zero?
+  iksnr = term[/\d+/]
+  reg = ODBA.cache.fetch(target_id.to_i, nil)
+  reg.each_sequence do |seq|
+    seq.compositions.each do |comp|
+      # Erst aufloesen. comp ist ein ODBA::Stub, und instance_variable_get
+      # greift auf den Stub selbst - dort liegen @odba_id und @odba_class, nie
+      # die Ivars des Objekts dahinter. Ein Methodenaufruf loest auf, ein
+      # Ivar-Zugriff nicht; das hat diesen Lauf zunaechst null finden lassen,
+      # wo es etwas zu finden gab.
+      comp = comp.odba_instance
+      list = comp.instance_variable_get(:@active_agents)
+      next unless list.is_a?(Array)
+      kaputt = list.reject { |a|
+        begin
+          a.respond_to?(:substance)
+        rescue
+          false
+        end
+      }
+      next if kaputt.empty?
+
+      gefunden += kaputt.size
+      kaputt_ids = kaputt.collect(&:object_id)
+      heile = list.reject { |x| kaputt_ids.include?(x.object_id) }
+
+      # Nie ueber == oder Array#delete gehen. Array#delete vergleicht mit ==,
+      # das geht bei einem Stub durch ActiveAgentCommon#== und ruft dort
+      # .substance auf dem Gegenueber - also genau auf dem kaputten Element,
+      # das man loswerden will. Deshalb ueberall object_id.
+      # standardrb schlaegt hier equal? statt object_id == vor. Das waere falsch:
+      # ODBAs no_override-Liste (stub.rb:83) enthaelt object_id, aber nicht
+      # equal?, also wird equal? an odba_instance weitergereicht und loest den
+      # Stub auf - genau das, was hier vermieden werden muss.
+      # standard:disable Lint/IdentityComparison
+      pos = ->(a) { list.each_index.find { |i| list[i].object_id == a.object_id } }
+      # standard:enable Lint/IdentityComparison
+
+      # Die Agents stehen in der Reihenfolge des Composition-Textes. Also wird
+      # nicht geraten, welche Substanz fehlt, sondern an der Position abgelesen
+      # - und zur Kontrolle geprueft, ob die heilen Nachbarn an ihrer Position
+      # wirklich stehen, wo der Text sie erwartet. Tun sie das nicht, stimmt die
+      # Annahme nicht und es wird nichts angelegt.
+      aus_quelle = comp.source.to_s.split(",").collect { |teil|
+        m = teil.strip.match(/\A([a-z][a-z\s]*?)\s+([\d.]+)\s*(mg|g|ml|mcg|µg)\z/i)
+        m && [m[1].strip, m[2], m[3]]
+      }.compact
+
+      passt = heile.all? { |a|
+        i = pos.call(a)
+        eintrag = i && aus_quelle[i]
+        eintrag && a.substance.to_s.downcase.start_with?(eintrag[0].downcase.split.first)
+      }
+
+      puts "\n#{iksnr}/#{seq.seqnr} Composition #{comp.odba_id}"
+      puts "  Quelle : #{comp.source.to_s[0, 100]}"
+      puts "  Text   : #{aus_quelle.collect { |n, d, u| "#{n} #{d}#{u}" }.join(" | ")}"
+      puts "  heil   : #{heile.collect { |a| "#{pos.call(a)}:#{a.substance}" }.join(", ")}"
+      puts "  kaputt : #{kaputt.collect { |a|
+        "#{pos.call(a)}:#{a.odba_id} (#{ begin
+          a.odba_instance.class
+        rescue
+          "?"
+        end
+                                      })"
+      }.join(", ")}"
+      puts "  Nachbarn stehen an der erwarteten Position: #{passt}"
+
+      unless passt
+        puts "  ! Reihenfolge passt nicht - wird nicht angefasst"
+        next
+      end
+
+      vorhaben = kaputt.collect { |a|
+        i = pos.call(a)
+        [a, i && aus_quelle[i]]
+      }
+      vorhaben.each do |a, eintrag|
+        puts eintrag ? "  -> #{a.odba_id} wird #{eintrag[0]} #{eintrag[1]} #{eintrag[2]}" : "  -> #{a.odba_id} hat keine Entsprechung im Text, wird nur entfernt"
+      end
+
+      next unless apply
+
+      list.replace(list.reject { |x| kaputt_ids.include?(x.object_id) })
+      entfernt += kaputt.size
+      undo << "#{comp.odba_id} entfernt #{kaputt.collect(&:odba_id).join(",")}"
+
+      vorhaben.each do |_a, eintrag|
+        next unless eintrag
+        name, dose, unit = eintrag
+        subst = app.substance(name.downcase)
+        unless subst
+          puts "  ! Substanz #{name.inspect} nicht gefunden, nur entfernt"
+          next
+        end
+        agent = comp.create_active_agent(subst.name)
+        agent.dose = ODDB::Dose.new(dose, unit)
+        agent.odba_isolated_store
+        repariert += 1
+        undo << "#{comp.odba_id} angelegt #{agent.odba_id} #{subst.name} #{dose}#{unit}"
+        puts "  + #{subst.name} #{dose} #{unit} als #{agent.odba_id}"
+      end
+
+      list.odba_isolated_store
+      comp.odba_isolated_store
+    end
+  end
+rescue => e
+  warn "#{iksnr}: #{e.class}: #{e.message}\n    #{e.backtrace[0, 6].join("\n    ")}"
+end
+
+puts "\nkaputte Elemente gefunden: #{gefunden}"
+if apply
+  puts "entfernt: #{entfernt}, neu angelegt: #{repariert}"
+  path = "log/repair_broken_active_agents.undo"
+  File.open(path, "a") { |f| f.puts(undo) }
+  puts "Undo-Protokoll: #{path}"
+else
+  puts "(Trockenlauf - mit --apply reparieren)"
+end
