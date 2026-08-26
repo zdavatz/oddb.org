@@ -19,6 +19,9 @@ module ODDB
   class RssReader
     Item = Struct.new(:title, :link, :date, :description)
 
+    # nil heisst: alles lesen. Fuer die Jahresansicht noetig, und vertretbar,
+    # weil dort nie fachinfo.rss selbst gelesen wird, sondern die
+    # Jahresdateien fachinfo-<jahr>.rss daneben.
     DEFAULT_LIMIT = 50
 
     # Beschreibungen der Preis-Feeds sind ganze HTML-Seiten von rund 28 KB -
@@ -33,6 +36,7 @@ module ODDB
     def initialize(path, limit = DEFAULT_LIMIT)
       @path = path
       @limit = limit
+      @limit = nil if limit == :all
       @items = []
       @title = nil
       @description = nil
@@ -58,7 +62,7 @@ module ODDB
         if line.include?("</item>")
           @items << current if current
           current = nil
-          return if @items.size >= @limit
+          return if @limit && @items.size >= @limit
           next
         end
         if current

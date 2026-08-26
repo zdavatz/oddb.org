@@ -13,6 +13,8 @@ require "view/resultfoot"
 require "view/dataformat"
 require "view/logohead"
 
+require "view/lookandfeel_components"
+
 module ODDB
   module View
     module Drugs
@@ -20,6 +22,8 @@ module ODDB
         include DataFormat
         include View::ResultColors
         include View::AdditionalInformation
+        include View::ColumnCssClass
+
         COMPONENTS = {}
         CSS_CLASS = "composite"
         CSS_KEYMAP = {
@@ -66,14 +70,18 @@ module ODDB
           super
         end
 
+        # Eigene Fassung, weil hier compare_list_components gilt - die
+        # Spaltenklassen col-<schluessel> braucht sie trotzdem, sonst bleibt
+        # die Vergleichsansicht auf dem Telefon eine breite Tabelle.
         def reorganize_components
           @components = @lookandfeel.compare_list_components
           @css_map = {}
           @css_head_map = {}
           @components.each { |key, val|
             if (klass = self.class::CSS_KEYMAP[val])
-              @css_map.store(key, klass)
-              @css_head_map.store(key, self.class::CSS_HEAD_KEYMAP[val] || "th")
+              @css_map.store(key, with_column_class(klass, val))
+              @css_head_map.store(key,
+                with_column_class(self.class::CSS_HEAD_KEYMAP[val] || "th", val))
             end
           }
         end
@@ -196,6 +204,7 @@ module ODDB
 
       class Compare < PrivateTemplate
         include InsertBackbutton
+
         CONTENT = CompareComposite
         SNAPBACK_EVENT = :result
       end
@@ -233,6 +242,7 @@ module ODDB
 
       class EmptyCompare < PrivateTemplate
         include InsertBackbutton
+
         CONTENT = View::Drugs::EmptyCompareComposite
         SNAPBACK_EVENT = :result
       end

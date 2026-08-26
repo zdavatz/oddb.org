@@ -280,13 +280,53 @@
     display: none;
   }
 
+  /* Kopf- und Fussnavigation stecken in der zweiten Spalte einer
+     zweispaltigen Zeile und ihre Tabellen schwimmen nach rechts
+     (table.right { float: right }). Auf dem Telefon lag der gruene Balken
+     deshalb eingerueckt in der Seitenmitte statt ueber die volle Breite, mit
+     der linken Haelfte leer. Zeilen aufbrechen, Zellen auf volle Breite,
+     nichts schwimmt mehr. */
+  tr:has(> td.subheading),
+  tr:has(> td.navigation),
+  tr:has(> td.tabnavigation) {
+    display: block;
+  }
+
+  tr:has(> td.subheading) > td,
+  tr:has(> td.navigation) > td,
+  tr:has(> td.tabnavigation) > td {
+    display: block;
+    width: auto;
+    text-align: left;
+  }
+
+  td.subheading table,
+  td.navigation table,
+  td.tabnavigation table,
+  table.right,
+  td.right table {
+    float: none;
+    width: 100%;
+  }
+
+  /* Ohne row-gap standen die umgebrochenen Zeilen weit auseinander, weil
+     jeder Eintrag schon 44px hoch ist. */
+  table.tabnavigation > tbody > tr,
+  table.navigation > tbody > tr,
+  table.subheading > tbody > tr,
+  table.navigation-foot > tbody > tr {
+    row-gap: 0;
+    column-gap: 4px;
+  }
+
   a.tabnavigation,
   a.navigation,
   a.subheading {
     display: inline-block;
     min-height: 44px;
     line-height: 44px;
-    padding: 0 6px;
+    padding: 0 8px;
+    font-size: 15px;
     white-space: nowrap;
   }
 
@@ -358,36 +398,56 @@
     line-height: 1.25;
   }
 
-  td.col-price_public {
+  /* Preisunterschied, Packungsgroesse und Preis stehen als Gruppe rechts
+     neben dem Namen - "+18%  50  10.50" liest sich als ein Gedanke. Das
+     margin-left:auto sitzt am ersten der drei und schiebt die ganze Gruppe
+     an den rechten Rand. */
+  td.col-price_difference {
     order: 2;
     flex: 0 0 auto;
     margin-left: auto;
+    text-align: right;
+    font-size: 15px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  td.col-comparable_size,
+  td.col-most_precise_dose {
+    order: 3;
+    flex: 0 0 auto;
+    text-align: right;
+    font-size: 15px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  td.col-price_public {
+    order: 4;
+    flex: 0 0 auto;
     font-size: 20px;
     padding-right: 0;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Danach je eine eigene Zeile, in Leserichtung. */
-  td.col-comparable_size,
-  td.col-most_precise_dose {
-    order: 3;
-    flex: 0 0 100%;
-    text-align: left;
-    font-size: 14px;
+  /* Ohne Preisunterschied - die Trefferliste hat keinen - muss die
+     Packungsgroesse die Gruppe an den Rand schieben. */
+  tr:has(> td.col-name_base):not(:has(> td.col-price_difference)) > td.col-comparable_size {
+    margin-left: auto;
   }
 
   td.col-galenic_form,
   td.col-compositions,
   td.col-substances,
   td.col-active_agents {
-    order: 4;
+    order: 5;
     flex: 0 0 100%;
     font-size: 14px;
   }
 
   td.col-company_name {
-    order: 5;
+    order: 6;
     flex: 0 0 100%;
     font-size: 14px;
   }
@@ -399,7 +459,7 @@
   td.col-ddd_price,
   td.col-deductible,
   td.col-registration_date {
-    order: 6;
+    order: 7;
     flex: 0 0 auto;
     font-size: 14px;
     text-align: left;
@@ -415,7 +475,7 @@
   td.col-feedback,
   td.col-google_search,
   td.col-notify {
-    order: 7;
+    order: 8;
     flex: 0 0 auto;
     text-align: left;
   }
