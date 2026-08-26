@@ -977,7 +977,10 @@ module ODDB
         :may_sell_drugs_header => "BTM Berechtigung",
         :mechanism => "Mechanism",
         :mediupdate => "MediupdateXML",
+        # MediupdateXML bleibt der HIN-Dienst - unveraendert.
         :mediupdate_url => "http://www.hin.ch/services/mediupdate-xml",
+        # Der Stammdaten-Download laeuft seit August 2026 hierueber.
+        :download_export_url => "https://mediupdatexml.oddb.org",
         :merge_commercial_form0 => "Mit der zu löschenden Handelsform sind noch ",
         :merge_commercial_form1 => " Packungen verbunden.<br>Legen Sie die zu löschende Handelsform mit einer anderen zusammen:",
         :merge_companies0 => "Mit der zu löschenden Firma sind noch ",

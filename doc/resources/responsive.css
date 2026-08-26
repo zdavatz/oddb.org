@@ -246,8 +246,13 @@
        - td.col-name_base : die Packungszeilen, die Karten werden
        - td.chapter-tab   : die Kapitelnavigation, die ein Chip-Band wird
        - th               : Kopfzeilen, die verschwinden
-       - td.subheading    : die Fusszeile, die ihre Reihenfolge umdreht */
-  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> td.subheading)) {
+       - td.subheading    : die Fusszeile, die ihre Reihenfolge umdreht
+       - td.sidebar       : die Startseite, die ihre drei Spalten stapelt
+
+     Fuenf Mal an einem Tag hat diese Regel einen Kampf gewonnen, in dem sie
+     nichts zu suchen hatte. Wer hier etwas ergaenzt, ergaenzt auch diese
+     Liste. */
+  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> td.subheading)):not(:has(> td.sidebar)) {
     display: block;
     width: auto;
   }
@@ -256,7 +261,7 @@
      inline-block braucht. Ausnehmen statt die Spezifitaet hochzuschrauben:
      diese Regel hier hat mit dem :not(:has()) schon (0,2,4), und jede Antwort
      darauf wird eine Spirale. */
-  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)) > td:not(.chapter-tab) {
+  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.sidebar)) > td:not(.chapter-tab) {
     display: block;
     width: auto;
   }
@@ -436,6 +441,38 @@
   table.navigation > tbody > tr > td:not(:has(a)),
   table.subheading > tbody > tr > td:not(:has(a)) {
     display: none;
+  }
+
+  /* Abschnittsbaender bleiben linksbuendig - "C07 - Cardiovascular System",
+     "Zusammensetzung". Zentriert wird nur die Fusszeile, und die ist daran
+     zu erkennen, dass sie eine rechte Haelfte hat. */
+  tr:has(> td.subheading):not(:has(> td.subheading.right)) > td.subheading {
+    text-align: left;
+  }
+
+  /* Logo in die Mitte, und der Umschalter fuer hell/dunkel darunter - auf
+     einem Telefon steht das Logo sonst allein links und der Knopf allein
+     rechts. Der Umschalter wird dafuer statisch; dark.css setzt ihn auf
+     position:fixed und kommt spaeter im Kopf, deshalb hier ein Selektor mit
+     hoeherer Spezifitaet. */
+  td:has(> a > img.welcomeleft),
+  td:has(> a > img.logo),
+  td:has(> img.welcomeleft),
+  td:has(> img.logo) {
+    text-align: center;
+  }
+
+  img.logo,
+  img.welcomeleft,
+  img.welcomecenter {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  html #dark-mode-toggle {
+    position: static;
+    display: block;
+    margin: 8px auto 0;
   }
 
   /* Kopf- und Fussnavigation stecken in der zweiten Spalte einer

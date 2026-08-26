@@ -116,6 +116,7 @@ module ODDB
     class CenteredSearchComposite < HtmlGrid::Composite
       include ExternalLinks
       include UserSettings
+
       COMPONENTS = {}
       CSS_CLASS = "composite"
       CSS_MAP = {
@@ -198,11 +199,16 @@ module ODDB
         link
       end
 
+      # Der Stammdaten-Download laeuft seit August 2026 ueber
+      # mediupdatexml.oddb.org und nicht mehr ueber die eigene
+      # Download-Seite. Eigener Schluessel, nicht :mediupdate_url - der
+      # MediupdateXML-Verweis daneben zeigt weiterhin auf den HIN-Dienst.
       def download_export(model, session)
         link = HtmlGrid::Link.new(:download_export, model, session, self)
-        link.href = @lookandfeel._event_url(:download_export)
+        link.href = @lookandfeel.lookup(:download_export_url)
         link.label = true
         link.set_attribute("class", "list")
+        link.set_attribute("target", "_blank")
         link
       end
 
