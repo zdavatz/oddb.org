@@ -417,7 +417,10 @@
   img.welcomecenter {
     float: none;
     width: auto;
-    max-width: 150px;
+    /* 150px passten zum kompakten ODDB-Schriftzug und liessen das
+       generika-Logo, das drei Textzeilen traegt, unleserlich klein werden.
+       min() deckelt am Bildschirm und an einer absoluten Breite zugleich. */
+    max-width: min(260px, 75%);
     height: auto;
     margin: 0;
   }
