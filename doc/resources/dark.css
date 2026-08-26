@@ -466,6 +466,52 @@ html[data-theme="dark"] .diff li.diff-block-info {
   color: var(--dark-text-dim);
 }
 
+/* Farbige Hinterlegungen, die als inline-Style aus Ruby kommen und deshalb in
+   keinem Stylesheet stehen, das bin/generate_dark_css.py liest: die
+   Schweregrade der Interaktionen (sdif_interaction.rb, Colors: #caff70,
+   #ffec8b, #ff82ab, #ff6a6a) und die Herkunfts-, Weg- und
+   Kombinationsmarken im selben Modul (#d5ecd5, #e8e0f0, #dff0d8, #dde8f0).
+
+   Sie tragen Bedeutung und behalten ihre Farbe - dann brauchen sie aber
+   dunkle Schrift. Ohne das stand heller Text auf Rosa (1.7:1) und
+   "Quelle: EPha.ch" hellgrau auf Hellblau (1.1:1), also unlesbar.
+
+   Die Regel darf allgemein sein: jeder inline gesetzte Hintergrund der
+   Anwendung ist hell, keiner dunkel. Die helle Schrift auf diesen Kaesten
+   kommt geerbt, nicht aus einer eigenen Regel, deshalb genuegt hier die
+   normale Spezifitaet und es braucht kein !important. */
+html[data-theme="dark"] [style*="background-color"],
+html[data-theme="dark"] [style*="background-color"] * {
+  color: #14171a;
+}
+
+html[data-theme="dark"] [style*="background-color"] a,
+html[data-theme="dark"] [style*="background-color"] a:link,
+html[data-theme="dark"] [style*="background-color"] a:visited {
+  color: #0b3c8a;
+}
+
+/* tundra.css setzt pre auf background:#eee. Die Datei kommt per @import aus
+   oddb.css und wird vom Erzeuger nicht gelesen - das ist seine blinde Stelle.
+   In den Fachinfos steht in genau diesem pre die spaltenweise ausgerichtete
+   Tabelle, und die stand als heller Kasten mit hellem Text da, 1.2:1. */
+html[data-theme="dark"] pre {
+  background: var(--dark-surface-2);
+  color: var(--dark-text);
+  border: 1px solid var(--dark-border);
+}
+
+/* Abbildungen aus den Fach- und Patienteninformationen sind Diagramme und
+   Tabellen auf weissem Grund. Invertieren verbietet sich: in einer
+   medizinischen Abbildung tragen die Farben Bedeutung. Sie bekommen deshalb
+   ihr Blatt Papier mit Rand, statt roh auf dunklem Grund zu leuchten. */
+html[data-theme="dark"] img[src*="/images/fi/"],
+html[data-theme="dark"] img[src*="/images/pi/"] {
+  background: #ffffff;
+  padding: 8px;
+  border: 1px solid var(--dark-border);
+}
+
 /* --- Der Umschalter --- */
 #dark-mode-toggle {
   position: fixed;

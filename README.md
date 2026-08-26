@@ -131,7 +131,47 @@ A toggle in the top right corner switches between light and dark; the choice liv
 
 The overlay is **generated** from the source stylesheets — `python3 bin/generate_dark_css.py doc/resources/gcc/oddb.css doc/resources/diff.css` — and a test fails if any source rule has no dark counterpart. Enumerating by hand missed 77 rules, and a generic `html[data-theme="dark"] a` loses on specificity to `a.subheading:link`, which is why links stayed dark blue at 2.1:1 on a dark ground. Prefixing the source's own selector is always more specific than the original and later in the cascade.
 
+The generator has two blind spots, both found in August 2026 by measuring contrast on rendered pages rather than reading CSS. It reads `oddb.css` and `diff.css` — so it never saw `background: #eee` on `pre`, which arrives via the `@import` of the vendored `tundra.css` and is where the Fachinfo's column-aligned tables live (1.2:1). And it cannot see **inline styles written from Ruby**: the interaction severity colours and the source, route and combination badges in `sdif_interaction.rb` are set as `style="background-color: …"`, which left light text on pink at 1.7:1 and "Quelle: EPha.ch" at 1.1:1. Both are handled in the hand-written tail of `dark.css`; the inline case is covered by a general rule, which is safe because every inline background in the application is light. Figures in Fach- and Patienteninformation get a white plate rather than an inversion — in a medical figure the colours carry meaning.
+
 It deliberately does not use the existing colour choice (`:styles`, `oddb-blue.css` and siblings). That mechanism has been dead since the stylesheet started being inlined rather than linked: `css_link` substitutes `oddb.css` for `oddb-<style>.css` inside a `<style>` block whose content is the CSS itself, where the filename never appears — which is why picking blue or red today only changes the logo.
+
+### Font sizes and screen widths
+
+The page has declared `width=device-width` for years and then shipped a sixteen-column table with fixed pixel widths and **not one media query** — in none of the nine stylesheets. On a 390px phone the screen ended after the fourth column.
+
+`doc/resources/responsive.css` is an overlay on the same pattern as `dark.css`: one file keyed on the shared class names, appended after `oddb.css`, covering all eight flavors. Two rules govern it and both are enforced by `test/test_view/responsive.rb` — **every declaration sits inside a media query**, so nothing outside the three breakpoints changes for anybody, and **it sets no fixed colours**, because it is embedded into every page and has to be right in dark mode too.
+
+Three breakpoints. Desktop from 1025px stays dense — 13px instead of 12px, row padding 4→7px, tabular figures for prices, a header that stays put while scrolling; whoever compares prices wants rows, not air. Below 1025px the columns nobody reads at that width drop out. Below 640px each pack becomes a card.
+
+The columns could not be addressed by position: `result_list_components` is overridden six times in `lookandfeelwrapper.rb`, so the public price is the ninth column in gcc and the eighth or fifth elsewhere. `View::LookandfeelComponents#reorganize_components` now appends the column key as a class — `col-price_public` means the same everywhere — and that one change is what makes the card layout possible at all.
+
+Two of the fixes were **specificity**, the same trap dark mode fell into: `table:has(…) > tbody > tr { display: block }` scores (0,1,4) and beat `tr:has(> th.col-name_base) { display: none }` at (0,1,2), so the header row survived and the cards stacked as blocks. And a generic `> td { display: block }` at (0,1,3) quietly undid the column hiding one breakpoint up.
+
+The 16px on inputs is not taste: Safari zooms the whole page when a field under 16px takes focus, and does not zoom back out.
+
+### The RSS feeds as pages
+
+Clicking a feed on the home page used to land you in raw XML. `jobs`-generated feeds now also render as HTML in the site's own look and feel — `/de/gcc/rss_html/channel/recall.rss`, opened in a new tab from the feed title, while the feed icon still points at the XML.
+
+`ODDB::RssReader` reads the file **line by line and stops at fifty entries**, deliberately without an XML parser: `fachinfo.rss` is 248 MB, and a DOM of it per request would be a multiple of that. It answers in 0.1s. Descriptions are shown only when they are short and not a whole HTML document — the price feeds carry a rendered 28 KB detail page in every item.
+
+The XML is going nowhere. Feedly polls the five small channels about 290 times a day between them; those are real subscribers. What is worth questioning is the fachinfo side: `fachinfo.rss` plus 21 yearly variants take **1226 seconds and up to 3.9 GB** every night and occupy 2.1 GB on disk, for two requests a day.
+
+Adding an event needs three places, not one: the method on the state, `require` for the state class, and the name in `EVENTS` in `src/util/validator.rb`. Without the third, SBSM silently never triggers it and you get the previous page back with status 200.
+
+### Do not update sbsm to 1.6.3
+
+We run 1.6.1. 1.6.2 and 1.6.3 change 29 lines between them — ChronoLogger to Logger, hpricot to nokogiri — and neither adds anything we need. But **1.6.3 rewrote `_validate_html` and lost the sanitising in the process**: the `unless` that decided whether a tag is allowed has an empty body, so the method now only unwraps `<body>` and returns everything else verbatim. Fed `<p>ok <b>fett</b> <script>alert(1)</script> …`, 1.6.1 returns `<p>ok <b>fett</b> alert(1) link</p>` and 1.6.3 returns the input unchanged. We use it for `:html_chapter` (`HTML = [:html_chapter]` in `src/util/validator.rb`), the FI/PI chapter editor.
+
+The one real argument for moving is that hpricot 0.8.6 is unmaintained and warns under Ruby 3.4. The way to take it is to fix `_validate_html` in sbsm first — it is our own gem.
+
+### AdSense is off
+
+Switched off in August 2026 in `View::GoogleAdSenseMethods` (`ENABLED = false`). The ads were not being used, but every page still carried the script from `pagead2.googlesyndication.com`, the `<ins>` block and the publisher id — and on a phone the iframe it pulled in was 504px wide, the last thing making the page scroll sideways.
+
+The switch sits at the call site and not in the lookandfeel because `SBSM::Lookandfeel#enabled?(event, default = true)` computes `default || ENABLED.include?(event)`: with the default `true` everything is on, and removing a key from an `ENABLED` list changes nothing.
+
+The inline style on the `<ins>` was broken twice over — `style="display:block height  #{@height}px width {@width}px"`, without colons or semicolons, and with a `{@width}` that never had its `#`. The browser dropped the whole declaration, so not even `display:block` applied.
 
 ### Posting to LinkedIn
 

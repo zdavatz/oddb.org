@@ -50,6 +50,12 @@
       color: #003d73;
       text-decoration: underline;
     }
+    .hint {
+      margin: 0.5em 0 1.5em;
+      font-size: 0.85em;
+      color: #666;
+      line-height: 1.4;
+    }
     #retry-btn {
       display: none;
       margin: 1em auto;
@@ -79,6 +85,10 @@
 
     <div id="qrcode"></div>
     <div id="deeplink"></div>
+    <p class="hint">Sind mehrere swiyu-Apps installiert, entscheidet das
+    Betriebssystem, welche der Link &ouml;ffnet &ndash; die Wahl l&auml;sst sich
+    von aussen nicht steuern. Zuverl&auml;ssig ist der QR-Code: die gew&uuml;nschte
+    App &ouml;ffnen und von dort aus scannen.</p>
     <div id="status" class="pending">Initialisierung...</div>
     <button id="retry-btn" onclick="startLogin()">Erneut versuchen</button>
 

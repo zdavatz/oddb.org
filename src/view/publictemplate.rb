@@ -16,6 +16,7 @@ module ODDB
     class PublicTemplate < HtmlGrid::Template
       include View::Custom::HeadMethods
       include HtmlGrid::DojoToolkit::DojoTemplate
+
       DOJO_DEBUG = false
       DOJO_ENCODING = "UTF-8"
       DOJO_REQUIRE = [
@@ -29,6 +30,7 @@ module ODDB
         "dijit/TooltipDialog"
       ]
       DOJO_PARSE_WIDGETS = false
+      RESPONSIVE_CSS = "/resources/responsive.css"
       DARK_MODE_CSS = "/resources/dark.css"
       DARK_MODE_JS = "darkmode.js"
       CONTENT = nil
@@ -106,8 +108,14 @@ module ODDB
       #
       # dark.css wirkt nur unter html[data-theme="dark"]. Wer nie umschaltet,
       # sieht die Seite unveraendert.
+      #
+      # responsive.css haengt aus demselben Grund hier: oddb.css gibt es
+      # achtmal, einmal pro Flavor, und eine Ueberlagerung auf den gemeinsamen
+      # Klassennamen deckt alle ab. Jede Regel darin steht in einer Media
+      # Query, ausserhalb wirkt die Datei nicht.
       def css_links(context, path = @lookandfeel.resource(:css))
         links = super
+        links << css_link(context, RESPONSIVE_CSS)
         links << css_link(context, DARK_MODE_CSS)
         links << context.script(
           "type" => "text/javascript",

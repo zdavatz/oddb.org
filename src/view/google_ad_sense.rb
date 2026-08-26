@@ -6,8 +6,22 @@
 module ODDB
   module View
     module GoogleAdSenseMethods
+      # AdSense ist seit August 2026 aus. Genutzt wurden die Anzeigen nicht
+      # mehr, ausgeliefert aber weiterhin auf jeder Seite: das Script von
+      # pagead2.googlesyndication.com, der <ins>-Block und die
+      # Verlegerkennung ca-pub-6948570700973491. Auf dem Telefon war das
+      # nachgeladene iframe mit 504px zudem der letzte Grund, warum die Seite
+      # quer scrollte.
+      #
+      # Der Schalter steht hier und nicht im Lookandfeel, weil
+      # SBSM::Lookandfeel#enabled?(event, default = true) "default ||
+      # ENABLED.include?(event)" rechnet: mit dem voreingestellten true ist
+      # alles eingeschaltet, und einen Eintrag aus einer ENABLED-Liste zu
+      # nehmen aendert nichts. Wieder einschalten heisst: ENABLED auf true.
+      ENABLED = false
+
       def ad_sense(model, session, label)
-        if @lookandfeel.enabled?(:google_adsense) \
+        if ENABLED && @lookandfeel.enabled?(:google_adsense) \
           && !(@session.user.valid? || active_sponsor?)
           google = GoogleAdSense.new(model, session, self, label)
           google.channel = self.class::GOOGLE_CHANNEL
@@ -44,6 +58,16 @@ module ODDB
           # To test the placement I prepended a string like Werbung #{@my_label} #{@width}x #{@height}<br>#{@script}
           # The if statement below is an ugly hack to prevent loading the adsbygoogle.js twice
           # Add  google_adtest = "on";  for showing ads on your Test-Server if you are behind a Dnydns IP.
+          #
+          # Der inline-Style hiess bis August 2026
+          #   style="display:block height  #{@height}px width {@width}px"
+          # und war gleich zweifach kaputt: ohne Doppelpunkte und Semikolon ist
+          # das eine einzige ungueltige Deklaration, die der Browser verwirft -
+          # also galt nicht einmal display:block - und {@width} war ein nie
+          # ersetzter Platzhalter, dem das # fehlte. Die Groesse kommt ohnehin
+          # aus dem <style>-Block darueber, und zwar je nach Bildschirmbreite.
+          # Uebrig bleibt display:block, das die responsive Anzeigeneinheit
+          # von AdSense braucht.
           %(
         <style>
           .search_result { width: 320px; height: 100px; }
@@ -53,7 +77,7 @@ module ODDB
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- search_result -->
         <ins class="adsbygoogle search_result"
-          style="display:block height  #{@height}px width {@width}px"
+          style="display:block"
           google_ad_channel ="#{@channel}";
           data-matched-content-ui-type="image_sidebyside"
           data-matched-content-rows-num=1
@@ -73,7 +97,7 @@ module ODDB
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- homes_responsive -->
         <ins class="adsbygoogle homes_responsive"
-          style="display:block height  #{@height}px width {@width}px"
+          style="display:block"
           google_ad_channel ="#{@channel}";
           data-matched-content-ui-type="text"
           data-matched-content-rows-num=4
@@ -89,6 +113,7 @@ module ODDB
 
     class GoogleAdSenseComposite < HtmlGrid::Composite
       include GoogleAdSenseMethods
+
       COMPONENTS = {
         [0, 0]	=>	:ad_sense_left,
         [1, 0]	=>	:content,

@@ -73,6 +73,7 @@ require "state/user/passthru"
 require "state/user/register_poweruser"
 require "state/paypal/return"
 require "state/rss/passthru"
+require "state/rss/html"
 require "state/user/paypal_thanks"
 require "state/user/powerlink"
 require "state/user/init"
@@ -155,6 +156,7 @@ module ODDB
 
       include UmlautSort
       include Admin::LoginMethods
+
       attr_reader :model, :snapback_model
       DIRECT_EVENT = nil
       GLOBAL_MAP = {
@@ -821,6 +823,26 @@ module ODDB
           else
             Http404.new(@session, nil)
           end
+        end
+      end
+
+      # Dieselben Feeds als HTML, im Aussehen der Seite. Der Kanal wird gleich
+      # aufgeloest wie in #rss, damit beide Wege denselben Namen verstehen -
+      # und die XML-Fassung bleibt, wo sie ist: Feedly holt die fuenf kleinen
+      # Feeds rund 290 Mal am Tag ab.
+      def rss_html
+        channel = @session.user_input(:channel)
+        return unless channel
+        key = channel.tr(".", "_").to_sym
+        return Http404.new(@session, nil) unless @session.lookandfeel.enabled?(key)
+        if ODDB::RssPlugin::FLAVORED_RSS.index(@session.flavor)
+          channel = File.basename(channel, ".rss") + "-" +
+            (@session.flavor || "") + ".rss"
+        end
+        begin
+          Rss::Html.new(@session, channel)
+        rescue
+          Http404.new(@session, nil)
         end
       end
 

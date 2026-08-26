@@ -270,6 +270,7 @@ module ODDB
       :resolve,
       :result,
       :rss,
+      :rss_html,
       :search,
       :search_registrations,
       :search_sequences,

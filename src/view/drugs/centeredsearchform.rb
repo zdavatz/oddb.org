@@ -16,6 +16,7 @@ module ODDB
     module Drugs
       class CenteredSearchForm < View::CenteredSearchForm
         include SearchBarMethods
+
         CSS_CLASS = "tundra composite"
         COMPONENTS = {
           [0, 0] => View::TabNavigation,
@@ -127,6 +128,7 @@ module ODDB
 
       class CenteredSearchComposite < View::CenteredSearchComposite
         include View::Facebook
+
         COMPONENTS = {
           [0, 0]	=>	:screencast,
           [0, 1]	=>	:language_chooser,
@@ -276,13 +278,33 @@ module ODDB
 
       class RssPreview < HtmlGrid::DivComposite
         CSS_MAP = ["heading"]
+
+        # Das Symbol bleibt beim Feed. Wer es anklickt, will abonnieren - und
+        # Feedly holt die fuenf kleinen Kanaele rund 290 Mal am Tag ab, die
+        # XML-Fassung geht also nirgends hin.
         def rss_image(model)
-          if (link = title(model))
-            img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
-            img.attributes["src"] = @lookandfeel.resource_global(:rss_feed)
-            link.value = img
-            link
-          end
+          return unless (channel = rss_channel(model))
+          link = HtmlGrid::Link.new(:rss_feed, model, @session, self)
+          link.href = @lookandfeel._event_url(:rss, channel: channel)
+          img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
+          img.attributes["src"] = @lookandfeel.resource_global(:rss_feed)
+          link.value = img
+          link
+        end
+
+        # Der Titel fuehrt zur lesbaren Fassung. Bisher landete man dort im
+        # rohen XML, was fuer einen Menschen nichts hergibt.
+        def html_feed_link(model, channel, value)
+          link = HtmlGrid::Link.new(:rss_html, model, @session, self)
+          link.href = @lookandfeel._event_url(:rss_html, channel: channel)
+          link.target = "_blank"
+          link.value = value
+          link.css_class = "list bold"
+          link
+        end
+
+        def rss_channel(model)
+          nil
         end
       end
 
@@ -314,13 +336,14 @@ module ODDB
           [1, 0] => :title,
           [0, 1] => RssFeedbackList
         }
+        def rss_channel(model)
+          "feedback.rss" if model.first
+        end
+
         def title(model)
-          if model.first
-            link = HtmlGrid::Link.new(:feedback_feed_title, model, @session, self)
-            link.href = @lookandfeel._event_url(:rss, channel: "feedback.rss")
-            link.css_class = "list bold"
-            link
-          end
+          return unless model.first
+          html_feed_link(model, "feedback.rss",
+            @lookandfeel.lookup(:feedback_feed_title))
         end
       end
 
@@ -346,16 +369,17 @@ module ODDB
           [1, 0] => :title,
           [0, 1] => FachinfoNewsList
         }
+        def rss_channel(model)
+          "fachinfo.rss" if model.first
+        end
+
         def title(model)
-          if (fachinfo = model.first) && (month = fachinfo.revision)
-            link = HtmlGrid::Link.new(:fachinfo_news_title, model, @session, self)
-            link.href = @lookandfeel._event_url(:rss, channel: "fachinfo.rss")
-            link.value = [@lookandfeel.lookup(:fachinfo_news_title), "<br>",
+          fachinfo = model.first
+          return unless fachinfo && (month = fachinfo.revision)
+          html_feed_link(model, "fachinfo.rss",
+            [@lookandfeel.lookup(:fachinfo_news_title), "<br>",
               @lookandfeel.lookup("month_#{month.month}"),
-              month.year].join(" ")
-            link.css_class = "list bold"
-            link
-          end
+              month.year].join(" "))
         end
       end
 
@@ -365,18 +389,19 @@ module ODDB
           [0, 0] => :rss_image,
           [1, 0] => :title
         }
+        def rss_channel(model)
+          "#{model}.rss"
+        end
+
         def title(model)
           title = "#{model}_feed_title"
           channel = "#{model}.rss"
           month, number = @session.rss_updates[channel]
           month ||= @@today
-          link = HtmlGrid::Link.new(title, model, @session, self)
-          link.href = @lookandfeel._event_url(:rss, channel: channel)
-          link.value = [number.to_i, @lookandfeel.lookup(title), "<br>",
-            @lookandfeel.lookup("month_#{month.month}"),
-            month.year].compact.join(" ")
-          link.css_class = "list bold"
-          link
+          html_feed_link(model, channel,
+            [number.to_i, @lookandfeel.lookup(title), "<br>",
+              @lookandfeel.lookup("month_#{month.month}"),
+              month.year].compact.join(" "))
         end
       end
 

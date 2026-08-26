@@ -1,0 +1,555 @@
+/* responsive.css -- oddb.org -- Schriftgroessen und Bildschirmbreiten
+ *
+ * Eine Ueberlagerung ueber oddb.css, nach demselben Muster wie dark.css:
+ * oddb.css existiert achtmal, einmal pro Flavor, und unterscheidet sich nur in
+ * den Akzentfarben. Eine Datei, die auf den gemeinsamen Klassennamen aufsetzt
+ * und nach oddb.css in den <head> kommt, deckt damit alle Flavors ab.
+ *
+ * Die Seite meldet dem Browser width=device-width (publictemplate.rb), lieferte
+ * bis August 2026 aber keine einzige Media Query aus - in keinem der neun
+ * eigenen Stylesheets. Auf 390px endete der Bildschirm nach der vierten von
+ * sechzehn Spalten.
+ *
+ * Zwei Regeln fuer alles hier drin:
+ *
+ * 1. KEINE FESTEN FARBEN. Die Datei wird in jede Seite eingebettet und muss
+ *    auch im Dunkelmodus stimmen. Wo eine Trennlinie noetig ist, wird sie aus
+ *    currentColor gemischt und folgt damit dem Thema von selbst.
+ * 2. Alles steht in einer Media Query. Ausserhalb wirkt die Datei nicht, und
+ *    was welche Breite bekommt, ist an einer Stelle nachlesbar.
+ *
+ * Die Spaltenklassen col-* setzt View::LookandfeelComponents#reorganize_components.
+ */
+
+/* ------------------------------------------------------------------ *
+ * Desktop ab 1025px
+ *
+ * Bleibt dicht. Wer Preise vergleicht, will Zeilen sehen, nicht Luft -
+ * deshalb waechst die Grundschrift nur um einen Punkt, und der Rest sind
+ * Kleinigkeiten, die nichts verschieben.
+ * ------------------------------------------------------------------ */
+@media (min-width: 1025px) {
+  body {
+    font-size: 13px;
+  }
+
+  td.list {
+    padding: 6px 8px;
+  }
+
+  th,
+  td.th {
+    padding: 7px 8px;
+  }
+
+  /* Preise untereinander lesbar: Tabellenziffern sind alle gleich breit,
+     also stehen Franken und Rappen in einer Spalte wirklich untereinander. */
+  td.col-price_public,
+  td.col-price_exfactory,
+  td.col-ddd_price,
+  td.col-comparable_size,
+  td.col-mail_order_price {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Die Kopfzeile der Trefferliste bleibt beim Scrollen stehen. Ohne das
+     weiss man nach zwanzig Zeilen nicht mehr, welche Spalte EFP und welche
+     PP ist. */
+  table:has(> tbody > tr > td.col-name_base) th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  /* FI, PI, FB, G: von 2x4px auf 5x8px. Immer noch klein, aber klickbar. */
+  td.list a.square,
+  td.list span.square {
+    padding: 5px 8px;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Tablet bis 1024px
+ *
+ * Die Tabelle bleibt eine Tabelle, verliert aber die Spalten, die man auf
+ * dieser Breite ohnehin nicht mehr liest. Nichts geht verloren: die
+ * Detailansicht fuehrt jedes Feld.
+ * ------------------------------------------------------------------ */
+@media (max-width: 1024px) {
+  td.col-price_exfactory,
+  th.col-price_exfactory,
+  td.col-ddd_price,
+  th.col-ddd_price,
+  td.col-company_name,
+  th.col-company_name,
+  td.col-registration_date,
+  th.col-registration_date,
+  td.col-feedback,
+  th.col-feedback,
+  td.col-google_search,
+  th.col-google_search,
+  td.col-notify,
+  th.col-notify {
+    display: none;
+  }
+
+  /* Was breiter ist als der Bildschirm, scrollt in sich selbst - nicht die
+     ganze Seite. Sonst wandert der Text beim Wischen mit.
+     Betrifft die Tabellen in Fach- und Patienteninformation: die kommen
+     entweder als table.chapter oder, wenn die Quelle sie mit Prozentbreiten
+     gesetzt hat, als spaltenweise ausgerichteter Text im pre. Beide sind auf
+     Papierbreite gerechnet - die laengste Zeile in 58868 hat 129 Zeichen,
+     rund 930px in Courier 12px. Umbrechen wuerde die Spalten zerstoeren,
+     also wird gescrollt. */
+  pre,
+  table.chapter {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Abbildungen aus FI und PI sind auf Papierbreite gerechnet und tragen ihre
+     Groesse als inline-Style ("width: 1.2029747in"). */
+  img[src*="/images/fi/"],
+  img[src*="/images/pi/"] {
+    max-width: 100%;
+    height: auto;
+  }
+
+  img.logo,
+  img.welcomeleft,
+  img.welcomecenter {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Telefon bis 640px
+ * ------------------------------------------------------------------ */
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+    margin: 0;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Die Seite ist aus verschachtelten Tabellen gebaut. Ohne das hier zwingt
+     eine einzige feste Breite tief drin die ganze Seite ins Querscrollen. */
+  table.composite {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  td.list,
+  td.th,
+  td.subheading,
+  td.breadcrumbs {
+    padding: 8px 12px;
+  }
+
+  td.th,
+  th {
+    font-size: 17px;
+  }
+
+  td.subheading {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  span.breadcrumb {
+    font-size: 14px;
+  }
+
+  /* ---- Suchfeld ----
+   *
+   * Die 16px sind keine Geschmacksfrage: Safari auf dem iPhone zoomt die
+   * ganze Seite, sobald ein Eingabefeld mit weniger als 16px den Fokus
+   * bekommt - und zoomt nicht wieder heraus. Das ist der Grund, warum die
+   * Suche auf dem Telefon die Ansicht verschob.
+   */
+  input,
+  select,
+  textarea,
+  input.button,
+  input.search {
+    font-size: 16px;
+  }
+
+  input.search,
+  td.center input.search {
+    width: 100%;
+    max-width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    margin: 0;
+  }
+
+  select,
+  input.button {
+    min-height: 44px;
+  }
+
+  textarea.big,
+  textarea.standard {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ---- Kopf und Navigation ----
+   *
+   * Der Kopf ist eine Tabelle mit zwei Spalten: links das Logo, rechts erst
+   * der (jetzt leere) Anzeigenplatz, darunter die Zonen-Navigation. Zwei
+   * Spalten nebeneinander gehen auf 390px nicht auf, und weil eine Tabelle
+   * ihre Spaltenbreiten ueber alle Zeilen teilt, zog die breite Navigation
+   * auch die leere Zelle darueber auf 493px. Untereinander statt nebeneinander.
+   */
+  table:has(> tbody > tr > td img.welcomeleft),
+  table:has(> tbody > tr > td img.welcomeleft) > tbody,
+  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr,
+  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr > td {
+    display: block;
+    width: auto;
+    text-align: left;
+  }
+
+  /* Die leergebliebene Zelle des Anzeigenplatzes soll keine Luecke reissen. */
+  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr > td.right:empty {
+    display: none;
+  }
+
+  img.logo,
+  img.welcomeleft,
+  img.welcomecenter {
+    float: none;
+    width: auto;
+    max-width: 150px;
+    height: auto;
+    margin: 0;
+  }
+
+  table.right,
+  td.right table,
+  td.right table.tabnavigation {
+    float: none;
+  }
+
+  /* Die Zonen-Navigation ist eine Tabelle mit acht Eintraegen in einer Zeile
+     und war mit 937px der Hauptgrund, warum die ganze Seite quer scrollte.
+     Als Flexbox bricht sie um. Die Trennstriche zwischen den Eintraegen
+     ergeben dann keinen Sinn mehr und fallen weg. */
+  table.tabnavigation,
+  table.tabnavigation > tbody,
+  table.navigation,
+  table.navigation > tbody,
+  table.subheading,
+  table.subheading > tbody,
+  table.navigation-foot,
+  table.navigation-foot > tbody {
+    display: block;
+    width: 100%;
+  }
+
+  table.tabnavigation > tbody > tr,
+  table.navigation > tbody > tr,
+  table.subheading > tbody > tr,
+  table.navigation-foot > tbody > tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  table.tabnavigation > tbody > tr > td,
+  table.navigation > tbody > tr > td,
+  table.subheading > tbody > tr > td,
+  table.navigation-foot > tbody > tr > td {
+    display: block;
+  }
+
+  /* Die Trennstriche zwischen den Eintraegen ergeben nach dem Umbruch keinen
+     Sinn mehr. */
+  table.tabnavigation > tbody > tr > td:not(:has(a)),
+  table.navigation > tbody > tr > td:not(:has(a)),
+  table.subheading > tbody > tr > td:not(:has(a)) {
+    display: none;
+  }
+
+  a.tabnavigation,
+  a.navigation,
+  a.subheading {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+    padding: 0 6px;
+    white-space: nowrap;
+  }
+
+  /* Der AdSense-Block traegt einen kaputten inline-Style
+     (style="display:block height  60px width {@width}px" - ohne Doppelpunkte
+     und mit einem nie ersetzten Platzhalter), faellt damit auf display:inline
+     zurueck und liefert ein iframe mit fester Breite von 468px. Das war nach
+     der Navigation der zweite Grund fuers Querscrollen. width statt nur
+     max-width, weil das iframe seine Breite als Attribut mitbringt und sich
+     von max-width allein nicht schmaeler machen laesst. */
+  ins.adsbygoogle {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+
+  ins.adsbygoogle iframe,
+  iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ---- Trefferliste: aus der Tabelle wird eine Karte pro Packung ----
+   *
+   * :has() statt :nth-child, weil die Spaltenreihenfolge pro Flavor eine
+   * andere ist. Eine Zeile, die eine Zelle col-name_base enthaelt, ist eine
+   * Packungszeile - und nur die wird umgebaut.
+   *
+   * Die Tabelle selbst bleibt eine Tabelle. Der erste Versuch setzte sie und
+   * ihre Zeilen auf display:block, und genau das war der Fehler: die Regel
+   * table:has(...) > tbody > tr hat die Spezifitaet (0,1,4) und schlaegt damit
+   * tr:has(> th.col-name_base) mit (0,1,2) - die Kopfzeile blieb stehen und
+   * die Packungszeilen wurden Bloecke statt Flexboxen, also jedes Feld auf
+   * einer eigenen Zeile. Es braucht sie auch nicht: sind Kopfzeile und
+   * Packungszeilen keine table-rows mehr, hat die Tabelle keine Spalten mehr,
+   * an denen sich etwas ausrichten koennte.
+   */
+  tr:has(> th.col-name_base) {
+    display: none;
+  }
+
+  tr:has(> td.col-name_base) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+    row-gap: 3px;
+    padding: 12px 12px 11px;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  }
+
+  /* Kein display hier: die Zellen sind Flex-Items und werden ohnehin
+     blockifiziert. Ein display:block an dieser Stelle haette die Spezifitaet
+     (0,1,3) und wuerde das display:none der Tablet-Regeln wieder aufheben -
+     EFP und Zulassungsinhaber waeren auf dem Telefon zurueck. */
+  tr:has(> td.col-name_base) > td {
+    padding: 0;
+  }
+
+  /* Erste Zeile: Name links, Publikumspreis rechts.
+     order, weil die Zellen in der Reihenfolge der Tabelle stehen und dort die
+     Marken FI und PI vor dem Namen kommen. Auf einer Karte liest man zuerst,
+     wie das Praeparat heisst und was es kostet. */
+  td.col-name_base {
+    order: 1;
+    flex: 1 1 auto;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  td.col-price_public {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    font-size: 20px;
+    padding-right: 0;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Danach je eine eigene Zeile, in Leserichtung. */
+  td.col-comparable_size,
+  td.col-most_precise_dose {
+    order: 3;
+    flex: 0 0 100%;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  td.col-galenic_form,
+  td.col-compositions,
+  td.col-substances,
+  td.col-active_agents {
+    order: 4;
+    flex: 0 0 100%;
+    font-size: 14px;
+  }
+
+  td.col-company_name {
+    order: 5;
+    flex: 0 0 100%;
+    font-size: 14px;
+  }
+
+  /* Letzte Zeile: Kategorie, Exfactory, Selbstbehalt und die Marken teilen
+     sich eine Zeile und brechen um, wenn es eng wird. */
+  td.col-ikscat,
+  td.col-price_exfactory,
+  td.col-ddd_price,
+  td.col-deductible,
+  td.col-registration_date {
+    order: 6;
+    flex: 0 0 auto;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  td.col-limitation_text,
+  td.col-minifi,
+  td.col-fachinfo,
+  td.col-patinfo,
+  td.col-narcotic,
+  td.col-complementary_type,
+  td.col-comarketing,
+  td.col-feedback,
+  td.col-google_search,
+  td.col-notify {
+    order: 7;
+    flex: 0 0 auto;
+    text-align: left;
+  }
+
+  /* Leere Zellen wuerden als Luecken in der Karte stehen bleiben. */
+  tr:has(> td.col-name_base) > td:empty {
+    display: none;
+  }
+
+  /* Der Wechsel der Zeilenfarbe sitzt an der einzelnen Zelle (td.bg). In einer
+     Karte fuellen die Zellen die Zeile nicht mehr aus, also blieb ein
+     halbhoher gruener Fleck stehen. Die Karten trennt der Strich, nicht die
+     Farbe. none statt einer Farbe, damit der Dunkelmodus nichts davon merkt. */
+  tr:has(> td.col-name_base) > td.bg {
+    background: none;
+  }
+
+  /* Marken auf Fingergroesse. */
+  td.list a.square,
+  td.list span.square,
+  td.infos a.square,
+  td.infos span.square {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 13px;
+    box-sizing: border-box;
+  }
+
+  span.deductible_g,
+  span.deductible_o {
+    display: inline-block;
+    padding: 6px 9px;
+    font-size: 14px;
+  }
+
+  /* Die ATC-Bandzeile ueber jeder Gruppe. Ihr Text ist mit &nbsp;
+     zusammengeklebt ("Propranolol (C07AA05)&nbsp;16&nbsp;Praeparate&nbsp;"),
+     also ein einziges unteilbares Wort von rund 650px - und eine Tabelle kann
+     nicht schmaler werden als ihr breitester Inhalt. Das war der letzte Grund
+     fuers Querscrollen. overflow-wrap:anywhere statt break-word, weil nur
+     anywhere die minimale Breite des Kastens wirklich senkt. */
+  td.atc {
+    display: block;
+    padding: 9px 12px;
+    font-size: 15px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- Detailansicht ----
+   *
+   * Vier Spalten aus Label/Wert-Paaren, die auf 390px je 90px breit waeren.
+   * Gestapelt steht das Label ueber seinem Wert. Der Haken ist das Label
+   * selbst, kein Klassenname - deshalb :has().
+   */
+  tr:has(> td.list > label) {
+    display: block;
+    padding: 4px 0;
+  }
+
+  tr:has(> td.list > label) > td.list {
+    display: block;
+    padding: 2px 12px;
+  }
+
+  tr:has(> td.list > label) > td.list:has(> label) {
+    padding-top: 10px;
+    font-size: 13px;
+  }
+
+  tr:has(> td.list > label) > td.list:empty,
+  tr:has(> td.list > label) > td.list:has(> label):empty {
+    display: none;
+  }
+
+  label {
+    display: inline-block;
+    line-height: 1.35;
+  }
+
+  /* ---- Fachinfo und Patinfo ----
+   *
+   * Der Fliesstext kommt mit font-size:13px als inline-Style aus
+   * LookandfeelBase#section_style, die Zeilenhoehe aus View::Chapter::PAR_STYLE.
+   * Ein inline-Style schlaegt jedes Stylesheet, deshalb hier !important -
+   * die einzige Stelle in dieser Datei, die eine braucht.
+   */
+  div:has(> h3) > p,
+  div:has(> h3) > p > span {
+    font-size: 17px !important;
+    line-height: 1.6 !important;
+  }
+
+  h3 {
+    font-size: 17px;
+    margin-top: 22px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  a.chapter-tab,
+  td.chapter-tab {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+    padding: 0 8px;
+    font-size: 14px;
+  }
+
+  td.legal-note {
+    font-size: 12px;
+  }
+
+  /* Lange Wirkstoffnamen und GTINs sprengen sonst die Breite.
+     Nicht auf td.atc anwenden - die braucht anywhere, siehe oben. Beide
+     Selektoren haben die Spezifitaet (0,1,1), und td.list stand hier zuerst
+     spaeter in der Datei und hat das anywhere wieder auf break-word gesetzt. */
+  td.list:not(.atc),
+  td.infos {
+    overflow-wrap: break-word;
+  }
+}
+
+/* Auf dem Ausdruck gilt nichts davon - print.css und die Papierbreite
+   entscheiden dort, nicht die Fensterbreite. */
+@media print {
+  td.list a.square,
+  td.list span.square {
+    display: inline;
+    min-width: 0;
+    min-height: 0;
+  }
+}
