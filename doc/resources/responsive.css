@@ -648,9 +648,15 @@
      order, weil die Zellen in der Reihenfolge der Tabelle stehen und dort die
      Marken FI und PI vor dem Namen kommen. Auf einer Karte liest man zuerst,
      wie das Praeparat heisst und was es kostet. */
+  /* Der Name nimmt den freien Platz der ersten Zeile. Damit stehen
+     Packungsgroesse und Preis rechts, und weil danach nichts mehr frei ist,
+     brechen die Marken zusammen auf die naechste Zeile. Vorher sass ein
+     margin-left:auto an der Packungsgroesse, das den Platz aufbrauchte -
+     dann konnte der Preis nicht mehr wachsen und die erste Marke rutschte
+     neben ihn auf die Namenszeile. */
   td.col-name_base {
     order: 1;
-    flex: 1 1 60%;
+    flex: 1 1 auto;
     min-width: 0;
     font-size: 23px;
     line-height: 1.2;
@@ -662,6 +668,10 @@
      an den rechten Rand. */
   /* Erste Zeile: Name links, Packungsgroesse und Preis rechts. Das
      margin-left:auto an der Packungsgroesse schiebt beide an den Rand. */
+  /* margin-left:auto schiebt Packungsgroesse und Preis an den rechten Rand.
+     Das war frueher der Grund, warum die erste Marke neben den Preis
+     rutschte - dagegen hilft jetzt das Umbruchelement, das
+     compactdetail.js vor die Marken setzt, und nicht mehr flex-grow. */
   td.col-comparable_size,
   td.col-most_precise_dose {
     order: 2;
@@ -673,9 +683,13 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* flex-grow, damit der Preis den Rest der ersten Zeile aufbraucht: sonst
+     rutscht die erste Marke neben ihn und FI steht auf der Namenszeile,
+     PI eine Zeile tiefer. Die Marken gehoeren zusammen unter den Namen. */
   td.col-price_public {
     order: 3;
     flex: 0 0 auto;
+    text-align: right;
     font-size: 20px;
     padding-right: 0;
     white-space: nowrap;
@@ -703,7 +717,7 @@
   td.col-compositions,
   td.col-substances,
   td.col-active_agents {
-    order: 7;
+    order: 8;
     flex: 0 0 100%;
     font-size: 13px;
     line-height: 1.3;
@@ -711,7 +725,7 @@
   }
 
   td.col-company_name {
-    order: 8;
+    order: 9;
     flex: 0 0 100%;
     font-size: 14px;
   }
@@ -730,7 +744,7 @@
   td.col-price_exfactory,
   td.col-ddd_price,
   td.col-registration_date {
-    order: 6;
+    order: 7;
     flex: 0 0 auto;
     font-size: 14px;
     text-align: left;
@@ -746,13 +760,26 @@
   td.col-feedback,
   td.col-google_search,
   td.col-notify {
-    order: 6;
+    order: 7;
     flex: 0 0 auto;
     text-align: left;
   }
 
+  /* Der Umbruch, den compactdetail.js vor die erste Marke setzt: null hoch,
+     volle Breite - damit beginnt die Markenzeile immer neu, egal wie kurz
+     Name und Preis darueber sind. */
+  td.oddb-line-break {
+    flex: 0 0 100%;
+    order: 6;
+    height: 0;
+    padding: 0;
+    margin: 0;
+  }
+
   /* Leere Zellen wuerden als Luecken in der Karte stehen bleiben. */
-  tr:has(> td.col-name_base) > td:empty {
+  /* :not(.oddb-line-break), sonst blendet diese Regel ausgerechnet den
+     Umbruch aus - der ist absichtlich leer. */
+  tr:has(> td.col-name_base) > td:empty:not(.oddb-line-break) {
     display: none;
   }
 
@@ -816,6 +843,14 @@
     overflow-wrap: anywhere;
   }
 
+  /* "WHO-DDD" und "DrugBank.ca" bleiben je ein Stueck: der Bindestrich ist
+     fuer den Umbruch eine Gelegenheit wie jede andere, und anywhere macht es
+     nicht besser. Der lange, mit &nbsp; zusammengeklebte Teil davor braucht
+     anywhere weiterhin. */
+  td.atc a {
+    white-space: nowrap;
+  }
+
   /* ---- Detailansicht ----
    *
    * Vier Spalten aus Label/Wert-Paaren, die auf 390px je 90px breit waeren.
@@ -839,7 +874,8 @@
      nichts als einem &nbsp; darin ist fuer :empty nicht leer, und CSS kann
      Textinhalt nicht pruefen. */
   td.oddb-empty-pair,
-  td.navigation.oddb-empty-pair {
+  td.navigation.oddb-empty-pair,
+  td.atc.oddb-empty-pair {
     display: none;
   }
 

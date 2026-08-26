@@ -41,11 +41,12 @@
     spacers(narrow);
   }
 
-  // Die erste Zelle der Fusszeile: bei abgemeldeten Nutzern ein DIV mit nur
-  // einem &nbsp;, bei angemeldeten die Begruessung. Nur die leere Fassung
-  // darf weg - eine CSS-Regel auf die Klasse haette beide getroffen.
+  // Zellen, die nur ein &nbsp; enthalten und trotzdem eine Zeile kosten:
+  // die erste Zelle der Fusszeile (bei angemeldeten Nutzern steht dort die
+  // Begruessung, die bleiben muss - deshalb wird der Inhalt geprueft und
+  // nicht die Klasse) und die zweite Zelle des ATC-Bandes.
   function spacers(narrow) {
-    var cells = document.querySelectorAll("td.navigation");
+    var cells = document.querySelectorAll("td.navigation, td.atc");
     for (var i = 0; i < cells.length; i++) {
       cells[i].classList.toggle(HIDDEN, narrow && blank(cells[i]));
     }
@@ -55,17 +56,57 @@
   // Zellen, die nur ein &nbsp; enthalten - und weil der Selbstbehalt eine
   // ganze Zeile breit ist, klaffte zwischen Name und Marken eine leere
   // Flaeche. :empty greift auch hier nicht.
+  var BADGES = ["col-limitation_text", "col-minifi", "col-fachinfo",
+    "col-patinfo", "col-narcotic", "col-complementary_type",
+    "col-comarketing", "col-feedback", "col-google_search", "col-notify"];
+  var BREAK = "oddb-line-break";
+
+  function isBadge(cell) {
+    for (var i = 0; i < BADGES.length; i++) {
+      if (cell.classList.contains(BADGES[i])) { return true; }
+    }
+    return false;
+  }
+
   function cards(narrow) {
     var names = document.querySelectorAll("td.col-name_base");
     for (var i = 0; i < names.length; i++) {
       var row = names[i].parentNode;
       var cells = row.children;
+      var first = null;
       for (var j = 0; j < cells.length; j++) {
         var cell = cells[j];
-        if (cell === names[i]) { continue; }
-        cell.classList.toggle(HIDDEN, narrow && blank(cell));
+        if (cell.classList.contains(BREAK)) { continue; }
+        if (cell !== names[i]) {
+          cell.classList.toggle(HIDDEN, narrow && blank(cell));
+        }
+        if (!first && isBadge(cell) && !cell.classList.contains(HIDDEN)) {
+          first = cell;
+        }
       }
+      lineBreak(row, first, narrow);
     }
+  }
+
+  // Die Marken gehoeren unter den Namen, immer - auch wenn Name, Groesse und
+  // Preis die erste Zeile nicht fuellen. flex-grow kann das nicht: eine
+  // Flexbox belegt die Zeile erst und verteilt den Rest danach, ein Umbruch
+  // laesst sich damit nicht erzwingen. Ein leeres Element mit flex-basis 100%
+  // davor kann es - und das gibt es in der Tabelle nicht, also wird es hier
+  // eingesetzt.
+  function lineBreak(row, before, narrow) {
+    var existing = row.querySelector("." + BREAK);
+    if (!narrow || !before) {
+      if (existing) { existing.parentNode.removeChild(existing); }
+      return;
+    }
+    if (existing) {
+      if (existing.nextElementSibling === before) { return; }
+      existing.parentNode.removeChild(existing);
+    }
+    var br = document.createElement("td");
+    br.className = BREAK;
+    row.insertBefore(br, before);
   }
 
   function start() {
