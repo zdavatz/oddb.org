@@ -36,7 +36,13 @@ module ODDB
     # gmail.compose reicht zum Anlegen von Entwürfen und erlaubt kein Lesen
     # des Postfachs - die kleinste Berechtigung, die den Zweck erfüllt.
     SCOPE = "https://www.googleapis.com/auth/gmail.compose"
+    # Lesen ist ein eigener Bereich. Getrennt gehalten, damit sichtbar bleibt,
+    # was ein Token darf: gmail.readonly liest alles, schreibt aber nichts,
+    # und gmail.compose schreibt Entwürfe, liest aber nichts.
+    SCOPE_READ = "https://www.googleapis.com/auth/gmail.readonly"
+    SCOPES = [SCOPE, SCOPE_READ].join(" ")
     DRAFTS_URI = "https://gmail.googleapis.com/gmail/v1/users/me/drafts"
+    MESSAGES_URI = "https://gmail.googleapis.com/gmail/v1/users/me/messages"
 
     attr_reader :mailbox
 
@@ -84,7 +90,72 @@ module ODDB
       response["id"] or raise Error, "no draft id in response: #{response.inspect}"
     end
 
+    # Sucht mit der ueblichen Gmail-Syntax (from:, newer_than:, in:anywhere)
+    # und liefert Kopfzeilen, nicht Rumpf - der kostet einen Aufruf je Mail.
+    def search(query, limit = 10)
+      response = get_json("#{MESSAGES_URI}?" + URI.encode_www_form(
+        "q" => query, "maxResults" => limit
+      ))
+      Array(response["messages"]).collect { |entry| summary(entry["id"]) }
+    end
+
+    # Eine Mail mit Rumpf, als Klartext.
+    def message(id)
+      full = get_json("#{MESSAGES_URI}/#{id}?format=full")
+      summary_of(full).merge(body: plain_text(full["payload"]))
+    end
+
     private
+
+    def summary(id)
+      summary_of(get_json("#{MESSAGES_URI}/#{id}?format=metadata&" +
+        %w[From To Cc Date Subject].collect { |h| "metadataHeaders=#{h}" }.join("&")))
+    end
+
+    def summary_of(message)
+      headers = Array(message.dig("payload", "headers")).each_with_object({}) { |header, hash|
+        hash[header["name"].to_s.downcase] = header["value"]
+      }
+      {
+        id: message["id"],
+        thread: message["threadId"],
+        from: headers["from"],
+        to: headers["to"],
+        cc: headers["cc"],
+        date: headers["date"],
+        subject: headers["subject"],
+        snippet: message["snippet"]
+      }
+    end
+
+    # Gmail schachtelt multipart beliebig tief; gesucht ist der erste
+    # text/plain-Teil. Gibt es keinen, wird aus text/html einer gemacht -
+    # roh, aber lesbar, und besser als gar nichts.
+    def plain_text(payload)
+      body = part_of(payload, "text/plain")
+      return body if body
+      html = part_of(payload, "text/html")
+      return nil unless html
+      html.gsub(/<br\s*\/?>/i, "\n").gsub(/<\/p>/i, "\n\n")
+        .gsub(/<[^>]+>/, "").gsub("&nbsp;", " ").gsub("&amp;", "&")
+        .gsub("&lt;", "<").gsub("&gt;", ">").gsub(/\n{3,}/, "\n\n")
+    end
+
+    def part_of(payload, mime)
+      return nil unless payload
+      if payload["mimeType"] == mime && payload.dig("body", "data")
+        return decode(payload.dig("body", "data"))
+      end
+      Array(payload["parts"]).each do |part|
+        found = part_of(part, mime)
+        return found if found
+      end
+      nil
+    end
+
+    def decode(data)
+      Base64.urlsafe_decode64(data.to_s).force_encoding("UTF-8").scrub
+    end
 
     # Betreff und Absendername werden nach RFC 2047 kodiert, sonst zerlegt
     # Gmail Umlaute. Der Rumpf geht als UTF-8 mit base64, was Zeilenlängen und

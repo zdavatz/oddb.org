@@ -8,6 +8,9 @@
 #                       --subject="Betreff" \
 #                       --body=datei.txt [--cc=...] [--mailbox=...]
 #
+#   bin/oddb_mail search --query="from:jemand@example.com" [--limit=10]
+#   bin/oddb_mail show --id=<id>
+#
 # Der Text kommt aus einer Datei oder von stdin. Es wird nur ein Entwurf
 # angelegt, nie versendet.
 
@@ -50,6 +53,28 @@ def remember(key, value)
   puts "#{key} in etc/oddb.yml gespeichert"
 end
 
+# Ein Token, dem nur mit gmail.compose zugestimmt wurde, darf nicht lesen.
+# Google sagt dazu "insufficient authentication scopes", was den Grund nicht
+# nennt - der Hinweis tut es.
+def read_hint(error)
+  message = "fehlgeschlagen: #{error.message}"
+  if /insufficient|ACCESS_TOKEN_SCOPE|^403/.match?(error.message)
+    message += "\n\nDas gespeicherte Token deckt nur das Anlegen von Entwuerfen ab." \
+      "\nEinmal bin/oddb_mail authorize durchlaufen; das fragt jetzt beide" \
+      "\nBereiche ab, Entwuerfe und Lesen."
+  end
+  message
+end
+
+def print_summary(mail)
+  puts "#{mail[:date]}  #{mail[:id]}"
+  puts "  von:      #{mail[:from]}"
+  puts "  an:       #{mail[:to]}"
+  puts "  Betreff:  #{mail[:subject]}"
+  puts "  #{mail[:snippet]}"
+  puts
+end
+
 command = ARGV.shift
 
 case command
@@ -57,7 +82,7 @@ when "authorize"
   oauth = ODDB::GoogleOAuth.new
   puts "1. Diese Adresse im Browser oeffnen und als #{ODDB.config.gmail_draft_mailbox} zustimmen:"
   puts
-  puts "   " + oauth.authorization_url(ODDB::GmailApi::SCOPE)
+  puts "   " + oauth.authorization_url(ODDB::GmailApi::SCOPES)
   puts
   puts "2. Der Browser landet danach auf #{ODDB::GoogleOAuth::REDIRECT_URI} und"
   puts "   zeigt einen Fehler - das ist richtig so, hier laeuft kein Server."
@@ -102,8 +127,50 @@ when "draft"
     exit 1
   end
 
+when "search"
+  query = option("query") || ARGV.join(" ")
+  if query.to_s.empty?
+    warn '--query ist noetig, z.B. --query="from:EPL@bag.admin.ch"'
+    exit 2
+  end
+  begin
+    api = ODDB::GmailApi.new(option("mailbox"))
+    found = api.search(query, (option("limit") || 10).to_i)
+    if found.empty?
+      puts "keine Treffer fuer #{query.inspect} in #{api.mailbox}"
+    else
+      found.each { |mail| print_summary(mail) }
+    end
+  rescue ODDB::GmailApi::Error, ODDB::GoogleOAuth::Error => error
+    warn read_hint(error)
+    exit 1
+  end
+
+when "show"
+  id = option("id") || ARGV.shift
+  unless id
+    warn "--id ist noetig"
+    exit 2
+  end
+  begin
+    api = ODDB::GmailApi.new(option("mailbox"))
+    mail = api.message(id)
+    puts "Von:     #{mail[:from]}"
+    puts "An:      #{mail[:to]}"
+    puts "Cc:      #{mail[:cc]}" if mail[:cc]
+    puts "Datum:   #{mail[:date]}"
+    puts "Betreff: #{mail[:subject]}"
+    puts
+    puts mail[:body] || mail[:snippet]
+  rescue ODDB::GmailApi::Error, ODDB::GoogleOAuth::Error => error
+    warn read_hint(error)
+    exit 1
+  end
+
 else
   warn "usage: #{$0} authorize"
   warn "       #{$0} draft --to=<adresse> --subject=<betreff> [--body=<datei>] [--cc=<adresse>] [--mailbox=<postfach>]"
+  warn "       #{$0} search --query=<gmail-suche> [--limit=<n>] [--mailbox=<postfach>]"
+  warn "       #{$0} show --id=<id> [--mailbox=<postfach>]"
   exit 2
 end
