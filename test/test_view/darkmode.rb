@@ -115,7 +115,6 @@ module ODDB
 
       private
 
-
       def selectors_setting_colour
         selectors_setting_colour_in(@css, /(background|(^|[\s;])color|filter)\s*:/)
       end

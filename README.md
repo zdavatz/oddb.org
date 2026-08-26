@@ -129,6 +129,8 @@ Two things worth carrying away from that hunt. `ODBA::Stub#is_a?` answers from t
 
 A toggle in the top right corner switches between light and dark; the choice lives in the browser and follows `prefers-color-scheme` until someone decides otherwise. `doc/resources/dark.css` is an overlay keyed on `html[data-theme="dark"]`, so without that attribute it does nothing and the light page is untouched — worth insisting on, because the file is embedded into every page. One overlay serves all eight flavor stylesheets, which share 249 of 253 selectors.
 
+The overlay is **generated** from the source stylesheets — `python3 bin/generate_dark_css.py doc/resources/gcc/oddb.css doc/resources/diff.css` — and a test fails if any source rule has no dark counterpart. Enumerating by hand missed 77 rules, and a generic `html[data-theme="dark"] a` loses on specificity to `a.subheading:link`, which is why links stayed dark blue at 2.1:1 on a dark ground. Prefixing the source's own selector is always more specific than the original and later in the cascade.
+
 It deliberately does not use the existing colour choice (`:styles`, `oddb-blue.css` and siblings). That mechanism has been dead since the stylesheet started being inlined rather than linked: `css_link` substitutes `oddb.css` for `oddb-<style>.css` inside a `<style>` block whose content is the CSS itself, where the filename never appears — which is why picking blue or red today only changes the logo.
 
 ### Search performance
