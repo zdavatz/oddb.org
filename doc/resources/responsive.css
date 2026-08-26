@@ -179,8 +179,16 @@
      Ohne das :not() gewinnt diese Regel mit (0,1,3) gegen
      tr:has(> td.col-name_base) mit (0,1,2), und die Karten fallen wieder in
      Einzelzeilen auseinander. Genau das ist am 26.08.2026 zweimal passiert. */
-  table.composite > tbody > tr:not(:has(> td.col-name_base)),
-  table.composite > tbody > tr:not(:has(> td.col-name_base)) > td {
+  table.composite > tbody > tr:not(:has(> td.col-name_base)) {
+    display: block;
+    width: auto;
+  }
+
+  /* td.chapter-tab ist ausgenommen, weil die Kapitelnavigation weiter unten
+     inline-block braucht. Ausnehmen statt die Spezifitaet hochzuschrauben:
+     diese Regel hier hat mit dem :not(:has()) schon (0,2,4), und jede Antwort
+     darauf wird eine Spirale. */
+  table.composite > tbody > tr:not(:has(> td.col-name_base)) > td:not(.chapter-tab) {
     display: block;
     width: auto;
   }
@@ -604,26 +612,33 @@
   td.col-compositions,
   td.col-substances,
   td.col-active_agents {
-    order: 6;
+    order: 7;
     flex: 0 0 100%;
     font-size: 13px;
     line-height: 1.35;
   }
 
   td.col-company_name {
-    order: 7;
+    order: 8;
     flex: 0 0 100%;
     font-size: 14px;
   }
 
   /* Letzte Zeile: Kategorie, Exfactory, Selbstbehalt und die Marken teilen
      sich eine Zeile und brechen um, wenn es eng wird. */
+  /* Der Selbstbehalt gehoert zum Preis: unter den Prozentwert, rechtsbuendig,
+     als dritte Zeile der Preisgruppe. */
+  td.col-deductible {
+    order: 5;
+    flex: 0 0 100%;
+    text-align: right;
+  }
+
   td.col-ikscat,
   td.col-price_exfactory,
   td.col-ddd_price,
-  td.col-deductible,
   td.col-registration_date {
-    order: 5;
+    order: 6;
     flex: 0 0 auto;
     font-size: 14px;
     text-align: left;
@@ -639,7 +654,7 @@
   td.col-feedback,
   td.col-google_search,
   td.col-notify {
-    order: 5;
+    order: 6;
     flex: 0 0 auto;
     text-align: left;
   }
@@ -777,31 +792,31 @@
   }
 
   /* Die Kapitelnavigation der Fachinfo ist eine Tabelle mit sechs Zeilen zu
-     je vier Zellen, jede mit gruenem Grund und schwarzem Strich darunter.
-     Auf dem Telefon ergab das eine Treppe mit ausgefransten rechten Kanten,
-     weil jede Zeile anders breit wird. Als ein einziger umbrechender Streifen
-     gelesen: display:contents loest Tabellenkoerper und Zeilen auf, sodass
-     alle Zellen Flex-Kinder derselben Reihe werden, und flex-grow fuellt jede
-     Zeile bis zum Rand. */
-  table:has(> tbody > tr > td.chapter-tab) {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
+     je vier Zellen, jede mit gruenem Grund und schwarzem Strich darunter -
+     auf dem Telefon eine Treppe mit ausgefransten Kanten.
+     Zeilen als Bloecke, Zellen als inline-block: jede Zeile wird ein Band aus
+     Chips, das umbricht. Ein frueherer Versuch mit display:contents und flex
+     hat sich mit der Geruest-Regel oben gebissen und drei zerrissene Spalten
+     ergeben - diese Fassung kann mit nichts kollidieren, weil sie nur setzt,
+     was das Geruest ohnehin setzt. */
+  table:has(> tbody > tr > td.chapter-tab),
   table:has(> tbody > tr > td.chapter-tab) > tbody,
   table:has(> tbody > tr > td.chapter-tab) > tbody > tr {
-    display: contents;
+    display: block;
+    width: auto;
   }
 
+  table.composite > tbody > tr > td.chapter-tab,
   td.chapter-tab {
-    flex: 1 1 auto;
+    display: inline-block;
+    width: auto;
     border: 0;
     padding: 0;
-    text-align: center;
+    vertical-align: top;
   }
 
   /* Die Fuellzellen mit nichts als einem &nbsp; darin. */
+  table.composite > tbody > tr > td.chapter-tab:not(:has(a)),
   td.chapter-tab:not(:has(a)) {
     display: none;
   }
@@ -809,9 +824,9 @@
   a.chapter-tab,
   td.chapter-tab > a {
     display: block;
-    min-height: 44px;
-    line-height: 44px;
-    padding: 0 8px;
+    min-height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
     font-size: 14px;
     white-space: nowrap;
   }
