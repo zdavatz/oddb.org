@@ -16,6 +16,7 @@ module ODDB
       class ResultLimitList < HtmlGrid::List
         include DataFormat
         include View::AdditionalInformation
+
         COMPONENTS = {
           [0, 0] => :minifi,
           [1, 0]	=> :fachinfo,
@@ -34,21 +35,41 @@ module ODDB
         DEFAULT_CLASS = HtmlGrid::Value
         CSS_CLASS = "composite"
         SORT_HEADER = false
+        # Je Spalte ausgeschrieben statt in Spannen, damit jede ihre
+        # col-<schluessel>-Klasse tragen kann. Diese Liste baut ihre Spalten
+        # fest auf und geht nicht durch reorganize_components, bekam die
+        # Klassen also nirgends her - auf dem Telefon blieb ausgerechnet die
+        # Seite mit der Abfragebeschraenkung eine breite Tabelle. Die
+        # Grundklassen sind unveraendert, am Desktop aendert sich nichts.
         CSS_MAP = {
-          [0, 0, 5]	=> "list",
-          [4, 0] => "list big",
-          [5, 0] => "list",
-          [6, 0, 4] => "list right",
-          [10, 0, 3] => "list right"
+          [0, 0] => "list col-minifi",
+          [1, 0] => "list col-fachinfo",
+          [2, 0] => "list col-patinfo",
+          [3, 0] => "list col-narcotic",
+          [4, 0] => "list big col-name_base",
+          [5, 0] => "list col-galenic_form",
+          [6, 0] => "list right col-comparable_size",
+          [7, 0] => "list right col-price_exfactory",
+          [8, 0] => "list right col-price_public",
+          [9, 0] => "list right col-ikscat",
+          [10, 0] => "list right col-feedback",
+          [11, 0] => "list right col-google_search",
+          [12, 0] => "list right col-notify"
         }
         CSS_HEAD_MAP = {
-          [6, 0] => "th right",
-          [7, 0] => "th right",
-          [8, 0] => "th right",
-          [9, 0] => "th right",
-          [10, 0] => "th right",
-          [11, 0] => "th right",
-          [12, 0] => "th right"
+          [0, 0] => "th col-minifi",
+          [1, 0] => "th col-fachinfo",
+          [2, 0] => "th col-patinfo",
+          [3, 0] => "th col-narcotic",
+          [4, 0] => "th col-name_base",
+          [5, 0] => "th col-galenic_form",
+          [6, 0] => "th right col-comparable_size",
+          [7, 0] => "th right col-price_exfactory",
+          [8, 0] => "th right col-price_public",
+          [9, 0] => "th right col-ikscat",
+          [10, 0] => "th right col-feedback",
+          [11, 0] => "th right col-google_search",
+          [12, 0] => "th right col-notify"
         }
         def compose_empty_list(offset)
           count = @session.state.package_count.to_i

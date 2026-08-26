@@ -33,6 +33,7 @@ module ODDB
       RESPONSIVE_CSS = "/resources/responsive.css"
       DARK_MODE_CSS = "/resources/dark.css"
       DARK_MODE_JS = "darkmode.js"
+      EXTERNAL_LINKS_JS = "externallinks.js"
       CONTENT = nil
       CSS_CLASS = "composite"
       COMPONENTS = {
@@ -121,6 +122,14 @@ module ODDB
           "type" => "text/javascript",
           "language" => "JavaScript",
           "src" => @lookandfeel.resource_global(:javascript, DARK_MODE_JS)
+        )
+        # Fremde Verweise in einen neuen Reiter. Aus demselben Grund hier wie
+        # der Dunkelmodus: javascripts wird auf den meistbesuchten Seiten ohne
+        # super ueberschrieben.
+        links << context.script(
+          "type" => "text/javascript",
+          "language" => "JavaScript",
+          "src" => @lookandfeel.resource_global(:javascript, EXTERNAL_LINKS_JS)
         )
         links
       end

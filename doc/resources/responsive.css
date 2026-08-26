@@ -190,6 +190,22 @@
     margin: 0;
   }
 
+  /* Auf der Startseite steht das Suchfeld allein in der Mitte der Spalte -
+     dann gehoert auch die Beschriftung darin mittig, nicht an den linken
+     Rand geklebt. Nur dort: in der Trefferliste steht das Feld neben anderen
+     Dingen und bleibt linksbuendig. */
+  td.center input.search,
+  td.center select,
+  td.center {
+    text-align: center;
+  }
+
+  td.center select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
   select,
   input.button {
     min-height: 44px;
@@ -474,7 +490,10 @@
      neben dem Namen - "+18%  50  10.50" liest sich als ein Gedanke. Das
      margin-left:auto sitzt am ersten der drei und schiebt die ganze Gruppe
      an den rechten Rand. */
-  td.col-price_difference {
+  /* Erste Zeile: Name links, Packungsgroesse und Preis rechts. Das
+     margin-left:auto an der Packungsgroesse schiebt beide an den Rand. */
+  td.col-comparable_size,
+  td.col-most_precise_dose {
     order: 2;
     flex: 0 0 auto;
     margin-left: auto;
@@ -484,18 +503,8 @@
     font-variant-numeric: tabular-nums;
   }
 
-  td.col-comparable_size,
-  td.col-most_precise_dose {
-    order: 3;
-    flex: 0 0 auto;
-    text-align: right;
-    font-size: 15px;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-  }
-
   td.col-price_public {
-    order: 4;
+    order: 3;
     flex: 0 0 auto;
     font-size: 20px;
     padding-right: 0;
@@ -503,10 +512,15 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Ohne Preisunterschied - die Trefferliste hat keinen - muss die
-     Packungsgroesse die Gruppe an den Rand schieben. */
-  tr:has(> td.col-name_base):not(:has(> td.col-price_difference)) > td.col-comparable_size {
-    margin-left: auto;
+  /* Der Preisunterschied steht unter dem Preis, rechtsbuendig: flex-basis
+     100% bricht die Zeile um, text-align:right stellt ihn unter die Zahl. */
+  td.col-price_difference {
+    order: 4;
+    flex: 0 0 100%;
+    text-align: right;
+    font-size: 20px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
   /* Die Zusammensetzung ist die laengste Zeile der Karte und darf dem Namen
