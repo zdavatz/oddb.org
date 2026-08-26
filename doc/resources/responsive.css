@@ -228,9 +228,27 @@
     white-space: nowrap;
   }
 
+  /* Hinweis und "Legende einblenden" stehen in zwei Zellen einer Zeile.
+     Gestapelt kostete das eine ganze Zeile gruenen Balken fuer einen
+     einzigen Verweis; als Flexzeile haengt er sich hinten an. */
+  tr:has(> td.explain) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    column-gap: 8px;
+    padding: 8px 12px;
+  }
+
+  tr:has(> td.explain) > td.explain {
+    display: block;
+    width: auto;
+    flex: 0 1 auto;
+    padding: 0;
+  }
+
   td.explain {
     text-align: center;
-    padding: 10px 12px;
     white-space: normal;
   }
 
@@ -248,11 +266,12 @@
        - th               : Kopfzeilen, die verschwinden
        - td.subheading    : die Fusszeile, die ihre Reihenfolge umdreht
        - td.sidebar       : die Startseite, die ihre drei Spalten stapelt
+       - td.explain       : der Hinweis unter der Trefferliste, einzeilig
 
      Fuenf Mal an einem Tag hat diese Regel einen Kampf gewonnen, in dem sie
      nichts zu suchen hatte. Wer hier etwas ergaenzt, ergaenzt auch diese
      Liste. */
-  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> td.subheading)):not(:has(> td.sidebar)) {
+  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> td.subheading)):not(:has(> td.sidebar)):not(:has(> td.explain)) {
     display: block;
     width: auto;
   }
