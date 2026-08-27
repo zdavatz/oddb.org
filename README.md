@@ -216,6 +216,8 @@ The inline style on the `<ins>` was broken twice over — `style="display:block 
 
 ### Posting to LinkedIn
 
+
+A published post cannot be read back, and that matters more than it sounds: `commentary` is read as "Little Text Format", where `\|{}@[]()<>*_~` count as markup and are silently dropped. Our own URLs are full of underscores, so `.../rss_html/channel/price_cut.rss` went out as `.../rsshtml/channel/pricecut.rss` — a link into nowhere under a post that looked perfectly fine. `GET /rest/posts/<urn>` answers 403, so the only way to see what was published is to publish it: two forms side by side, visible to connections only, and look. `#` stays unescaped, or the hashtags stop being hashtags.
 `bin/oddb_linkedin authorize`, then `bin/oddb_linkedin post --body=text.txt --image=shot.png::alt text`. Credentials live in the gitignored `etc/oddb.yml`.
 
 Three things about this API are worth knowing before reaching for it. An image uploaded as `application/octet-stream` **vanishes silently** — 201, a valid urn, a post created, and no image; only `image/png` works. Scopes are stamped into a token when it is issued, so enabling a product or verifying the app does nothing for tokens that already exist, and they keep answering 403 with an empty body. And the `profileId` in a profile's page source is not the OpenID subject — only the `sub` from `userinfo` works as an author.
