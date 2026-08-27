@@ -198,7 +198,7 @@ That alone was not enough for `ch.oddb.org`, which proxies to Anubis rather than
 
 The measurement was misleading. Anubis answers `curl` with its own "administrator has misconfigured Anubis" page; a **browser** during an outage gets **502**. So `ProxyErrorOverride On 502 503 504` catches exactly this case and leaves real 500s alone. The status list needs Apache 2.4.52 or later — 2.4.58 here.
 
-Beware of measuring through `:443` in general: this is the second time Anubis' 500 has sent an investigation the wrong way. Send a Googlebot user-agent, which bypasses it, or probe `http://localhost:8012` directly.
+`curl` cannot verify the result, which is worth knowing before trying: Anubis answers any `curl` with its own 500 page whatever `User-Agent` is sent — measured with a full Chrome user-agent while the application was up. Only a real browser gets the 502 the override converts, so this is checked in a browser during a restart and not from the shell. It is the second time Anubis' 500 has sent an investigation the wrong way; for anything else, send a Googlebot user-agent, which bypasses it, or probe `http://localhost:8012` directly.
 
 ### Do not update sbsm to 1.6.3
 
