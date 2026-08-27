@@ -134,6 +134,16 @@
  * Telefon bis 640px
  * ------------------------------------------------------------------ */
 @media (max-width: 640px) {
+  /* Ein Datum ist ein Wort. Auf 393px brach "01.08.2026" nach der zweiten
+     Stelle des Jahres um, weil die Spalte so schmal wird wie ihr laengster
+     Umbruchpunkt - und ein Punkt ist einer. Gilt nur fuer diese Spalte, denn
+     ein pauschales nowrap auf td.right erwischt auch den Hinweistext unter
+     der Trefferliste und stellt ihn als eine Zeile von 710px hin. */
+  td.col-rss_date,
+  th.col-rss_date {
+    white-space: nowrap;
+  }
+
   body {
     font-size: 16px;
     margin: 0;
