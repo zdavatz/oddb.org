@@ -1,0 +1,159 @@
+#!/usr/local/bin/ruby
+# Zaehlt die Kapitel, die die Anwendung selbst erreicht, und vergleicht sie
+# mit der Liste, die eine Breitensuche ueber object_connection fuer
+# unerreichbar haelt.
+#
+#   bundle exec ruby jobs/verify_chapter_reachability unerreichbar.txt
+#
+# Zwei unabhaengige Wege, und das ist der ganze Zweck. Eine Zaehlung ueber
+# object_connection hat in diesem Datenbestand schon einmal danebengelegen -
+# "7710 leere Patinfos", waehrend der Gang durch die lebenden Objekte 47 fand.
+# Text::Document deklariert @descriptions als ODBA_SERIALIZABLE, und ein
+# solches Feld wird im Elternobjekt mitgeschrieben; eine fehlende Kante ist
+# dann kein Beweis fuer Unerreichbarkeit.
+#
+# Findet dieser Gang auch nur ein Kapitel, das die Suche unerreichbar nennt,
+# taugt die Suche fuer Kapitel nicht - und dann wird nichts geloescht.
+#
+# Die Dokumente werden ueber @descriptions gelesen und nicht ueber
+# fachinfo.de: SimpleLanguage#description raeumt bei jedem Aufruf, dessen
+# Schluessel nichts findet, symbolische Schluessel weg und ruft odba_store.
+# Ein Gang ueber 14000 Registrierungen mit einer Sprache, die es nicht gibt,
+# schreibt so tausende Male in die Datenbank - dieser Lauf soll nur lesen.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      path = ARGV.find { |a| !a.start_with?("--") }
+      unless path && File.exist?(path)
+        warn "Datei mit den unerreichbaren odba_ids fehlt"
+        next
+      end
+      unreachable = Set.new
+      File.foreach(path) { |line| unreachable << line.to_i }
+      puts "unerreichbar laut Suche: #{unreachable.size}"
+
+      def self.retire(object)
+        id = object.odba_id
+        return unless id
+        ODBA.cache.fetch_cache_entry(id)&.odba_retire(force: true)
+      rescue
+        nil
+      end
+
+      seen = Set.new
+      widerspruch = []
+      documents = 0
+
+      # Die Kapitel sind keine Instanzvariablen des Dokuments, sondern
+      # Zugriffsmethoden: chapters gibt die Namen als Symbole zurueck, und
+      # erst document.send(name) liefert das Kapitel. Der erste Anlauf hier
+      # sah in die Instanzvariablen, fand 1261 Kapitel statt hunderttausender
+      # und meldete triumphierend null Widersprueche.
+      collect = lambda { |document|
+        return unless document
+        names = begin
+          Array(document.chapters)
+        rescue
+          []
+        end
+        return if names.empty?
+        documents += 1
+        names.each { |name|
+          next unless name.is_a?(Symbol) || name.is_a?(String)
+          value = begin
+            document.send(name)
+          rescue
+            nil
+          end
+          Array(value.is_a?(Array) ? value : [value]).each { |item|
+            id = begin
+              item.respond_to?(:odba_id) ? item.odba_id : nil
+            rescue
+              nil
+            end
+            next unless id
+            next unless seen.add?(id)
+            widerspruch << id if unreachable.include?(id)
+          }
+        }
+        retire(document)
+      }
+
+      # Alle Sprachfassungen. Ueber die Methode und nicht ueber
+      # instance_variable_get: was hier ankommt, ist meist ein ODBA::Stub,
+      # dessen eigene Instanzvariablen nur @odba_id und Geschwister sind - ein
+      # Blick darauf findet nichts und meldet faelschlich Ruhe. Erst ein
+      # Methodenaufruf loest den Stub auf. description(key) wird bewusst
+      # gemieden: es raeumt symbolische Schluessel weg und ruft odba_store,
+      # und dieser Lauf soll nur lesen.
+      docs_of = lambda { |info|
+        d = begin
+          info.descriptions
+        rescue
+          nil
+        end
+        d.respond_to?(:values) ? d.values.compact : []
+      }
+      count = 0
+      system.each_registration { |reg|
+        count += 1
+        [begin
+          reg.fachinfo
+        rescue
+          nil
+        end,
+          begin
+            reg.patinfo
+          rescue
+            nil
+          end].compact.each { |info|
+          docs_of.call(info).each { |doc| collect.call(doc) }
+          retire(info)
+        }
+        reg.each_sequence { |seq|
+          pi = begin
+            seq.patinfo
+          rescue
+            nil
+          end
+          if pi
+            docs_of.call(pi).each { |doc| collect.call(doc) }
+            retire(pi)
+          end
+          seq.each_package { |pac|
+            pp = begin
+              pac.patinfo
+            rescue
+              nil
+            end
+            next unless pp
+            docs_of.call(pp).each { |doc| collect.call(doc) }
+            retire(pp)
+          }
+        }
+        retire(reg)
+        if (count % 500).zero?
+          puts "  #{count} Registrierungen, #{seen.size} Kapitel erreicht, " \
+            "#{widerspruch.size} Widersprüche"
+        end
+      }
+
+      puts
+      puts "Registrierungen:        #{count}"
+      puts "Dokumente angefasst:    #{documents}"
+      puts "Kapitel erreicht:       #{seen.size}"
+      puts "davon als unerreichbar gezählt: #{widerspruch.size}"
+      if widerspruch.empty?
+        puts "=> kein Widerspruch. Die Suche stimmt auch für Kapitel."
+      else
+        puts "=> Die Suche taugt für Kapitel NICHT. Beispiele: #{widerspruch.first(10).inspect}"
+      end
+    end
+  end
+end

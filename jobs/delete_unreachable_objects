@@ -1,0 +1,156 @@
+#!/usr/local/bin/ruby
+# Loescht Objekte, die von keiner Wurzel aus erreichbar sind.
+#
+#   bundle exec ruby jobs/delete_unreachable_objects                  # nur zaehlen
+#   bundle exec ruby jobs/delete_unreachable_objects --extent=ODDB::EphaInteraction --apply
+#   bundle exec ruby jobs/delete_unreachable_objects --all --apply
+#
+# Woher die Liste kommt: eine Breitensuche ueber object_connection von den
+# benannten, den prefetchable und den ueber Indextabellen erreichbaren
+# Objekten aus. Der Job legt die dafuer noetigen Tabellen selbst an
+# (tmp_roots, tmp_reachable) - reine Hilfstabellen, am Ende wieder weg.
+#
+# Warum das ueberhaupt so viel ist: bei jeder Aktualisierung einer Fach- oder
+# Patienteninformation entsteht ein neues Dokument mit neuen Kapiteln, die
+# Registrierung tauscht ueber replace_observer die Referenz, und das alte
+# Dokument wird losgelassen statt geloescht. Auf ~6300 lebende Fachinfos
+# kommen so rund 200000 abgeloeste Dokumentfassungen und 3.95 Mio Kapitel.
+#
+# Zwei Dinge werden nie geloescht, und das ist die wichtigste Zeile hier:
+#
+#   * alles, was auf ChangeLogItem endet. An den unerreichbaren Dokumenten
+#     haengen 31370 davon - die verwaisten Diffs, von denen im August 20105
+#     an lebende Dokumente umgehaengt wurden und heute auf den /diff/-Seiten
+#     stehen. Ein Diff traegt den vollstaendigen alten und neuen Text; er ist
+#     die Historie, die die alten Dokumente entbehrlich macht.
+#   * Array und Hash. Dort liegen unter anderem die change_log-Listen.
+#
+# Geloescht wird mit SQL in Bloecken und nicht ueber ODBA.cache.delete: der
+# macht je Objekt eine Abfrage und schreibt alle Verweisenden zurueck, was
+# bei vier Millionen Objekten Stunden dauert. Die Kehrseite: es ist nicht
+# rueckgaengig zu machen. Vor dem Lauf gehoert ein frischer Dump angelegt.
+#
+# Geprueft ist die Erreichbarkeit auf zwei unabhaengigen Wegen: die Suche
+# hier und ein Gang durch die lebenden Objekte
+# (jobs/verify_chapter_reachability), der 286639 Kapitel erreicht und davon
+# kein einziges gefunden hat, das die Suche unerreichbar nennt.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+      all = ARGV.include?("--all")
+      only = ARGV.find { |a| a.start_with?("--extent=") }&.split("=", 2)&.last
+      # Mehrere auf einmal, fuer die vielen kleinen Klassen am Anfang.
+      many = ARGV.find { |a| a.start_with?("--extents=") }&.split("=", 2)&.last&.split(",")
+      # Alle Klassen mit hoechstens n Objekten - so laesst sich von unten
+      # nach oben arbeiten, ohne die Namen abzuschreiben.
+      upto = ARGV.find { |a| a.start_with?("--upto=") }&.split("=", 2)&.last&.to_i
+      batch = (ARGV.find { |a| a.start_with?("--batch=") }&.split("=", 2)&.last || "20000").to_i
+
+      db = ODBA.storage.dbi
+      query = ->(sql) { db.execute(sql).fetch_all }
+
+      # Nie anfassen. ChangeLogItem traegt die Historie, Array und Hash
+      # halten unter anderem die change_log-Listen.
+      keep = "o.extent not like '%ChangeLogItem' and o.extent not in ('Array', 'Hash')"
+
+      index_tables = query.call(<<~SQL).collect(&:first) - ["object_connection"]
+        select table_name from information_schema.columns
+        where column_name = 'target_id' and table_schema = 'public'
+      SQL
+
+      puts "Erreichbarkeit wird berechnet (#{index_tables.size} Indextabellen) ..."
+      started = Time.now
+      db.execute("drop table if exists tmp_roots")
+      db.execute("create table tmp_roots(odba_id bigint)")
+      roots = ["select odba_id from object where name is not null",
+        "select odba_id from object where prefetchable"] +
+        index_tables.collect { |t| "select target_id from #{t}" }
+      db.execute("insert into tmp_roots #{roots.join(" union ")}")
+      db.execute("create index on tmp_roots(odba_id)")
+      db.execute("drop table if exists tmp_reachable")
+      db.execute(<<~SQL)
+        create table tmp_reachable as
+        with recursive r as (
+          select distinct odba_id from tmp_roots
+          union
+          select c.target_id from object_connection c join r on r.odba_id = c.origin_id
+        )
+        select odba_id from r
+      SQL
+      db.execute("create index on tmp_reachable(odba_id)")
+      reachable = query.call("select count(*) from tmp_reachable").first.first
+      total = query.call("select count(*) from object").first.first
+      puts "  #{reachable} von #{total} erreichbar (#{(Time.now - started).round(1)}s)"
+      puts
+
+      where = "not exists (select 1 from tmp_reachable r where r.odba_id = o.odba_id) and #{keep}"
+      where += " and o.extent = '#{only}'" if only
+      where += " and o.extent in (#{many.collect { |e| "'#{e}'" }.join(",")})" if many
+      if upto
+        small = query.call(<<~SQL).collect(&:first)
+          select o.extent from object o
+          where not exists (select 1 from tmp_reachable r where r.odba_id = o.odba_id) and #{keep}
+          group by o.extent having count(*) <= #{upto}
+        SQL
+        if small.empty?
+          puts "keine Klasse mit hoechstens #{upto} Objekten uebrig"
+          next
+        end
+        where += " and o.extent in (#{small.collect { |e| "'#{e}'" }.join(",")})"
+      end
+      rows = query.call(<<~SQL)
+        select o.extent, count(*), sum(pg_column_size(o.content))
+        from object o where #{where}
+        group by o.extent order by sum(pg_column_size(o.content)) desc
+      SQL
+      bytes = rows.sum { |r| r[2].to_i }
+      rows.each { |extent, count, size|
+        puts format("  %-42s %8d  %8.1f MB", extent, count, size.to_i / 1048576.0)
+      }
+      puts format("  %-42s %8d  %8.1f MB", "zusammen", rows.sum { |r| r[1].to_i }, bytes / 1048576.0)
+
+      unless apply
+        puts
+        puts "ohne --apply nichts geloescht"
+        next
+      end
+      unless only || many || upto || all
+        puts
+        puts "--extent=, --extents=, --upto=<n> oder --all noetig, damit ein Lauf nicht versehentlich alles nimmt"
+        next
+      end
+
+      log = File.expand_path("../log/deleted_unreachable-#{Time.now.strftime("%Y%m%d-%H%M%S")}.txt",
+        File.dirname(__FILE__))
+      puts
+      puts "Protokoll: #{log}"
+      deleted = 0
+      File.open(log, "w") { |fh|
+        loop do
+          ids = query.call("select o.odba_id from object o where #{where} limit #{batch}").collect(&:first)
+          break if ids.empty?
+          list = ids.join(",")
+          db.execute("delete from object_connection where origin_id in (#{list}) or target_id in (#{list})")
+          db.execute("delete from object where odba_id in (#{list})")
+          ids.each { |id| fh.puts(id) }
+          fh.flush
+          deleted += ids.size
+          print "\r  #{deleted} geloescht"
+          $stdout.flush
+        end
+      }
+      puts
+      db.execute("drop table if exists tmp_roots")
+      db.execute("drop table if exists tmp_reachable")
+      puts "#{deleted} Objekte geloescht in #{(Time.now - started).round(1)}s"
+      puts "Die Datenbank gibt den Platz erst mit VACUUM FULL zurueck - oder beim naechsten Dump."
+    end
+  end
+end
