@@ -121,12 +121,34 @@
     height: auto;
   }
 
+  /* width:auto loest die 350px aus oddb.css, und max-width:100% laesst das
+     Bild danach bis zur Breite seines Kastens wachsen. Auf der Startseite
+     steckt es in einer Zelle mit width:33% und bleibt klein; auf einer
+     Trefferseite ist der Kopf anders gebaut, und quer gehalten wurde das
+     Logo dort 477px breit statt 260. Dieselbe Deckelung wie im Hochformat -
+     die Groesse dort gibt den Ausschlag. */
   img.logo,
   img.welcomeleft,
   img.welcomecenter {
     width: auto;
-    max-width: 100%;
+    /* 100% und nicht 75%: quer ist die Spalte, in der das Logo steht, mal
+       schmal, und 75% davon liessen es auf 124px schrumpfen. Massgebend ist
+       die Groesse im Hochformat, also 260px, sobald Platz da ist. */
+    max-width: min(260px, 100%);
     height: auto;
+  }
+
+  /* Die Sprachwahl im Kopf steht quer links, wie der Rest der Zeile. Nur im
+     Hochformat rueckt sie unter das Logo (siehe weiter unten). Die
+     Startseite ist nicht betroffen: ihre Sprachwahl kommt aus dem
+     zentrierten Suchformular, nicht aus dem Kopf. */
+  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list.center {
+    text-align: left;
+  }
+
+  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list.center table {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -557,6 +579,18 @@
      davor faellt weg, weil er sonst allein am Ende der ersten Zeile
      stuende. Gilt nur bis 640px, also im Hochformat; quer bleibt alles auf
      einer Zeile. */
+  /* Im Hochformat rueckt die Sprachwahl aus dem Kopf unter das Logo und
+     unter den Hell-dunkel-Knopf; quer steht sie links (siehe der Block
+     darueber). */
+  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list.center {
+    text-align: center;
+  }
+
+  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list.center table {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   td:has(> span.breadcrumb) {
     padding-left: 12px;
     padding-right: 12px;

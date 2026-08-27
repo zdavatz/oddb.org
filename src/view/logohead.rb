@@ -35,7 +35,9 @@ module ODDB
         [1, 1] => :tab_navigation
       }
       CSS_MAP = {
-        [0, 1] => "list",
+        # "center", damit die Sprachwahl unter dem Logo steht und nicht am
+        # linken Rand - dieselbe Zelle traegt sie auf der Startseite mittig.
+        [0, 1] => "list center",
         [1, 0] => "right",
         [1, 1] => "tabnavigation"
       }
