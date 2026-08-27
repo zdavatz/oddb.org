@@ -19,6 +19,7 @@
 
   var QUERY = "(max-width: 640px)";
   var HIDDEN = "oddb-empty-pair";
+  var BREAK = "oddb-line-break";
 
   function blank(cell) {
     //   ist das &nbsp;.
@@ -38,6 +39,7 @@
       value.classList.toggle(HIDDEN, hide);
     }
     cards(narrow);
+    emptyRows(narrow);
     spacers(narrow);
     toggleUnderLogo(narrow);
   }
@@ -69,6 +71,47 @@
     }
   }
 
+  // Ganze Zeilen, deren Zellen alle nur ein &nbsp; tragen. Auf der
+  // Startseite steht zwischen Logo und Sprachwahl ein
+  // <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>: auf dem grossen
+  // Bildschirm eine Zeile von 19px, auf dem Telefon drei uebereinander, weil
+  // die Zellen dort Bloecke sind. Zusammen mit der leeren td.right neben dem
+  // Logo waren das rund 76px Leere.
+  //
+  // Nur Zeilen ohne jeden Inhalt, und nur solche mit mehr als einer Zelle -
+  // eine einzelne leere Zelle kann eine Spalte offenhalten, die daneben
+  // gebraucht wird.
+  function emptyRows(narrow) {
+    // Nur Gerueste, nie Datentabellen: eine Datentabelle hat eine Kopfzeile
+    // aus th, und dort wuerde display:none eine Spalte verschieben statt
+    // eine Leere zu schliessen.
+    var tables = document.querySelectorAll("table.composite");
+    for (var t = 0; t < tables.length; t++) {
+      if (tables[t].querySelector(":scope > tbody > tr > th")) { continue; }
+      var rows = tables[t].querySelectorAll(":scope > tbody > tr");
+      for (var i = 0; i < rows.length; i++) {
+        // Die Packungszeilen werden Karten; um deren leere Zellen kuemmert
+        // sich cards(), samt der Umbruchzelle, die leer sein muss.
+        if (rows[i].querySelector(":scope > td.col-name_base")) { continue; }
+        var cells = rows[i].children;
+        var blanks = 0;
+        for (var j = 0; j < cells.length; j++) {
+          var cell = cells[j];
+          // children.length ist hier das Entscheidende und nicht bloss
+          // Vorsicht: blank() sieht nur Text, und eine Zelle mit dem Logo
+          // oder dem Suchfeld darin hat keinen. Ohne diese Bedingung
+          // verschwanden Logo, Umschalter und die ganze Suchmaske.
+          var empty = cell.tagName === "TD" &&
+            !cell.classList.contains(BREAK) &&
+            cell.children.length === 0 && blank(cell);
+          if (empty) { blanks++; }
+          cell.classList.toggle(HIDDEN, narrow && empty);
+        }
+        rows[i].classList.toggle(HIDDEN, narrow && cells.length > 0 && blanks === cells.length);
+      }
+    }
+  }
+
   // Dasselbe in den Karten der Trefferliste. Eine Packung ohne Preis hat dort
   // Zellen, die nur ein &nbsp; enthalten - und weil der Selbstbehalt eine
   // ganze Zeile breit ist, klaffte zwischen Name und Marken eine leere
@@ -76,7 +119,6 @@
   var BADGES = ["col-limitation_text", "col-minifi", "col-fachinfo",
     "col-patinfo", "col-narcotic", "col-complementary_type",
     "col-comarketing", "col-feedback", "col-google_search", "col-notify"];
-  var BREAK = "oddb-line-break";
 
   function isBadge(cell) {
     for (var i = 0; i < BADGES.length; i++) {

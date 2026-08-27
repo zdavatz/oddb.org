@@ -279,11 +279,12 @@
        - td.subheading    : die Fusszeile, die ihre Reihenfolge umdreht
        - td.sidebar       : die Startseite, die ihre drei Spalten stapelt
        - td.explain       : der Hinweis unter der Trefferliste, einzeilig
+       - .oddb-empty-pair : Zeilen, deren Zellen alle nur ein &nbsp; tragen
 
      Fuenf Mal an einem Tag hat diese Regel einen Kampf gewonnen, in dem sie
      nichts zu suchen hatte. Wer hier etwas ergaenzt, ergaenzt auch diese
      Liste. */
-  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> td.subheading)):not(:has(> td.sidebar)):not(:has(> td.explain)) {
+  table.composite:not(:has(> tbody > tr > th)) > tbody > tr:not(:has(> td.col-name_base)):not(:has(> td.chapter-tab)):not(:has(> td.subheading)):not(:has(> td.sidebar)):not(:has(> td.explain)):not(.oddb-empty-pair) {
     display: block;
     width: auto;
   }
@@ -1008,7 +1009,12 @@
   td.oddb-empty-pair,
   td.navigation.oddb-empty-pair,
   td.atc.oddb-empty-pair,
-  td.explain.oddb-empty-pair {
+  td.explain.oddb-empty-pair,
+  /* Und ganze Zeilen: zwischen Logo und Sprachwahl steht auf der Startseite
+     ein <tr> mit drei Zellen, die nichts als ein &nbsp; tragen. Auf dem
+     grossen Bildschirm ist das eine Zeile von 19px, auf dem Telefon sind es
+     drei uebereinander, weil die Zellen dort Bloecke sind. */
+  tr.oddb-empty-pair {
     display: none;
   }
 
