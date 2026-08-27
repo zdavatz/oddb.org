@@ -8,6 +8,7 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 
 require "util/job"
 require "plugin/text_info"
+require "util/fachinfo_year_feeds"
 
 module ODDB
   module Util
@@ -26,11 +27,21 @@ module ODDB
       puts "Main feed updated in #{duration.round(2)} seconds"
       
       # Update yearly fachinfo feeds
+      #
+      # Nicht mehr plugin.update_yearly_fachinfo_feeds: das teilte den heutigen
+      # Bestand nach dem Jahr der letzten Revision auf, so dass jede Fachinfo
+      # in genau einem Jahr stand und alte Jahre schrumpften, sobald ein
+      # Dokument wieder angefasst wurde. Die Jahre kommen jetzt aus dem
+      # change_log der Dokumente, also aus den Aenderungen selbst.
       puts "\nUpdating yearly fachinfo feeds..."
       start_time = Time.now
-      plugin.update_yearly_fachinfo_feeds
+      builder = FachinfoYearFeeds.new(system,
+        root: File.expand_path("../data/rss", File.dirname(__FILE__)),
+        logger: ->(line) { puts line })
+      written = builder.write(builder.collect, apply: true)
       duration = Time.now - start_time
-      puts "Yearly feeds updated in #{duration.round(2)} seconds"
+      puts "#{written} yearly feeds from #{builder.counts[:entries]} changes " \
+        "in #{builder.counts[:fachinfos]} Fachinfos, #{duration.round(2)} seconds"
       
       # Store updates
       puts "\nSaving RSS updates to database..."
