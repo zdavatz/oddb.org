@@ -20,6 +20,8 @@
   var QUERY = "(max-width: 640px)";
   var HIDDEN = "oddb-empty-pair";
   var BREAK = "oddb-line-break";
+  // Was auch ohne Text etwas auf dem Bildschirm ergibt.
+  var SELF_SHOWING = "img,input,select,textarea,button,svg,canvas,video,iframe,hr,object,embed";
 
   function blank(cell) {
     //   ist das &nbsp;.
@@ -97,13 +99,16 @@
         var blanks = 0;
         for (var j = 0; j < cells.length; j++) {
           var cell = cells[j];
-          // children.length ist hier das Entscheidende und nicht bloss
-          // Vorsicht: blank() sieht nur Text, und eine Zelle mit dem Logo
-          // oder dem Suchfeld darin hat keinen. Ohne diese Bedingung
-          // verschwanden Logo, Umschalter und die ganze Suchmaske.
+          // blank() sieht nur Text, und eine Zelle mit dem Logo oder dem
+          // Suchfeld darin hat keinen - ohne die zweite Bedingung
+          // verschwanden Logo, Umschalter und die ganze Suchmaske. Gefragt
+          // ist nicht, ob die Zelle Kinder hat, sondern ob eines davon von
+          // sich aus etwas darstellt: eine Zelle, in der nur eine leere
+          // Tabelle steht, ist so leer wie eine mit einem &nbsp; und kostet
+          // trotzdem ihre 35px.
           var empty = cell.tagName === "TD" &&
             !cell.classList.contains(BREAK) &&
-            cell.children.length === 0 && blank(cell);
+            !cell.querySelector(SELF_SHOWING) && blank(cell);
           if (empty) { blanks++; }
           cell.classList.toggle(HIDDEN, narrow && empty);
         }
