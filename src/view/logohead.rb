@@ -48,11 +48,11 @@ module ODDB
         # puts "LogoHead for #{@session.request_path} #{@components}"
       end
 
-      def language_chooser(model, session = @session)
-        # We do not want the language_chooser to be displayed when displaying results
-        nil
-      end
-
+      # Bis August 2026 stand hier ein nil mit der Begruendung "We do not want
+      # the language_chooser to be displayed when displaying results". Auf dem
+      # Telefon ist das die falsche Entscheidung: die Sprachwahl steht sonst
+      # nur auf der Startseite, und wer aus einer Suchmaschine auf eine
+      # Trefferliste kommt, hat sie nie gesehen. Sie kostet eine Zeile.
       def tab_navigation(model, session = @session)
         unless @lookandfeel.disabled?(:search_result_head_navigation)
           View::TabNavigation.new(model, session, self)
