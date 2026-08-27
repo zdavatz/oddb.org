@@ -14,23 +14,31 @@ module ODDB
         DIRECT_EVENT = :rss_html
         VOLATILE = true
 
-        # Ohne Jahresangabe die neuesten Eintraege. Mit Jahresangabe das ganze
-        # Jahr, wie bei /recent_registrations/.
+        # Nur noch fuer fachinfo: dort ist ein einzelnes Jahr bis zu 231 MB
+        # gross, die Einstiegsseite zeigt deshalb die neuesten Eintraege. Wo
+        # Monatsarchive liegen, ist sie das neueste Jahr, wie bei
+        # /recent_registrations/.
         LIMIT = 50
 
         class Feed
           attr_reader :title, :description, :items, :channel, :year, :years
-          def initialize(reader, channel, fallback_title, year, years)
+          def initialize(reader, channel, fallback_title, year, years, newest_view)
             @channel = channel
             @title = reader.title || fallback_title
             @description = reader.description
             @items = reader.items
             @year = year
             @years = years
+            @newest_view = newest_view
           end
 
-          def complete?
-            !@year.nil?
+          # Ob es neben den Jahren ueberhaupt eine "Neueste"-Ansicht gibt. Nur
+          # fachinfo hat eine: dort ist ein ganzes Jahr 231 MB. Wo die Jahre
+          # aus Monatsarchiven kommen, ist die Einstiegsseite das neueste
+          # Jahr, und ein zusaetzlicher Eintrag im Waehler zeigte auf dieselbe
+          # Seite.
+          def newest_view?
+            @newest_view
           end
         end
 
@@ -45,44 +53,45 @@ module ODDB
 
           if !monthly_files.empty?
             # Die Jahre kommen aus den Dateinamen, ohne eine Datei zu oeffnen.
+            # Ohne Jahresangabe das neueste Jahr - nicht die grosse Datei:
+            # update_price_feeds ueberschreibt sl_introduction.rss, price_cut.rss
+            # und price_rise.rss bei jedem Lauf mit einem Fenster von einem
+            # Monat. Die Einstiegsseite zeigte darum "Juli 2026", waehrend
+            # Januar bis Juni als Monatsarchive danebenlagen.
             years = monthly_files.keys.sort.reverse
-            year = years.include?(wanted) ? wanted : nil
-            paths = year ? monthly_files[year].sort.reverse : [File.join(rss_dir, @channel)]
+            year = years.include?(wanted) ? wanted : years.first
             items = []
-            paths.each do |path|
-              reader = ODDB::RssReader.new(path, year ? :all : LIMIT)
-              items.concat(reader.items)
-              break if !year && items.size >= LIMIT
+            monthly_files[year].sort.reverse_each do |path|
+              items.concat(ODDB::RssReader.new(path, :all).items)
             end
-            items = items.first(LIMIT) unless year
             reader = ODDB::RssReader.new(File.join(rss_dir, @channel), 0)
             reader.items.replace(items)
+            newest_view = false
           elsif yearly_files.empty?
             # Ein einziger, kleiner Kanal (recall.rss: 188 KB, 226 Eintraege).
             # Einmal ganz lesen, daraus sowohl die Jahresliste als auch die
             # Eintraege - zweimal lesen waere die Datei zweimal.
             all = ODDB::RssReader.new(File.join(rss_dir, @channel), :all)
             years = all.items.filter_map { |item| item.date&.year }.uniq.sort.reverse
-            year = years.include?(wanted) ? wanted : nil
-            items = if year
-              all.items.select { |item| item.date&.year == year }
-            else
-              all.items.first(LIMIT)
-            end
-            all.items.replace(items)
+            year = years.include?(wanted) ? wanted : years.first
+            all.items.replace(all.items.select { |item| item.date&.year == year }) if year
             reader = all
+            newest_view = false
           else
             # fachinfo: die Jahresdateien liegen daneben, die grosse Datei
-            # (248 MB) wird fuer eine Jahresansicht nie angefasst.
+            # (248 MB) wird fuer eine Jahresansicht nie angefasst. Hier bleibt
+            # die Einstiegsseite bei den neuesten Eintraegen, weil ein Jahr
+            # allein schon 231 MB gross sein kann.
             years = yearly_files.keys.sort.reverse
             year = years.include?(wanted) ? wanted : nil
             reader = ODDB::RssReader.new(path_for(year), year ? :all : LIMIT)
             if year
               reader.items.replace(reader.items.select { |item| item.date&.year == year })
             end
+            newest_view = true
           end
 
-          @model = Feed.new(reader, @channel, @channel.sub(/\.rss\z/, ""), year, years)
+          @model = Feed.new(reader, @channel, base_name, year, years, newest_view)
         end
 
         private
