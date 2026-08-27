@@ -534,7 +534,17 @@
   html #dark-mode-toggle {
     position: static;
     display: block;
-    margin: 8px auto 0;
+    margin: 2px auto 0;
+  }
+
+  /* Die einzeiligen, mittig gesetzten Zeilen ueber der Suche - Screencast,
+     Sprachwahl - tragen aus td.list je 8px oben und unten. Bei zwei Zeilen
+     sind das 32px Luft im ersten Bildschirm, wo sonst nichts steht als ein
+     Verweis von 19px Hoehe. Nur mittig gesetzte Listenzellen, damit die
+     Tippflaechen in Trefferlisten und Detailansichten unberuehrt bleiben. */
+  td.list.center {
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
 
   /* Kopf- und Fussnavigation stecken in der zweiten Spalte einer
