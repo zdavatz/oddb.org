@@ -481,6 +481,29 @@
     display: none;
   }
 
+  /* Vier der acht Zonen reichen auf dem Telefon: gesucht wird dort nach
+     Medikamenten, Interaktionen, MiGeL und Services. Apotheken, Arzt, Spital
+     und Zulassungsinhaber bleiben dem grossen Bildschirm vorbehalten - acht
+     Eintraege brachen auf 390px auf drei Zeilen um und schoben die Suche
+     nach unten aus dem Bild.
+
+     Ausgewaehlt ueber das name-Attribut, nicht ueber die Beschriftung: der
+     Name steht so im Code und ist in allen drei Sprachen derselbe, waehrend
+     "Apotheken" auf franzoesisch "Pharmacies" heisst.
+
+     Und nur dort, wo die Zeile lang genug ist, um umzubrechen: :nth-child(9)
+     verlangt mindestens neun Zellen, also fuenf Eintraege samt Trennstrichen.
+     gcc hat acht und faellt darunter, generika mit dreien und oekk mit
+     zweien behalten alle - dort ist nichts gedraengt, und ein Eintrag
+     weniger waere nur ein Verlust. mobile bringt von Haus aus genau diese
+     vier mit. */
+  table.tabnavigation > tbody > tr:has(> td:nth-child(9)) > td:has(> a[name="pharmacies"]),
+  table.tabnavigation > tbody > tr:has(> td:nth-child(9)) > td:has(> a[name="doctors"]),
+  table.tabnavigation > tbody > tr:has(> td:nth-child(9)) > td:has(> a[name="hospitals"]),
+  table.tabnavigation > tbody > tr:has(> td:nth-child(9)) > td:has(> a[name="companies"]) {
+    display: none;
+  }
+
   /* Abschnittsbaender bleiben linksbuendig - "C07 - Cardiovascular System",
      "Zusammensetzung". Zentriert wird nur die Fusszeile, und die ist daran
      zu erkennen, dass sie eine rechte Haelfte hat. */
@@ -629,9 +652,19 @@
     white-space: nowrap;
   }
 
-  /* Die Zonen-Navigation etwas enger, damit die vier Eintraege des
-     mobile-Flavors auf eine Zeile passen. gcc hat acht und bricht weiterhin
-     um - das laesst sich auf 390px nicht vermeiden. */
+  /* Die Zellen der Zonen-Navigation tragen 8px links und rechts aus
+     oddb.css. Bei vier Eintraegen sind das 64px, und genau die fehlten:
+     gemessen brauchen "Interaktionen | Medikamente | MiGeL | Services"
+     zusammen 410px, das Fenster hat 393. Der Abstand steckt ohnehin schon
+     im Verweis selbst, der als Tippflaeche 40px hoch ist. */
+  table.tabnavigation > tbody > tr > td {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Die Zonen-Navigation etwas enger, damit die vier Eintraege auf eine
+     Zeile passen - der mobile-Flavor bringt von Haus aus vier mit, bei den
+     uebrigen bleiben vier von acht uebrig (siehe oben). */
   a.tabnavigation {
     display: inline-block;
     min-height: 40px;
