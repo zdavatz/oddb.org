@@ -954,16 +954,35 @@
      #explain_result selbst bleibt aussen vor: die Legende wird ueber
      style="display:none|block" ein- und ausgeklappt, und ein inline-Stil
      schlaegt ohnehin jede Regel von hier. */
-  /* Die Reihenfolge bleibt die des Dokuments, also Zeile fuer Zeile von
-     links nach rechts - dieselbe, in der man die Tabelle im Querformat
-     liest. Ein Versuch, mit display:contents und order nach Spalten zu
-     gruppieren, sah aufgeraeumter aus und war trotzdem falsch: dann steht
-     im Hochformat etwas anderes als im Querformat, und wer das Geraet
-     dreht, sucht neu. */
-  #explain_result > tbody,
-  #explain_result > tbody > tr {
-    display: block;
+  #explain_result > tbody {
+    display: flex;
+    flex-direction: column;
     width: auto;
+  }
+
+  /* Gelesen wird die Legende spaltenweise: erst die linke Spalte ganz
+     hinunter, dann die naechste. Die drei Spalten sind drei Themen -
+     Farben und Marken, Marken, Preiskuerzel -, und untereinander gestapelt
+     kamen sie reihenweise durcheinander: Farbe, Marke, Kuerzel, Farbe,
+     Marke, Kuerzel.
+
+     display: contents loest die Zeile auf, so dass die Zellen selbst zu
+     Elementen der Spalte werden - erst dadurch greift order. Innerhalb
+     einer Gruppe bleibt die Reihenfolge des Dokuments erhalten. */
+  #explain_result > tbody > tr {
+    display: contents;
+  }
+
+  #explain_result > tbody > tr > td:nth-child(1) {
+    order: 1;
+  }
+
+  #explain_result > tbody > tr > td:nth-child(2) {
+    order: 2;
+  }
+
+  #explain_result > tbody > tr > td:nth-child(3) {
+    order: 3;
   }
 
   #explain_result > tbody > tr > td {
