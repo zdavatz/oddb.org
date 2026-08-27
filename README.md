@@ -29,6 +29,11 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 `sudo -u apache bundle exec ruby jobs/import_swissmedic_only check`
 ### Reparse FachInfo/PatInfo text for a specific IKSNR
 `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both 62822 --reparse`
+### Rebuild the RSS archives
+`bundle exec ruby jobs/build_fachinfo_year_feeds --apply` writes `fachinfo-<year>.rss` from the documents' change logs (about fifteen minutes for 6287 Fachinfos; runs nightly from `jobs/update_fachinfo_rss_feeds`).
+`bundle exec ruby jobs/build_price_archives --apply` rebuilds the monthly price archives from the packages' price history.
+`bundle exec ruby jobs/split_rss_archives <channel>.rss --apply` cuts an existing feed into monthly files.
+Each of the three is dry by default and writes only with `--apply`.
 
 **Note:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). After making code changes to `ext/fiparse/src/`, restart the daemon with `sudo svc -h /etc/service/fiparse` for changes to take effect.
 
@@ -133,6 +138,8 @@ The overlay is **generated** from the source stylesheets — `python3 bin/genera
 
 The generator has two blind spots, both found in August 2026 by measuring contrast on rendered pages rather than reading CSS. It reads `oddb.css` and `diff.css` — so it never saw `background: #eee` on `pre`, which arrives via the `@import` of the vendored `tundra.css` and is where the Fachinfo's column-aligned tables live (1.2:1). And it cannot see **inline styles written from Ruby**: the interaction severity colours and the source, route and combination badges in `sdif_interaction.rb` are set as `style="background-color: …"`, which left light text on pink at 1.7:1 and "Quelle: EPha.ch" at 1.1:1. Both are handled in the hand-written tail of `dark.css`; the inline case is covered by a general rule, which is safe because every inline background in the application is light. Figures in Fach- and Patienteninformation get a white plate rather than an inversion — in a medical figure the colours carry meaning.
 
+A third correction came from reading rather than measuring: the diff lines kept their own colour, green text on a green ground and red on red, which clears the contrast bar at 7.4:1 and 8.3:1 and still reads badly line after line. The line keeps its ground — that is what carries the meaning — and the text moved to the reading colour, 9.1:1 and 10.8:1. The rule sits behind the generator marker, because everything above it is overwritten on the next run.
+
 It deliberately does not use the existing colour choice (`:styles`, `oddb-blue.css` and siblings). That mechanism has been dead since the stylesheet started being inlined rather than linked: `css_link` substitutes `oddb.css` for `oddb-<style>.css` inside a `<style>` block whose content is the CSS itself, where the filename never appears — which is why picking blue or red today only changes the logo.
 
 ### Font sizes and screen widths
@@ -146,6 +153,8 @@ Three breakpoints. Desktop from 1025px stays dense — 13px instead of 12px, row
 The columns could not be addressed by position: `result_list_components` is overridden six times in `lookandfeelwrapper.rb`, so the public price is the ninth column in gcc and the eighth or fifth elsewhere. `View::LookandfeelComponents#reorganize_components` now appends the column key as a class — `col-price_public` means the same everywhere — and that one change is what makes the card layout possible at all.
 
 Two of the fixes were **specificity**, the same trap dark mode fell into: `table:has(…) > tbody > tr { display: block }` scores (0,1,4) and beat `tr:has(> th.col-name_base) { display: none }` at (0,1,2), so the header row survived and the cards stacked as blocks. And a generic `> td { display: block }` at (0,1,3) quietly undid the column hiding one breakpoint up.
+
+On a phone the zone navigation shows four of its eight entries — Medikamente, Interaktionen, MiGeL and Services. Eight broke onto three lines at 390px and pushed the search box off the first screen. They are picked by the `name` attribute, which is written in the code and is the same in all three languages, not by the label — "Apotheken" is "Pharmacies" in French. And only where the row is long enough to wrap: `:nth-child(9)` asks for at least five entries, so generika with three and oekk with two keep all of theirs. The four still did not fit at 410px against 393, until the cells gave up the 8px they carry on each side from `oddb.css`; the spacing is already inside the link, whose tap target is 40px tall.
 
 The 16px on inputs is not taste: Safari zooms the whole page when a field under 16px takes focus, and does not zoom back out.
 
@@ -161,23 +170,35 @@ Every link to a foreign host — ywesee.com, swissmedic.ch, drugbank.ca, the app
 
 Clicking a feed on the home page used to land you in raw XML. `jobs`-generated feeds now also render as HTML in the site's own look and feel — `/de/gcc/rss_html/channel/recall.rss`, opened in a new tab from the feed title, while the feed icon still points at the XML.
 
-`ODDB::RssReader` reads the file **line by line and stops at fifty entries**, deliberately without an XML parser: `fachinfo.rss` is 248 MB, and a DOM of it per request would be a multiple of that. It answers in 0.1s. Descriptions are shown only when they are short and not a whole HTML document — the price feeds carry a rendered 28 KB detail page in every item.
+`ODDB::RssReader` reads the file **line by line**, deliberately without an XML parser: `fachinfo.rss` is 237 MB, and a DOM of it per request would be a multiple of that. Descriptions are shown only when they are short and not a whole HTML document — the price feeds carry a rendered 28 KB detail page in every item.
 
-The pages page by year, the way `/recent_registrations/` does, and the title says which period is on screen. There are two shapes of history behind that: fachinfo keeps yearly files next to the big one, so a year view reads `fachinfo-2015.rss` and never touches the 248 MB file; the other channels are a single small file where the years come from the entries' own dates.
+Reading a whole year of Fachinfo took **52 seconds**, and only 0.66 of those were the file. The reader ran four interpolated regular expressions against each of 3.7 million lines, and an interpolated pattern is recompiled on every call. Now it is one expression anchored at the start of the line, the indentation of a field is taken from the `<item>` line above it so the test per line is a prefix comparison, and a line too long to be a usable description is skipped before either. **2.3 seconds**, all 2871 entries complete, and every one of the 2871 archive files still reads back exactly as many items as it holds.
 
-Three feeds have no history to show, and that is not the page's fault: `update_price_feeds` computes a one-month window and **overwrites** `sl_introduction.rss`, `price_cut.rss` and `price_rise.rss` on every run — 37, 40 and one entry respectively, all from the current month, while `recall.rss` reaches back to 2018. The data is in the packages' price history, but recomputing it per request means walking 10 000 packages per month. Real history means writing monthly archives and backfilling them once.
+The pages page by year, the way `/recent_registrations/` does, and the title says which period is on screen. **The entry page is the newest year**, not a window of the newest fifty: `update_price_feeds` overwrites `sl_introduction.rss`, `price_cut.rss` and `price_rise.rss` with a single month on every run, and a page fed from those files showed July while January to June sat beside it in the monthly archives. The years in the chooser were right the whole time; only the page one lands on was wrong, which is the kind of fault that gets reported as missing data.
 
-The XML is going nowhere. Feedly polls the five small channels about 290 times a day between them; those are real subscribers. What is worth questioning is the fachinfo side: `fachinfo.rss` plus 21 yearly variants take **1226 seconds and up to 3.9 GB** every night and occupy 2.1 GB on disk, for two requests a day.
+The history itself is written once and read from files. `jobs/split_rss_archives` cuts an existing feed into `<name>-YYYY-MM.rss`; `jobs/build_price_archives` reconstructs the three price channels from the packages' own price history in a single pass — 55 049 changes over 20 401 packages, back to the 1980s. It does not go through `View::Rss::Package`, which computes `price_public(0)` against `(1)`, so an archive built through it showed today's price under a date from 2019. Note that the earliest entries are not events: the oldest `price_cut` is dated 1955 and names a Ramipril generic, and Ramipril was patented in 1981 — that is a placeholder `valid_from`. One per cent of the entries lie before 2000.
+
+The Fachinfo yearly feeds were a different kind of wrong. `update_yearly_fachinfo_feeds` built them from `app.sorted_fachinfos` — the Fachinfos as they stand today, grouped by the year of their **last** revision. Each has exactly one revision date, so each landed in exactly one year: measured, 5053 distinct Fachinfos across all yearly files and three of them in more than one year. That is a partition of the stock, and it erodes, because a year keeps only what has not been touched since — February 2026's mass reparse pulled 2191 documents out of their earlier years, leaving 2025 with 66 entries against 2871 for 2026. A drug rewritten in 2019, 2022 and 2025 belonged in all three and appeared only in the last.
+
+`ODDB::FachinfoYearFeeds` builds them from the documents' `change_log` instead — the same source the `/diff/` pages read — one entry per Fachinfo and date, linking to the diff. Per Fachinfo and not per registration: a Fachinfo belongs to 2.3 registrations on average and the text changed once, not twice. `jobs/build_fachinfo_year_feeds` is the one-off, dry by default; `jobs/update_fachinfo_rss_feeds` uses the same class nightly.
+
+Walking that graph needs `odba_retire`. A `FachinfoDocument` carries the whole text and a `ChangeLogItem` carries the old one **and** the new one — the double storage behind the 19 GB database. Reading 1500 Fachinfos stood at 2.7 GB and rising linearly; all 6287 would have passed ten. Neither `ODBA.cache.clean` nor nulling the instance variable helps, because the application's own `@fachinfos` hash and the memoized `@sorted_fachinfos` array hold every object alive. `ODBA.cache.fetch_cache_entry(id)&.odba_retire(force: true)` replaces the object with its Stub in everything that holds it — what ODBA itself does under memory pressure, and it writes nothing. Flat at 280 MB afterwards.
+
+The yearly files stop carrying the full text, which is the point and the cost: `fachinfo-2026.rss` was 231 MB because every item embedded a rendered Fachinfo. The main `fachinfo.rss` still does, and that is the one Feedly subscribes to.
+
+The XML is going nowhere. Feedly polls the five small channels about 290 times a day between them; those are real subscribers. `fachinfo.rss` gets two requests a day.
 
 Adding an event needs three places, not one: the method on the state, `require` for the state class, and the name in `EVENTS` in `src/util/validator.rb`. Without the third, SBSM silently never triggers it and you get the previous page back with status 200.
 
-### The app-down page does not appear
+### The app-down page
 
-Measured during a restart, once a second: `https://ch.oddb.org/de/gcc/home/` answers HTTP 500 with 2537 bytes of Anubis' own error page for the entire outage — the appdown page never shows. Two causes, and both need fixing.
+`ErrorDocument 500/503 /var/www/oddb.org/doc/resources/errors/appdown.html` was a filesystem path where Apache expects a URL: a value with a leading `/` is a local URL, so under `DocumentRoot /var/www/oddb.org/doc` it resolved to `…/doc/var/www/oddb.org/doc/…`, failed, and fell through to the proxy that was down. It reads `/resources/errors/appdown.html` now, which the file-exists rewrite serves off disk.
 
-`ErrorDocument 500/503 /var/www/oddb.org/doc/resources/errors/appdown.html` is a filesystem path where Apache expects a URL: a value with a leading `/` is a local URL, so under `DocumentRoot /var/www/oddb.org/doc` it resolves to `…/doc/var/www/oddb.org/doc/…`, fails, and falls through to the proxy that is down. It should be `/resources/errors/appdown.html`.
+That alone was not enough for `ch.oddb.org`, which proxies to Anubis rather than to the application. **`ErrorDocument` fires only for errors Apache generates itself**; with the application down and Anubis up, Apache receives a valid response from a healthy proxy and passes it through. `ProxyErrorOverride` is what changes that, and for a while it looked like a trade rather than a fix, because measuring with `curl` showed Anubis answering **500** — a status a narrow override cannot catch and a blanket one would take from the application's genuine 500s, the ones the Search Console work is about.
 
-And `ch.oddb.org:443` proxies to Anubis, not to the application. With the app down and Anubis up, Apache gets a valid response from a healthy proxy and `ErrorDocument` never fires; `ProxyErrorOverride` is set nowhere. The catch that makes this a decision rather than a fix: Anubis answers 500, not 502 or 503, so a narrow override catches nothing and a blanket one would also replace the application's genuine 500s with the appdown page.
+The measurement was misleading. Anubis answers `curl` with its own "administrator has misconfigured Anubis" page; a **browser** during an outage gets **502**. So `ProxyErrorOverride On 502 503 504` catches exactly this case and leaves real 500s alone. The status list needs Apache 2.4.52 or later — 2.4.58 here.
+
+Beware of measuring through `:443` in general: this is the second time Anubis' 500 has sent an investigation the wrong way. Send a Googlebot user-agent, which bypasses it, or probe `http://localhost:8012` directly.
 
 ### Do not update sbsm to 1.6.3
 

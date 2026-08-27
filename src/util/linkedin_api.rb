@@ -119,6 +119,24 @@ module ODDB
       urn
     end
 
+    # LinkedIn liest commentary als "Little Text Format" und behandelt eine
+    # Reihe von Zeichen als Auszeichnung. Unmaskiert verschwinden sie aus dem
+    # veroeffentlichten Text - und das trifft ausgerechnet Adressen: aus
+    # https://ch.oddb.org/de/gcc/rss_html/channel/price_cut.rss wurde
+    # .../rsshtml/channel/pricecut.rss, also ein Verweis ins Leere. Der Fehler
+    # ist im Beitrag nicht zu sehen, solange man den Link nicht anklickt, und
+    # zurueckgelesen werden kann er nicht: GET /rest/posts/<urn> antwortet mit
+    # 403, w_member_social ist schreibend.
+    #
+    # '#' steht bewusst nicht in der Liste. Maskiert waere es ein gewoehnliches
+    # Doppelkreuz, und die Schlagworte am Ende eines Beitrags waeren keine
+    # mehr. Der Backslash zuerst, sonst maskiert er die eigenen Maskierungen.
+    RESERVED = /([\\|{}@\[\]()<>*_~])/
+
+    def self.escape(text)
+      text.to_s.gsub(RESERVED) { "\\#{$1}" }
+    end
+
     # visibility: "PUBLIC" oder "CONNECTIONS"
     #
     # images: Liste von [pfad, alternativtext]. Ein Bild wandert nach
@@ -131,7 +149,7 @@ module ODDB
       }
       body = {
         "author" => owner,
-        "commentary" => text,
+        "commentary" => self.class.escape(text),
         "visibility" => visibility,
         "distribution" => {
           "feedDistribution" => "MAIN_FEED",
