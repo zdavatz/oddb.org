@@ -944,6 +944,46 @@
     box-sizing: border-box;
   }
 
+  /* Die Legende unter der Trefferliste ist eine Tabelle aus drei Spalten,
+     in der jede Zelle einen ganzen Eintrag traegt - "H = Homoeopathisches
+     Heilmittel". Auf 393px teilen sich drei Eintraege die Breite, und der
+     Text bricht hinter genau dem Zeichen um, das er erklaeren soll.
+     Untereinander ist es eine Liste, und die Marke steht neben ihrer
+     Erklaerung statt darueber.
+
+     #explain_result selbst bleibt aussen vor: die Legende wird ueber
+     style="display:none|block" ein- und ausgeklappt, und ein inline-Stil
+     schlaegt ohnehin jede Regel von hier. */
+  /* Die Reihenfolge bleibt die des Dokuments, also Zeile fuer Zeile von
+     links nach rechts - dieselbe, in der man die Tabelle im Querformat
+     liest. Ein Versuch, mit display:contents und order nach Spalten zu
+     gruppieren, sah aufgeraeumter aus und war trotzdem falsch: dann steht
+     im Hochformat etwas anderes als im Querformat, und wer das Geraet
+     dreht, sucht neu. */
+  #explain_result > tbody,
+  #explain_result > tbody > tr {
+    display: block;
+    width: auto;
+  }
+
+  #explain_result > tbody > tr > td {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    padding: 5px 8px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  /* Alle Marken gleich breit, damit die Erklaerungen eine Kante bilden.
+     flex-shrink 0, sonst quetscht ein langer Text die Marke zusammen. */
+  #explain_result > tbody > tr > td > a.square,
+  #explain_result > tbody > tr > td > span.square {
+    flex: 0 0 auto;
+    min-width: 44px;
+  }
+
   td.col-name_base a.square,
   td.col-name_base span.square,
   td.atc a.square,
