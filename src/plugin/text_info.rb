@@ -16,6 +16,7 @@ require "model/fachinfo"
 require "model/patinfo"
 require "view/rss/fachinfo"
 require "util/logfile"
+require "util/superseded_document"
 require "simple_xlsx_reader"
 require "yaml"
 
@@ -189,8 +190,13 @@ module ODDB
           if old_ti.descriptions && desc = new_ti.description(lang_s)
             msg = "#{container.class} #{type} lang #{lang_s} #{new_ti.description(lang_s).to_s.split("\n")[0..2]}"
             LogFile.debug msg
+            # Hier wird direkt in den Hash geschrieben, also an
+            # SimpleLanguage#update_values vorbei - das abgeloeste Dokument
+            # muss deshalb an dieser Stelle selbst weggeraeumt werden.
+            superseded = old_ti.descriptions[lang_s]
             old_ti.descriptions[lang_s] = desc
             old_ti.descriptions.odba_isolated_store
+            SupersededDocument.discard(superseded, desc)
           end
         end
         res = app.update(old_ti.pointer, {descriptions: old_ti.descriptions})

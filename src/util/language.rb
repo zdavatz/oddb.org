@@ -5,6 +5,7 @@
 
 require "util/persistence"
 require "util/logfile"
+require "util/superseded_document"
 module ODDB
   module SimpleLanguage
     include Persistence
@@ -95,8 +96,20 @@ module ODDB
       descr = values.keys.each_with_object({}) { |key, inj|
         inj.store(key.to_s, values.delete(key)) if key.to_s.length == 2
       }
+      # Was hier ersetzt wird, ist bei Fach- und Patienteninformationen ein
+      # ganzes Dokument mit rund zwanzig Kapiteln. Bis August 2026 blieb das
+      # alte liegen: 200000 abgeloeste Fassungen und 3.95 Millionen Kapitel,
+      # 7.5 von 19 GB. Es wird nach dem Ersetzen geloescht - die Historie
+      # steckt im change_log, das store_fachinfo mitnimmt, und ein Diff
+      # traegt den vollstaendigen alten Text.
+      superseded = descr.filter_map { |lang, value|
+        old = descriptions[lang]
+        [old, value] unless old.equal?(value)
+      }
       descriptions.update_values(descr)
-      super
+      result = super
+      superseded.each { |old, value| SupersededDocument.discard(old, value) }
+      result
     end
     alias_method :pointer_descr, :description
     alias_method :name, :to_s

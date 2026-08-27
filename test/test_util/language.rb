@@ -200,5 +200,46 @@ module ODDB
       @language.synonyms = ["synonym"]
       assert_equal(["synonym"], @language.synonyms)
     end
+
+    # Wird eine Sprachfassung durch ein anderes Dokument ersetzt, faellt das
+    # alte samt seinen Kapiteln. Bis August 2026 blieb es liegen - 200000
+    # abgeloeste Dokumente und 3.95 Millionen Kapitel.
+    def test_update_values_discards_the_replaced_document
+      geloescht = []
+      alt = Object.new
+      neu = Object.new
+      simple = SimpleLanguageStub.new(alt)
+      ODDB::SupersededDocument.stub(:discard, lambda { |old, value|
+        geloescht << [old, value]
+        1
+      }) do
+        simple.update_values({de: neu})
+      end
+      assert_equal([[alt, neu]], geloescht)
+      assert_equal(neu, simple.descriptions["de"])
+    end
+
+    # Zeichenketten - Substanznamen, galenische Formen - sind keine Dokumente.
+    # discard sieht sie zwar, tut aber nichts; die neue Fassung muss ankommen.
+    def test_update_values_still_stores_plain_strings
+      simple = SimpleLanguageStub.new("Paracetamolum")
+      simple.update_values({de: "Paracetamol"})
+      assert_equal("Paracetamol", simple.descriptions["de"])
+    end
+  end
+
+  class SimpleLanguageStub
+    include ODDB::SimpleLanguage
+
+    def initialize(value)
+      @descriptions = ODDB::SimpleLanguage::Descriptions.new
+      @descriptions.store("de", value)
+    end
+
+    def odba_store
+    end
+
+    def odba_isolated_store
+    end
   end
 end
