@@ -411,8 +411,8 @@
    */
   table:has(> tbody > tr > td img.welcomeleft),
   table:has(> tbody > tr > td img.welcomeleft) > tbody,
-  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr,
-  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr > td {
+  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr:not(.oddb-empty-pair),
+  table:has(> tbody > tr > td img.welcomeleft) > tbody > tr > td:not(.oddb-empty-pair) {
     display: block;
     width: auto;
     text-align: left;
@@ -545,6 +545,38 @@
   td.list.center {
     padding-top: 3px;
     padding-bottom: 3px;
+  }
+
+  /* Die Brotkrumen stehen in einer Zelle ohne Klasse, gleich unter dem
+     gruenen Balken. Am linken Rand klebten sie dort auf 0, waehrend das
+     Suchfeld darunter seinen Text 12px eingerueckt beginnt - das "H" von
+     "Home" stand also links vom "p" von "ponstan". Gleicher Einzug.
+
+     Und "Sortierung nach Staerke, Packung und Preis" bekommt eine eigene
+     Zeile: es ist ein Verweis und kein Teil des Pfades. Der Gedankenstrich
+     davor faellt weg, weil er sonst allein am Ende der ersten Zeile
+     stuende. Gilt nur bis 640px, also im Hochformat; quer bleibt alles auf
+     einer Zeile. */
+  td:has(> span.breadcrumb) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* span.breadcrumb bringt aus oddb.css 6px Rand links mit. Beim ersten
+     Element und beim Verweis auf der zweiten Zeile muss der weg, sonst
+     beginnen sie bei 18 statt bei 12 und stehen wieder neben statt unter
+     dem "p" von "ponstan". */
+  td:has(> span.breadcrumb) > span.breadcrumb:first-child,
+  td:has(> span.breadcrumb) > a {
+    margin-left: 0;
+  }
+
+  td:has(> span.breadcrumb) > a {
+    display: block;
+  }
+
+  td:has(> span.breadcrumb) > span.breadcrumb:nth-last-child(2) {
+    display: none;
   }
 
   /* Kopf- und Fussnavigation stecken in der zweiten Spalte einer
