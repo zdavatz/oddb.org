@@ -554,6 +554,21 @@ html[data-theme="dark"] #dark-mode-toggle {
   border-color: var(--dark-border);
 }
 
+/* Die Diff-Zeilen tragen ihre Bedeutung im Hintergrund, nicht in der Schrift.
+   Gruen auf Gruen und Rot auf Rot ist kontrastreich genug - 7.4:1 und 8.3:1 -
+   aber eine Fachinformation liest sich Zeile fuer Zeile, und dafuer gehoert
+   der Text in die Lesefarbe, waehrend die Farbe hinter ihm stehen bleibt.
+   9.1:1 auf der gruenen und 10.8:1 auf der roten Zeile. Steht hinter der
+   Erzeuger-Marke, weil generate_dark_css.py den Block darueber ueberschreibt. */
+html[data-theme="dark"] .diff li.ins,
+html[data-theme="dark"] .diff li.del,
+html[data-theme="dark"] .diff li.ins ins,
+html[data-theme="dark"] .diff li.del del,
+html[data-theme="dark"] .diff del strong,
+html[data-theme="dark"] .diff ins strong {
+  color: var(--dark-text);
+}
+
 @media print {
   #dark-mode-toggle { display: none; }
 }
