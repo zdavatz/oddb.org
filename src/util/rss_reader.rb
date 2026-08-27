@@ -31,6 +31,27 @@ module ODDB
     # Zeichen echter Text uebrig, und der ist die Zeile wert.
     MAX_DESCRIPTION = 600
 
+    # Eine Zeile, die laenger ist als das, kann kein Titel, kein Link und kein
+    # Datum mehr sein - und als Beschreibung waere sie ohnehin verworfen.
+    # fachinfo.rss traegt ganze Fachinformationen als je eine Zeile von
+    # mehreren Megabyte, und vier Regex-Laeufe ueber so eine Zeile sind der
+    # Unterschied zwischen 52 Sekunden und einer halben fuer ein Jahr.
+    MAX_LINE = 8192
+
+    # Ein einziger, am Zeilenanfang verankerter Ausdruck statt vier Suchen pro
+    # Zeile. fachinfo-2026.rss hat 3.7 Millionen Zeilen, davon tragen ein paar
+    # tausend ein Feld; alles andere ist der HTML-Text der Fachinformationen.
+    # Verankert scheitert der Ausdruck nach wenigen Bytes, und das Lesen des
+    # ganzen Jahres faellt von 52 auf gut eine Sekunde.
+    FIELD = /\A\s*<(title|link|pubDate|description)>(.*)<\/\1>/m
+
+    # Vorkompiliert, statt den Namen in jedes Muster zu interpolieren: ein
+    # interpolierter Ausdruck wird bei jedem Aufruf neu uebersetzt.
+    PATTERNS = {
+      "title" => /<title>(.*)<\/title>/m,
+      "description" => /<description>(.*)<\/description>/m
+    }.freeze
+
     attr_reader :title, :description, :items, :path
 
     def initialize(path, limit = DEFAULT_LIMIT)
@@ -56,6 +77,12 @@ module ODDB
       File.foreach(@path, encoding: "UTF-8") do |line|
         if line.include?("<item>")
           in_channel_header = false
+          # Die Einrueckung der Felder aus der Datei selbst nehmen, statt sie
+          # anzunehmen: ein Feld steht zwei Stellen tiefer als sein <item>.
+          # Damit wird aus dem Test pro Zeile ein Praefixvergleich, und der
+          # Regex laeuft nur noch auf den paar tausend Zeilen, die ihn
+          # brauchen - bei fachinfo-2026.rss sind es 20100 von 3.7 Millionen.
+          @field_prefix ||= "#{line[/\A[ \t]*/]}  <"
           current = Item.new
           next
         end
@@ -79,19 +106,25 @@ module ODDB
     end
 
     def collect(item, line)
-      if (value = tag(line, "title"))
-        item.title ||= value
-      elsif (value = tag(line, "link"))
-        item.link ||= value
-      elsif (value = tag(line, "pubDate"))
-        item.date ||= parse_date(value)
-      elsif (value = tag(line, "description"))
-        item.description ||= usable_description(value)
+      return if line.bytesize > MAX_LINE
+      return if @field_prefix && !line.start_with?(@field_prefix)
+      md = FIELD.match(line)
+      return unless md
+      value = CGI.unescapeHTML(md[2].to_s).strip
+      case md[1]
+      when "title" then item.title ||= value
+      when "link" then item.link ||= value
+      when "pubDate" then item.date ||= parse_date(value)
+      when "description" then item.description ||= usable_description(value)
       end
     end
 
+    # Erst suchen, dann das Muster: include? ist ein Substring-Vergleich und
+    # spart den Regex-Lauf auf allen Zeilen, die das Feld gar nicht tragen -
+    # und das sind fast alle.
     def tag(line, name)
-      md = /<#{name}>(.*)<\/#{name}>/m.match(line)
+      return nil unless line.include?("<#{name}>")
+      md = PATTERNS[name].match(line)
       return nil unless md
       CGI.unescapeHTML(md[1].to_s).strip
     end

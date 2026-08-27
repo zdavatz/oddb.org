@@ -14,31 +14,15 @@ module ODDB
         DIRECT_EVENT = :rss_html
         VOLATILE = true
 
-        # Nur noch fuer fachinfo: dort ist ein einzelnes Jahr bis zu 231 MB
-        # gross, die Einstiegsseite zeigt deshalb die neuesten Eintraege. Wo
-        # Monatsarchive liegen, ist sie das neueste Jahr, wie bei
-        # /recent_registrations/.
-        LIMIT = 50
-
         class Feed
           attr_reader :title, :description, :items, :channel, :year, :years
-          def initialize(reader, channel, fallback_title, year, years, newest_view)
+          def initialize(reader, channel, fallback_title, year, years)
             @channel = channel
             @title = reader.title || fallback_title
             @description = reader.description
             @items = reader.items
             @year = year
             @years = years
-            @newest_view = newest_view
-          end
-
-          # Ob es neben den Jahren ueberhaupt eine "Neueste"-Ansicht gibt. Nur
-          # fachinfo hat eine: dort ist ein ganzes Jahr 231 MB. Wo die Jahre
-          # aus Monatsarchiven kommen, ist die Einstiegsseite das neueste
-          # Jahr, und ein zusaetzlicher Eintrag im Waehler zeigte auf dieselbe
-          # Seite.
-          def newest_view?
-            @newest_view
           end
         end
 
@@ -66,7 +50,6 @@ module ODDB
             end
             reader = ODDB::RssReader.new(File.join(rss_dir, @channel), 0)
             reader.items.replace(items)
-            newest_view = false
           elsif yearly_files.empty?
             # Ein einziger, kleiner Kanal (recall.rss: 188 KB, 226 Eintraege).
             # Einmal ganz lesen, daraus sowohl die Jahresliste als auch die
@@ -76,22 +59,18 @@ module ODDB
             year = years.include?(wanted) ? wanted : years.first
             all.items.replace(all.items.select { |item| item.date&.year == year }) if year
             reader = all
-            newest_view = false
           else
             # fachinfo: die Jahresdateien liegen daneben, die grosse Datei
-            # (248 MB) wird fuer eine Jahresansicht nie angefasst. Hier bleibt
-            # die Einstiegsseite bei den neuesten Eintraegen, weil ein Jahr
-            # allein schon 231 MB gross sein kann.
+            # (248 MB) wird nie angefasst. Auch hier ist die Einstiegsseite
+            # das neueste Jahr - fachinfo-2026.rss ist 231 MB mit 3.7
+            # Millionen Zeilen, was RssReader in gut zwei Sekunden liest.
             years = yearly_files.keys.sort.reverse
-            year = years.include?(wanted) ? wanted : nil
-            reader = ODDB::RssReader.new(path_for(year), year ? :all : LIMIT)
-            if year
-              reader.items.replace(reader.items.select { |item| item.date&.year == year })
-            end
-            newest_view = true
+            year = years.include?(wanted) ? wanted : years.first
+            reader = ODDB::RssReader.new(path_for(year), :all)
+            reader.items.replace(reader.items.select { |item| item.date&.year == year }) if year
           end
 
-          @model = Feed.new(reader, @channel, base_name, year, years, newest_view)
+          @model = Feed.new(reader, @channel, base_name, year, years)
         end
 
         private

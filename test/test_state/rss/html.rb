@@ -86,24 +86,20 @@ module ODDB
           assert_equal(2026, state("1999").year)
         end
 
-        # Wo Monatsarchive liegen, ist die Einstiegsseite ein Jahr - der
-        # Eintrag "Neueste" im Jahreswaehler zeigte dann auf dieselbe Seite.
-        def test_no_newest_view_where_months_exist
-          write_feed("price_cut.rss", ["2026-07-01"])
-          write_feed("price_cut-2026-01.rss", ["2026-01-01"])
-          refute(state.newest_view?)
-        end
-
-        # fachinfo behaelt sie: ein einzelnes Jahr ist dort bis zu 231 MB gross.
-        def test_yearly_files_keep_the_newest_view
-          write_feed("fachinfo.rss", ["2026-07-01"])
-          write_feed("fachinfo-2026.rss", ["2026-01-01", "2026-07-01"])
+        # fachinfo hat Jahresdateien statt Monatsarchiven, und die grosse
+        # Datei (248 MB) wird nie angefasst. Auch dort ist die Einstiegsseite
+        # das neueste Jahr und nicht der neueste Monat.
+        def test_yearly_files_default_to_the_newest_year
+          write_feed("fachinfo.rss", ["2026-08-01"])
+          write_feed("fachinfo-2025.rss", ["2025-05-01"])
+          write_feed("fachinfo-2026.rss", ["2026-01-01", "2026-04-01", "2026-08-01"])
           session = flexmock("session", language: "de")
           session.should_receive(:user_input).with(:year).and_return(nil)
           state = ODDB::State::Rss::Html.new(session, "fachinfo.rss")
           state.init
-          assert(state.model.newest_view?)
-          assert_nil(state.model.year)
+          assert_equal(2026, state.model.year)
+          assert_equal([1, 4, 8], state.model.items.collect { |i| i.date.month }.sort)
+          assert_equal([2026, 2025], state.model.years)
         end
 
         # Ein Kanal ganz ohne Archive: die Jahre kommen aus den Eintraegen,

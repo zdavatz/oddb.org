@@ -96,19 +96,6 @@ module ODDB
               "<A class=\"list\" href=\"#{CGI.escapeHTML(url)}\">#{year}</A>"
             end
           }
-          # "Neueste" nur, wo es die Ansicht wirklich gibt. Wo die
-          # Einstiegsseite das neueste Jahr ist, zeigte der Eintrag auf
-          # dieselbe Seite, die daneben schon als Jahr dasteht.
-          if model.newest_view?
-            if model.year.nil?
-              links.unshift("<SPAN class=\"bold\">" \
-                "#{CGI.escapeHTML(@lookandfeel.lookup(:rss_html_newest).to_s)}</SPAN>")
-            else
-              url = @lookandfeel._event_url(:rss_html, channel: model.channel)
-              links.unshift("<A class=\"list\" href=\"#{CGI.escapeHTML(url)}\">" \
-                "#{CGI.escapeHTML(@lookandfeel.lookup(:rss_html_newest).to_s)}</A>")
-            end
-          end
           links.join(separator)
         end
 
@@ -152,8 +139,15 @@ module ODDB
           md && md[1]
         end
 
+        # Die Preis-Feeds schreiben das Datum in den Titel ("01.08.2026: OFEV
+        # 150 mg, ..."), weil ein Leser keine Spalten hat. Hier steht es schon
+        # links daneben; zweimal dasselbe Datum auf einer Zeile ist Laerm.
+        DATE_PREFIX = /\A\d{2}\.\d{2}\.\d{4}:\s*/
+
         def item_row(item, numbered)
-          title = CGI.escapeHTML(item.title.to_s)
+          text = item.title.to_s
+          text = text.sub(DATE_PREFIX, "") if item.date
+          title = CGI.escapeHTML(text)
           cell = if item.link && !item.link.empty?
             "<A class=\"list bold\" href=\"#{CGI.escapeHTML(item.link)}\">#{title}</A>"
           else
