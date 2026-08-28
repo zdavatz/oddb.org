@@ -20,8 +20,13 @@
 # by zdavatz, and it was cron running it as root at 22:00 that made that a
 # problem.
 #
+# scripts/pg_backup.sh is installed too, but only once its credentials exist.
+# The versioned copy carries no password on purpose; it reads
+# /etc/oddb/pg_backup.conf instead. Installing it without that file would turn
+# the nightly backup into a silent failure, so a missing or unreadable conf
+# skips that one file and makes this run exit non-zero.
+#
 # Not installed from here, deliberately:
-#   /usr/local/sbin/pg_backup.sh   carries the postgres password in clear text
 #   sdif/update_interactions       lives in github.com/zdavatz/sdif
 #   swissmedicinfo                 lives in github.com/zdavatz/swissmedicinfo
 
@@ -34,12 +39,37 @@ apply=no
 backup_dir=/var/backups/oddb-config
 stamp=$(date +%Y%m%d-%H%M%S)
 
+status=0
+
 # src : dest : mode
 set -- \
   "$root/etc/crontab:/etc/crontab:644" \
   "$root/bin/oddb_cron:/usr/local/sbin/oddb_cron:755"
 
-status=0
+# pg_backup.sh only with its credentials in place. Read in a subshell, so the
+# value never reaches this script's environment and is never printed.
+# Ueberschreibbar wie ODDB_ROOT in oddb_cron, damit test/test_bin/
+# install_crontab.sh die vier Faelle durchspielen kann, ohne /etc anzufassen.
+pgconf=${PG_BACKUP_CONF:-/etc/oddb/pg_backup.conf}
+pgmode=$([ -f "$pgconf" ] && stat -c '%a' "$pgconf")
+if [ ! -r "$pgconf" ]; then
+  echo "SKIP     /usr/local/sbin/pg_backup.sh - $pgconf is missing"
+  echo "         The versioned copy holds no password. Create it first:"
+  echo "           sudo install -d -m 700 -o root -g root /etc/oddb"
+  echo "           sudo sh -c \"umask 077; printf \\\"PGPASSWORD='%s'\\\\n\\\" '<password>' > $pgconf\""
+  echo "         The value is still in line 148 of the installed pg_backup.sh."
+  status=1
+elif [ "$pgmode" != "600" ] && [ "$pgmode" != "400" ]; then
+  echo "SKIP     /usr/local/sbin/pg_backup.sh - $pgconf is mode $pgmode, want 600"
+  echo "           sudo chown root:root $pgconf && sudo chmod 600 $pgconf"
+  status=1
+elif [ -z "$(. "$pgconf" >/dev/null 2>&1; printf %s "$PGPASSWORD")" ]; then
+  echo "SKIP     /usr/local/sbin/pg_backup.sh - $pgconf sets no PGPASSWORD"
+  status=1
+else
+  set -- "$@" "$root/scripts/pg_backup.sh:/usr/local/sbin/pg_backup.sh:755"
+fi
+
 for entry in "$@"; do
   src=${entry%%:*}
   rest=${entry#*:}
@@ -61,7 +91,13 @@ for entry in "$@"; do
     echo "CHOWN    $dest (is $owner, want root:root $mode)"
   elif [ -f "$dest" ]; then
     echo "UPDATE   $dest"
-    diff -u "$dest" "$src" | sed 's/^/         /' | head -20
+    # Der Diff wird angezeigt, und die abgeloeste pg_backup.sh traegt das
+    # Passwort im Klartext - ohne diesen Filter druckt ein blosser Probelauf
+    # "-PGPASSWORD='...'" auf das Terminal und in jedes Protokoll, das ihn
+    # mitschreibt. Aufgefallen beim Testen, nicht beim Lesen.
+    diff -u "$dest" "$src" \
+      | sed -E "s/((PGPASSWORD|PASSWORD|SECRET|TOKEN|API_KEY)[[:space:]]*=[[:space:]]*).*/\\1<redacted>/I" \
+      | sed 's/^/         /' | head -20
   else
     echo "CREATE   $dest"
   fi
@@ -71,6 +107,10 @@ for entry in "$@"; do
   if [ -f "$dest" ]; then
     mkdir -p "$backup_dir"
     cp -a "$dest" "$backup_dir/$(basename "$dest").$stamp"
+    # 600, nicht die 755 des Originals: die abgeloeste pg_backup.sh traegt das
+    # Passwort im Klartext, und eine Sicherung davon soll es nicht weiter
+    # verteilen.
+    chmod 600 "$backup_dir/$(basename "$dest").$stamp"
   fi
   install -o root -g root -m "$mode" "$src" "$dest" || status=1
 done
