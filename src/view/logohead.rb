@@ -35,9 +35,10 @@ module ODDB
         [1, 1] => :tab_navigation
       }
       CSS_MAP = {
-        # "center", damit die Sprachwahl unter dem Logo steht und nicht am
-        # linken Rand - dieselbe Zelle traegt sie auf der Startseite mittig.
-        [0, 1] => "list center",
+        # Links, wie alles andere im Kopf. Mittig steht die Sprachwahl nur im
+        # Hochformat, und das entscheidet responsive.css - eine feste Klasse
+        # haette sie auch am Bildschirm in die Mitte gezogen.
+        [0, 1] => "list",
         [1, 0] => "right",
         [1, 1] => "tabnavigation"
       }

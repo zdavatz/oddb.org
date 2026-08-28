@@ -563,8 +563,11 @@
      Sprachwahl - tragen aus td.list je 8px oben und unten. Bei zwei Zeilen
      sind das 32px Luft im ersten Bildschirm, wo sonst nichts steht als ein
      Verweis von 19px Hoehe. Nur mittig gesetzte Listenzellen, damit die
-     Tippflaechen in Trefferlisten und Detailansichten unberuehrt bleiben. */
-  td.list.center {
+     Tippflaechen in Trefferlisten und Detailansichten unberuehrt bleiben.
+     Die Sprachwahl im Kopf traegt kein "center" mehr - am Bildschirm gehoert
+     sie nach links -, deshalb steht sie hier mit ihrem eigenen Selektor. */
+  td.list.center,
+  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list {
     padding-top: 3px;
     padding-bottom: 3px;
   }
@@ -580,13 +583,15 @@
      stuende. Gilt nur bis 640px, also im Hochformat; quer bleibt alles auf
      einer Zeile. */
   /* Im Hochformat rueckt die Sprachwahl aus dem Kopf unter das Logo und
-     unter den Hell-dunkel-Knopf; quer steht sie links (siehe der Block
-     darueber). */
-  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list.center {
-    text-align: center;
-  }
+     unter den Hell-dunkel-Knopf; quer und am Bildschirm steht sie links.
 
-  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list.center table {
+     Zentriert wird ueber margin und nicht ueber text-align: der Zelleninhalt
+     ist eine eigene Tabelle, und eine Tabelle ist kein Inline-Element - sie
+     folgt dem text-align ihres Elternteils nicht. Das erspart zugleich den
+     Kampf mit dem Skelett-Selektor weiter oben, der jeder Zelle dieses
+     Kopfes text-align: left gibt und mit (0,2,8) spezifischer ist als
+     alles, was hier vernuenftig hinzuschreiben waere. */
+  table:has(> tbody > tr > td.tabnavigation) > tbody > tr > td.list > table {
     margin-left: auto;
     margin-right: auto;
   }
