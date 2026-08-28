@@ -112,28 +112,46 @@ module ODDB
         } << context.br
       end
 
+      # Kapiteltext liegt teilweise als Latin-1 in der Datenbank, und in der
+      # Ueberschrift kostete das die ganze Seite: ein "\xF6" aus ASCII-8BIT
+      # brachte /de/gcc/minifi/reg/56120 auf 500. Repariert wurde bisher zu
+      # spaet - escape(section.subheading) lief vor dem begin/rescue, und
+      # `head.encode("utf-8")` warf sein Ergebnis weg und konnte nur noch
+      # werfen. Also gleich zu Beginn umrechnen, und dabei nichts mehr am
+      # Modell aendern: das alte `section.subheading = ...` schrieb in ein
+      # ODBA-Objekt hinein, nur um es anzuzeigen.
       def sections(context, sections)
         section_attr = {"style" => @lookandfeel.section_style}
         subhead_attr = {"style" => self.class::SUB_STYLE}
         sections.collect { |section|
           context.p(section_attr) {
+            subheading = utf8_text(section.subheading)
             head = context.span(subhead_attr) {
-              escape(section.subheading)
+              escape(subheading)
             }
-            begin
-              /\n\s*$/u.match(section.subheading.encode("utf-8"))
-            rescue
-              section.subheading = section.subheading.encode("UTF-16BE", invalid: :replace, undef: :replace, replace: "?").encode("UTF-8")
-            end
-            if /\n\s*$/u.match?(section.subheading)
+            if /\n\s*$/u.match?(subheading)
               head << context.br
-            elsif !section.subheading.strip.empty?
+            elsif !subheading.strip.empty?
               head << "&nbsp;"
             end
-            head.encode("utf-8")
             head << paragraphs(context, section.paragraphs)
           }
         }.join
+      end
+
+      # Wie in #formats: ASCII-8BIT heisst hier Latin-1 und nicht "UTF-8 ohne
+      # Etikett". Umetikettieren waere hier falsch - die Bytes muessen
+      # umgerechnet werden, sonst faellt das Umlautzeichen weg.
+      def utf8_text(text)
+        text = text.to_s
+        case text.encoding.to_s
+        when "ISO-8859-1", "ASCII-8BIT"
+          text.dup.force_encoding("ISO-8859-1").encode("UTF-8")
+        else
+          text.valid_encoding? ? text.encode("UTF-8") : text.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
+        end
+      rescue EncodingError
+        text.to_s.dup.force_encoding("UTF-8").scrub("?")
       end
 
       def paragraphs(context, paragraphs, emit_p = false)

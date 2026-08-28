@@ -25,6 +25,39 @@ module ODDB
         @view = View::Chapter.new(:name, nil, session)
       end
 
+      # Ein Latin-1-Byte in der Ueberschrift kostete die ganze Seite:
+      # /de/gcc/minifi/reg/56120 antwortete mit 500 und
+      # Encoding::UndefinedConversionError "\xF6" from ASCII-8BIT to UTF-8.
+      # Der Umlaut muss dabei erhalten bleiben - umetikettieren statt
+      # umrechnen liesse ihn wegfallen.
+      def test_a_latin1_subheading_does_not_kill_the_page
+        section = Text::Section.new
+        section.subheading = "Nebenwirkungen \xF6".dup.force_encoding("ASCII-8BIT")
+        section.paragraphs << (Text::Paragraph.new << "Text")
+        result = @view.sections(CGI.new, [section])
+        assert_equal(Encoding::UTF_8, result.encoding)
+        assert(result.valid_encoding?)
+        assert_match("Nebenwirkungen ö", result)
+      end
+
+      # Und das Modell wird dabei nicht angefasst: bis August 2026 schrieb die
+      # Ansicht die reparierte Ueberschrift ins ODBA-Objekt zurueck.
+      def test_the_section_is_left_alone
+        section = Text::Section.new
+        original = "Dosierung \xE4".dup.force_encoding("ASCII-8BIT")
+        section.subheading = original
+        @view.sections(CGI.new, [section])
+        assert_equal(Encoding::ASCII_8BIT, section.subheading.encoding)
+        assert_equal(original, section.subheading)
+      end
+
+      # Gueltiges UTF-8 bleibt unveraendert.
+      def test_valid_utf8_passes_through
+        section = Text::Section.new
+        section.subheading = "Überdosierung"
+        assert_match("Überdosierung", @view.sections(CGI.new, [section]))
+      end
+
       def test_escaped_paragraphs
         txt = "Guten Tag! & wie gehts uns Heute? < oder >?"
         par1 = Text::Paragraph.new
