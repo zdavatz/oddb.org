@@ -235,8 +235,15 @@ module ODDB
           [1, 0]	=> "th right"
         }
         DEFAULT_CLASS = HtmlGrid::Value
+        # Dieselbe Stelle wie in patinfo.rb: `if model` laesst alles durch, was
+        # nicht nil ist, und bei einigen Fachinformationen steht in
+        # @descriptions kein Dokument, sondern eine Zeichenkette - dann bricht
+        # model.name die ganze Seite ab. respond_to? und nicht is_a?, weil
+        # ODBA::Stub#is_a? aus der deklarierten Klasse antwortet, ohne den Stub
+        # aufzuloesen, und erst respond_to? ihn tatsaechlich holt.
         def fachinfo_name(model, session)
-          @lookandfeel.lookup(:fachinfo_name, model.name) if model
+          return unless model.respond_to?(:name)
+          @lookandfeel.lookup(:fachinfo_name, model.name)
         end
       end
 

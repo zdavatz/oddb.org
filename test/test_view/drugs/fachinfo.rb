@@ -400,3 +400,42 @@ class TestFI_ChangeLogs < Minitest::Test
     assert_match(/href/, text)
   end
 end
+
+# `if model` liess alles durch, was nicht nil ist. Bei einigen
+# Fachinformationen steht in @descriptions keine Dokumentfassung, sondern
+# eine Zeichenkette - dann brach model.name die ganze Seite ab
+# (/de/gcc/fachinfo/reg/49533, NoMethodError: undefined method 'name' for an
+# instance of String). Dieselbe Stelle wie patinfo_name.
+class TestFachinfoName < Minitest::Test
+  def setup
+    @lnf = flexmock("lookandfeel")
+    @lnf.should_receive(:lookup).with(:fachinfo_name, FlexMock.any).and_return { |_, name| "FI #{name}" }
+    super
+  end
+
+  def preview
+    composite = ODDB::View::Drugs::FachinfoPreviewComposite.allocate
+    composite.instance_variable_set(:@lookandfeel, @lnf)
+    composite
+  end
+
+  def test_a_normal_document
+    document = flexmock("document", name: "Aspirin")
+    assert_equal("FI Aspirin", preview.fachinfo_name(document, nil))
+  end
+
+  def test_a_string_where_a_document_belongs
+    assert_nil(preview.fachinfo_name("Aspirin cardio", nil))
+  end
+
+  def test_nil
+    assert_nil(preview.fachinfo_name(nil, nil))
+  end
+
+  # ActiveAgent, Array und Hash tauchten an der Schwesterstelle in patinfo.rb
+  # auf; keines davon beantwortet #name.
+  def test_a_mis_referenced_object
+    assert_nil(preview.fachinfo_name([], nil))
+    assert_nil(preview.fachinfo_name({}, nil))
+  end
+end
