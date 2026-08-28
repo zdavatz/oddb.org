@@ -439,3 +439,47 @@ class TestFachinfoName < Minitest::Test
     assert_nil(preview.fachinfo_name({}, nil))
   end
 end
+
+# FiChapterChooser#init las document.change_log und display_names las
+# document.chapter_names. Steht dort eine Zeichenkette statt einer
+# Dokumentfassung - wie bei /de/gcc/fachinfo/reg/49533 -, nahm das die ganze
+# Seite mit, auch nachdem fachinfo_name still geworden war.
+class TestFiChapterChooserGuards < Minitest::Test
+  def chooser(container = nil)
+    c = ODDB::View::Drugs::FiChapterChooser.allocate
+    c.instance_variable_set(:@container, container)
+    c
+  end
+
+  def test_display_names_for_a_document
+    document = flexmock("document", chapter_names: [:usage, :date])
+    assert_equal([:usage, :date], chooser.display_names(document))
+  end
+
+  def test_display_names_for_a_string
+    assert_equal([], chooser.display_names("Aspirin cardio"))
+  end
+
+  def test_display_names_for_nil
+    assert_equal([], chooser.display_names(nil))
+  end
+
+  # Die Liste des Dokuments wird nicht angefasst - :photos und :links wurden
+  # bisher in das Array des Modells hineingeschrieben.
+  def test_the_documents_list_is_not_modified
+    names = [:usage]
+    document = flexmock("document", chapter_names: names)
+    container = flexmock("container", photos: true, links: [])
+    chooser(container).display_names(document)
+    assert_equal([:usage], names)
+  end
+
+  def test_change_log_size_of_a_string_is_zero
+    assert_equal(0, ODDB::View::Drugs.change_log_size("Aspirin cardio"))
+  end
+
+  def test_change_log_size_counts
+    document = flexmock("document", change_log: [1, 2, 3])
+    assert_equal(3, ODDB::View::Drugs.change_log_size(document))
+  end
+end

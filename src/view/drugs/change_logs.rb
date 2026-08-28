@@ -47,6 +47,20 @@ module ODDB
         diffy
       end
 
+      # Stand bis August 2026 in patinfo.rb; fachinfo.rb braucht sie
+      # genauso und lud sie nicht. Beide Dateien laden change_logs.rb.
+      # #change_log is declared as an Array, but the reference can resolve to an
+      # unrelated ODBA object (137 of the 500s in August 2026 were
+      # "undefined method 'size' for an instance of ODDB::PatinfoDocument").
+      # Treat anything that cannot answer #size as "no change log".
+      def self.change_log_size(document)
+        change_log = document.change_log
+        change_log.respond_to?(:size) ? change_log.size : 0
+      rescue => error
+        LogFile.debug("View::Drugs.change_log_size: #{error.class} #{error.message}")
+        0
+      end
+
       def self.get_show_change_link_href(model, pack_or_reg, lnf, supress_date = false)
         may_be_date = supress_date ? [] : [model.time.strftime("%d.%m.%Y")]
         if pack_or_reg.is_a?(ODDB::Registration)

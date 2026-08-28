@@ -81,8 +81,14 @@ module ODDB
             @components.store([next_offset, 0], :ddd)
             next_offset += 1
           end
-          document = @model.send(@session.language)
-          if document.change_log.size > 0
+          # Zwei kaputte Referenzen an einer Stelle: das Modell ist bei drei
+          # Registrierungen gar keine Fachinformation und beantwortet de/fr/it
+          # nicht, und wo es sie beantwortet, steht darunter mitunter eine
+          # Zeichenkette statt einer Dokumentfassung. Beides nahm die Seite mit
+          # (/de/gcc/fachinfo/reg/70260 und /de/gcc/fachinfo/reg/49533).
+          lang = @session.language.to_s.to_sym
+          document = @model.send(lang) if @model.respond_to?(lang)
+          if Drugs.change_log_size(document) > 0
             @components.store([next_offset, 0], :change_log)
             @css_map.store([next_offset, 0], "chapter-tab")
             next_offset += 1
@@ -138,7 +144,7 @@ module ODDB
         end
 
         def display_names(document)
-          names = (document ? document.chapter_names : [])
+          names = (document.respond_to?(:chapter_names) ? document.chapter_names.dup : [])
           if @container.respond_to?(:photos) && @container.photos && !@container.photos.nil?
             names << :photos
           end
@@ -178,8 +184,13 @@ module ODDB
         DEFAULT_CLASS = View::Chapter
         CSS_STYLE_MAP = {}
         def init
-          if @model # document
-            names = @model.chapter_names
+          # `if @model` liess alles durch, was nicht nil ist - und in
+          # @descriptions steht bei einigen Fachinformationen eine
+          # Zeichenkette statt einer Dokumentfassung. Dieselbe Stelle wie in
+          # PatinfoInnerComposite. Die Liste wird kopiert: :links gehoerte
+          # bisher hinterher dem Dokument.
+          if @model.respond_to?(:chapter_names)
+            names = @model.chapter_names.dup
             if @container.respond_to?(:links) and !@container.links.empty?
               names << :links
             end
@@ -287,18 +298,31 @@ module ODDB
           [1, 0]	=> "th right",
           [0, 2] => "list article"
         }
+        # Drei Registrierungen halten unter @fachinfo ein PatinfoDocument statt
+        # einer Fachinformation. Das beantwortet weder de/fr/it noch links,
+        # photos oder has_photo?, und jede dieser Zeilen nahm die Seite mit -
+        # nacheinander, denn jede Absicherung legte die naechste frei. Eine
+        # Frage entscheidet ueber alle: kann das Modell die Sprache?
         def init
-          @document = @model.send(@session.language)
-          @links = @model.send(:links)
+          @document = nil
+          @links = nil
           @photos = nil
-          case @session.user_input(:chapter)
-          when nil
-            @photos = @model.send(:photos, "thumbnail")
-          when "photos"
-            @photos = @model.send(:photos, "small")
-          else
-            if @model.send(:has_photo?)
-              @photos = true # link only
+          # Als Symbol gefragt: SimpleLanguage#respond_to? nimmt beides
+          # (symbol.to_s.length == 2), FlexMock beantwortet nur Symbole, und
+          # so stimmen Anwendung und Test ueberein.
+          lang = @session.language.to_s.to_sym
+          if @model.respond_to?(lang)
+            @document = @model.send(lang)
+            @links = @model.send(:links)
+            case @session.user_input(:chapter)
+            when nil
+              @photos = @model.send(:photos, "thumbnail")
+            when "photos"
+              @photos = @model.send(:photos, "small")
+            else
+              if @model.send(:has_photo?)
+                @photos = true # link only
+              end
             end
           end
           super

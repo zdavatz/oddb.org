@@ -25,9 +25,14 @@ module ODDB
         def init
           @fachinfo = @model
           @model = FachinfoWrapper.new(@fachinfo)
-          descr = @session.lookandfeel.lookup(:fachinfo_descr,
-            @fachinfo.localized_name(@session.language))
-          @model.pointer_descr = descr
+          # Drei Registrierungen halten unter @fachinfo ein PatinfoDocument -
+          # eine falsch gesetzte ODBA-Referenz -, und localized_name nahm die
+          # Seite mit. respond_to? und nicht is_a?: ODBA::Stub#is_a? antwortet
+          # aus der deklarierten Klasse, ohne den Stub aufzuloesen.
+          name = if @fachinfo.respond_to?(:localized_name)
+            @fachinfo.localized_name(@session.language)
+          end
+          @model.pointer_descr = @session.lookandfeel.lookup(:fachinfo_descr, name)
         end
 
         def allowed?(key = "dummy")

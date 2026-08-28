@@ -47,18 +47,6 @@ module ODDB
         args
       end
 
-      # #change_log is declared as an Array, but the reference can resolve to an
-      # unrelated ODBA object (137 of the 500s in August 2026 were
-      # "undefined method 'size' for an instance of ODDB::PatinfoDocument").
-      # Treat anything that cannot answer #size as "no change log".
-      def self.change_log_size(document)
-        change_log = document.change_log
-        change_log.respond_to?(:size) ? change_log.size : 0
-      rescue => error
-        LogFile.debug("View::Drugs.change_log_size: #{error.class} #{error.message}")
-        0
-      end
-
       class Patinfo2001; end
 
       class PiChapterChooserLink < HtmlGrid::Link
