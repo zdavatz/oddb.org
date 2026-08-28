@@ -10,6 +10,7 @@ require "flexmock/minitest"
 require "model/registration"
 require "model/text"
 require "model/fachinfo"
+require "model/patinfo"
 
 module ODDB
   class RegistrationCommon
@@ -120,6 +121,22 @@ class StubRegistrationApp
 end
 
 class StubRegistrationIndication
+  attr_reader :added, :removed
+  attr_accessor :oid
+  def add_registration(reg)
+    @added = reg
+  end
+
+  def remove_registration(reg)
+    @removed = reg
+  end
+end
+
+# Fuer fachinfo= reicht eine beliebige Attrappe nicht mehr: der Setter
+# besteht seit August 2026 auf einer ODDB::Fachinfo, weil drei
+# Registrierungen ein PatinfoDocument darunter hielten. Die Beobachter-
+# Verdrahtung, um die es hier geht, prueft sich damit genauso.
+class StubRegistrationFachinfo < ODDB::Fachinfo
   attr_reader :added, :removed
   attr_accessor :oid
   def add_registration(reg)
@@ -340,9 +357,9 @@ class TestRegistration < Minitest::Test
   end
 
   def test_fachinfo_writer
-    fachinfo1 = StubRegistrationIndication.new
+    fachinfo1 = StubRegistrationFachinfo.new
     fachinfo1.oid = 2
-    fachinfo2 = StubRegistrationIndication.new
+    fachinfo2 = StubRegistrationFachinfo.new
     fachinfo2.oid = 3
     @registration.fachinfo = fachinfo1
     assert_equal(@registration, fachinfo1.added)
@@ -533,5 +550,38 @@ class TestRegistration < Minitest::Test
     values[:company] = "Jansen Cilag AG"
     @registration.update_values(@registration.diff(values, app))
     assert_equal([], company.registrations)
+  end
+end
+
+# Drei Registrierungen hielten unter @fachinfo ein PatinfoDocument und
+# antworteten mit 500; check_accessor_list deklariert die Pruefung seit jeher,
+# aber der handgeschriebene Setter ueberschrieb die erzeugte Methode.
+class TestRegistrationFachinfoAccessor < Minitest::Test
+  def setup
+    @registration = ODDB::Registration.new("12345")
+    super
+  end
+
+  def test_a_fachinfo_is_accepted
+    fachinfo = ODDB::Fachinfo.new
+    @registration.fachinfo = fachinfo
+    assert_equal(fachinfo, @registration.fachinfo)
+  end
+
+  def test_nil_is_accepted
+    @registration.fachinfo = nil
+    assert_nil(@registration.fachinfo)
+  end
+
+  def test_a_document_is_refused
+    error = assert_raises(TypeError) {
+      @registration.fachinfo = ODDB::PatinfoDocument.new
+    }
+    assert_match("PatinfoDocument", error.message)
+    assert_nil(@registration.fachinfo)
+  end
+
+  def test_a_string_is_refused
+    assert_raises(TypeError) { @registration.fachinfo = "Ojemda" }
   end
 end

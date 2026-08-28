@@ -265,6 +265,7 @@ SCHEDULE="
 50  15  *   update_drugshortage
 50  8   20  import_whocc
 1   20  11  import_refdata_nat
+30  6   5   repair_fachinfo_references
 "
 
 # Runs whatever is due this minute. Invoked once a minute from cron, so it has

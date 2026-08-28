@@ -361,7 +361,23 @@ module ODDB
       @indication = replace_observer(@indication, indication)
     end
 
+    # Am 28.08.2026 hielten drei Registrierungen unter @fachinfo ein
+    # PatinfoDocument, und jede ihrer Seiten antwortete mit 500 - Google hatte
+    # eine davon gecrawlt und den Serverfehler in der Search Console stehen.
+    #
+    # check_accessor_list oben deklariert fuer :fachinfo laengst
+    # "ODDB::Fachinfo", aber define_check_class_methods laeuft in Zeile 60 und
+    # dieser Setter ueberschreibt die erzeugte Methode - die Pruefung war tot.
+    #
+    # Beim *Lesen* laesst sie sich nicht guenstig nachholen: der Wert ist ein
+    # ODBA::Stub, der ODDB::Fachinfo deklariert, und Stub#is_a? antwortet aus
+    # der Deklaration, ohne aufzuloesen. Erst respond_to? holt das Objekt, und
+    # das bei jedem Zugriff waere zu teuer. Beim Schreiben liegt es vor.
+    # Ein Stub kommt durch, ein falsches Objekt nicht.
     def fachinfo=(fachinfo)
+      if !fachinfo.nil? && defined?(ODDB::Fachinfo) && !fachinfo.is_a?(ODDB::Fachinfo)
+        raise TypeError, "Registration#fachinfo= expects an ODDB::Fachinfo, got #{fachinfo.class}"
+      end
       @fachinfo = replace_observer(@fachinfo, fachinfo)
     end
 

@@ -1,0 +1,102 @@
+#!/usr/local/bin/ruby
+# Findet Registrierungen, deren @fachinfo nicht auf eine Fachinformation
+# zeigt, und loescht die Referenz.
+#
+#   bundle exec ruby jobs/repair_fachinfo_references            # nur melden
+#   bundle exec ruby jobs/repair_fachinfo_references --apply
+#
+# Am 28.08.2026 waren es drei - 70237 (Vanco Labatec 500 mg), 70241 und
+# 70260 (Ojemda). Alle drei zeigten auf ein PatinfoDocument, und alle drei
+# antworteten mit 500: State::Drugs::Fachinfo#init ruft localized_name, das
+# ein Dokument nicht kennt. Google hatte 70260 am 27.08. gecrawlt und den
+# Serverfehler in der Search Console stehen.
+#
+# Warum loeschen und nicht umbiegen: es gibt keine Fachinformation, auf die
+# man zeigen koennte. Die Registrierung hat schlicht keine - und genau das
+# sagt eine leere Referenz. Kommt spaeter eine, setzt der Swissmedic-Import
+# sie wieder.
+#
+# Absichern laesst sich das nicht durch eine Pruefung beim Lesen: der Wert
+# ist ein ODBA::Stub, der ODDB::Fachinfo *deklariert*, und Stub#is_a?
+# antwortet aus der Deklaration, ohne aufzuloesen. Erst respond_to? holt das
+# Objekt - fuer jeden Zugriff zu teuer. Deshalb: eine Pruefung beim Schreiben
+# (Registration#fachinfo=) und dieser Lauf, der gegen die Datenbank misst
+# statt gegen die Deklaration.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+
+      # Die Frage stellt man an die Datenbank und nicht an die Objekte: eine
+      # Registrierung zeigt legitim auf Hash, Company, Indication, Fachinfo,
+      # Patent, Registration und MiniFi. Ein Dokument gehoert nie dazu.
+      sql = <<~SQL
+        select c.origin_id, c.target_id, o.extent
+        from object_connection c
+        join object p on p.odba_id = c.origin_id and p.extent = 'ODDB::Registration'
+        join object o on o.odba_id = c.target_id
+        where o.extent not in ('Hash', 'ODDB::Company', 'ODDB::Indication',
+                               'ODDB::Fachinfo', 'ODDB::Patent',
+                               'ODDB::Registration', 'ODDB::MiniFi')
+        order by c.origin_id
+      SQL
+      rows = ODBA.storage.dbi.execute(sql).fetch_all
+
+      if rows.empty?
+        puts "keine fehlgeleiteten Referenzen"
+        next
+      end
+
+      puts "#{rows.size} Registrierung(en) zeigen auf etwas, das keine Fachinformation ist:"
+      undo = File.expand_path("../log/repair_fachinfo_references-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      repaired = 0
+      File.open(undo, "w") { |fh|
+        rows.each { |origin_id, target_id, extent|
+          reg = ODBA.cache.fetch(origin_id.to_i, nil)
+          unless reg.is_a?(ODDB::Registration)
+            puts format("  %-10s %-24s -> %s (uebersprungen, kein Registration-Objekt)",
+              origin_id, reg.class, extent)
+            next
+          end
+          held = reg.instance_variable_get(:@fachinfo)
+          held_id = (held.respond_to?(:odba_id) ? held.odba_id : nil)
+          unless held_id.to_s == target_id.to_s
+            # Die Kante kommt von einem anderen Feld - nicht anfassen.
+            puts format("  %-8s %-28s -> %s (nicht @fachinfo, uebersprungen)",
+              reg.iksnr, reg.name_base.to_s[0, 28], extent)
+            next
+          end
+          puts format("  %-8s %-28s -> %s (odba_id %s)", reg.iksnr,
+            reg.name_base.to_s[0, 28], extent, target_id)
+          next unless apply
+          fh.puts("#{reg.iksnr}\t#{origin_id}\t#{target_id}\t#{extent}")
+          fh.flush
+          # Direkt am Feld, nicht ueber fachinfo= : der Setter ruft
+          # replace_observer, und das Dokument kennt remove_registration nicht.
+          reg.instance_variable_set(:@fachinfo, nil)
+          reg.odba_isolated_store
+          repaired += 1
+        }
+      }
+      if apply
+        puts
+        puts "#{repaired} Referenz(en) geleert, rueckgaengig zu machen mit #{undo}"
+      else
+        File.unlink(undo) if File.exist?(undo)
+        puts
+        puts "ohne --apply nichts geaendert"
+        # Damit der monatliche Lauf sich meldet: cron macht aus einem
+        # Exit-Status ungleich null eine Mail, und ein stiller Fund waere
+        # dasselbe wie kein Fund.
+        exit 1
+      end
+    end
+  end
+end
