@@ -149,25 +149,24 @@ fi
 # Steht bewusst nicht im Repository. Gesucht wird, in dieser Reihenfolge:
 #
 #   1. $PGPASSWORD aus der Umgebung.
-#   2. /etc/oddb/pg_backup.conf - eine Datei mit einer einzigen Zeile
-#      PGPASSWORD='...', root gehoerend und chmod 600.
+#   2. db_password aus etc/oddb.yml - dieselbe Stelle wie jedes andere
+#      Geheimnis der Anwendung, und die einzige davon mit Modus 600.
 #   3. gar nichts. Dann macht libpq den Rest ueber ~/.pgpass oder ueber
 #      peer-Authentifizierung, und pg_dump sagt laut Bescheid, wenn es so
 #      nicht geht - der Exit-Status erreicht seit August 2026 die cron-Mail.
 #
-# Warum ausserhalb von /var/www: dieses Skript laeuft als root. Eine Datei,
-# die der Anwendungsbenutzer schreiben kann und root ausfuehrt, waere ein
-# Weg von einer kompromittierten Anwendung zu root - genau der Grund, aus
-# dem bin/oddb_cron nicht root gehoert.
-#
-# Die installierte Fassung unter /usr/local/sbin/pg_backup.sh traegt den
-# Wert bis auf weiteres direkt in dieser Zeile. Wer diese Fassung dorthin
-# kopiert, legt vorher /etc/oddb/pg_backup.conf an - sonst schlaegt das
-# naechtliche Backup fehl.
-if [ -z "$PGPASSWORD" ] && [ -r /etc/oddb/pg_backup.conf ]; then
-        . /etc/oddb/pg_backup.conf
+# Herausgelesen, nicht eingelesen, und das ist der ganze Punkt: dieses Skript
+# laeuft als root, oddb.yml gehoert dem Anwendungsbenutzer. Ein "." auf diese
+# Datei waere ein Weg von einer kompromittierten Anwendung zu root - sed holt
+# einen Wert und fuehrt nichts aus. Das Ergebnis wird zitiert zugewiesen, es
+# wird also auch nicht nachtraeglich noch einmal ausgewertet.
+ODDB_YML=${ODDB_YML:-/var/www/oddb.org/etc/oddb.yml}
+if [ -z "${PGPASSWORD:-}" ] && [ -r "$ODDB_YML" ]; then
+        PGPASSWORD=$(sed -n "s/^db_password:[[:space:]]*//p" "$ODDB_YML" \
+                | head -1 \
+                | sed -e "s/^'\(.*\)'$/\1/" -e 's/^"\(.*\)"$/\1/' -e "s/''/'/g")
 fi
-postgresql_password="$PGPASSWORD"
+postgresql_password="${PGPASSWORD:-}"
 
 ##################
 # Locations      #

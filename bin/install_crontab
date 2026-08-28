@@ -21,10 +21,10 @@
 # problem.
 #
 # scripts/pg_backup.sh is installed too, but only once its credentials exist.
-# The versioned copy carries no password on purpose; it reads
-# /etc/oddb/pg_backup.conf instead. Installing it without that file would turn
-# the nightly backup into a silent failure, so a missing or unreadable conf
-# skips that one file and makes this run exit non-zero.
+# The versioned copy carries no password on purpose; it reads db_password from
+# etc/oddb.yml instead. Installing it without that key would turn the nightly
+# backup into a silent failure, so a missing key skips that one file and makes
+# this run exit non-zero.
 #
 # Not installed from here, deliberately:
 #   sdif/update_interactions       lives in github.com/zdavatz/sdif
@@ -46,29 +46,30 @@ set -- \
   "$root/etc/crontab:/etc/crontab:644" \
   "$root/bin/oddb_cron:/usr/local/sbin/oddb_cron:755"
 
-# pg_backup.sh only with its credentials in place. Read in a subshell, so the
-# value never reaches this script's environment and is never printed.
-# Ueberschreibbar wie ODDB_ROOT in oddb_cron, damit test/test_bin/
-# install_crontab.sh die vier Faelle durchspielen kann, ohne /etc anzufassen.
-pgconf=${PG_BACKUP_CONF:-/etc/oddb/pg_backup.conf}
-pgmode=$([ -f "$pgconf" ] && stat -c '%a' "$pgconf")
-if [ ! -r "$pgconf" ]; then
-  echo "SKIP     /usr/local/sbin/pg_backup.sh - $pgconf is missing"
-  echo "         The versioned copy holds no password. Create it first:"
-  echo "           sudo install -d -m 700 -o root -g root /etc/oddb"
-  echo "           sudo sh -c \"umask 077; printf \\\"PGPASSWORD='%s'\\\\n\\\" '<password>' > $pgconf\""
+# pg_backup.sh only with its credentials in place. Read in a subshell and never
+# echoed, so the value reaches neither this script's environment nor the
+# terminal.
+oddb_yml=${ODDB_YML:-$root/etc/oddb.yml}
+yml_mode=$([ -f "$oddb_yml" ] && stat -c '%a' "$oddb_yml")
+db_password=$(sed -n "s/^db_password:[[:space:]]*//p" "$oddb_yml" 2>/dev/null | head -1 \
+  | sed -e "s/^'\(.*\)'$/\1/" -e 's/^"\(.*\)"$/\1/')
+if [ ! -r "$oddb_yml" ]; then
+  echo "SKIP     /usr/local/sbin/pg_backup.sh - $oddb_yml is missing"
+  status=1
+elif [ -z "$db_password" ]; then
+  echo "SKIP     /usr/local/sbin/pg_backup.sh - $oddb_yml sets no db_password"
+  echo "         The versioned copy holds no password. Add the line first:"
+  echo "           db_password: '<password>'"
   echo "         The value is still in line 148 of the installed pg_backup.sh."
   status=1
-elif [ "$pgmode" != "600" ] && [ "$pgmode" != "400" ]; then
-  echo "SKIP     /usr/local/sbin/pg_backup.sh - $pgconf is mode $pgmode, want 600"
-  echo "           sudo chown root:root $pgconf && sudo chmod 600 $pgconf"
-  status=1
-elif [ -z "$(. "$pgconf" >/dev/null 2>&1; printf %s "$PGPASSWORD")" ]; then
-  echo "SKIP     /usr/local/sbin/pg_backup.sh - $pgconf sets no PGPASSWORD"
+elif [ "$yml_mode" != "600" ] && [ "$yml_mode" != "400" ]; then
+  echo "SKIP     /usr/local/sbin/pg_backup.sh - $oddb_yml is mode $yml_mode, want 600"
+  echo "           chmod 600 $oddb_yml"
   status=1
 else
   set -- "$@" "$root/scripts/pg_backup.sh:/usr/local/sbin/pg_backup.sh:755"
 fi
+db_password=
 
 for entry in "$@"; do
   src=${entry%%:*}

@@ -6,12 +6,12 @@
 # Not part of test/suite.rb, which runs minitest against src/. What matters
 # here cannot be seen in production without breaking it: the versioned
 # scripts/pg_backup.sh carries no password, so installing it over the current
-# one before /etc/oddb/pg_backup.conf exists would turn the nightly backup
-# into a silent failure. Four cases - missing, wrong mode, empty, good.
+# one before etc/oddb.yml holds db_password would turn the nightly backup into
+# a silent failure. Four cases - missing file, no key, wrong mode, good.
 #
 # id and install are replaced by stubs on PATH, so nothing here needs root and
-# nothing is written outside the work directory. PG_BACKUP_CONF points the
-# script at a temporary file instead of /etc.
+# nothing is written outside the work directory. ODDB_YML points the script at
+# a temporary file instead of the real config.
 
 set -u
 
@@ -47,7 +47,7 @@ run() {
   INSTALLED=$WORK/installed
   export INSTALLED
   : > "$INSTALLED"
-  OUT=$(PG_BACKUP_CONF="$1" sh "$SCRIPT" 2>&1)
+  OUT=$(ODDB_YML="$1" sh "$SCRIPT" 2>&1)
   RC=$?
 }
 
@@ -67,36 +67,35 @@ contains() {
   esac
 }
 
-# 1. Keine Zugangsdatei - pg_backup.sh wird uebersprungen, Status 1.
-run "$WORK/nicht-da.conf"
-check "fehlende conf meldet sich" "$RC" "1"
-contains "fehlende conf nennt den Grund" "$OUT" "is missing"
-contains "fehlende conf sagt, wie man sie anlegt" "$OUT" "install -d -m 700"
+# 1. Keine Konfiguration - pg_backup.sh wird uebersprungen, Status 1.
+run "$WORK/nicht-da.yml"
+check "fehlende oddb.yml meldet sich" "$RC" "1"
+contains "fehlende oddb.yml nennt den Grund" "$OUT" "is missing"
 
-# 2. Da, aber fuer alle lesbar - das Passwort gehoert nicht in ein 644.
-conf=$WORK/pg_backup.conf
-printf "PGPASSWORD='geheim'\n" > "$conf"
-chmod 644 "$conf"
-run "$conf"
+# 2. Da, aber ohne den Schluessel.
+yml=$WORK/oddb.yml
+printf "smtp_port: 587\n" > "$yml"
+chmod 600 "$yml"
+run "$yml"
+check "fehlendes db_password wird abgelehnt" "$RC" "1"
+contains "fehlendes db_password nennt den Grund" "$OUT" "sets no db_password"
+contains "fehlendes db_password zeigt die Zeile" "$OUT" "db_password:"
+
+# 3. Schluessel da, aber fuer alle lesbar - ein Passwort gehoert nicht in ein 644.
+printf "db_password: 'geheim'\n" > "$yml"
+chmod 644 "$yml"
+run "$yml"
 check "644 wird abgelehnt" "$RC" "1"
 contains "644 nennt den Modus" "$OUT" "mode 644"
 
-# 3. Richtiger Modus, aber ohne Wert.
-: > "$conf"
-chmod 600 "$conf"
-run "$conf"
-check "leere conf wird abgelehnt" "$RC" "1"
-contains "leere conf nennt den Grund" "$OUT" "sets no PGPASSWORD"
-
 # 4. Alles da - jetzt gehoert pg_backup.sh in die Liste.
-printf "PGPASSWORD='geheim'\n" > "$conf"
-chmod 600 "$conf"
-run "$conf"
-check "gute conf laeuft durch" "$RC" "0"
-contains "gute conf nimmt pg_backup.sh auf" "$OUT" "/usr/local/sbin/pg_backup.sh"
+chmod 600 "$yml"
+run "$yml"
+check "gute Konfiguration laeuft durch" "$RC" "0"
+contains "gute Konfiguration nimmt pg_backup.sh auf" "$OUT" "/usr/local/sbin/pg_backup.sh"
 case "$OUT" in
-  *SKIP*) echo "FAIL  gute conf darf nichts ueberspringen"; FAILURES=$((FAILURES + 1)) ;;
-  *) echo "ok    gute conf ueberspringt nichts" ;;
+  *SKIP*) echo "FAIL  gute Konfiguration darf nichts ueberspringen"; FAILURES=$((FAILURES + 1)) ;;
+  *) echo "ok    gute Konfiguration ueberspringt nichts" ;;
 esac
 
 # Und das Passwort darf in keinem Fall in der Ausgabe stehen.
