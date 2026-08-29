@@ -82,6 +82,63 @@ else
   echo "ok    Skript traegt kein Passwort"
 fi
 
+# Die Datenbankliste wird aus psqls Ausgabe geparst, und die Fusszeile wird
+# dabei beim Namen erkannt: unter de_CH.UTF-8 heisst sie "(4 Zeilen)" und nicht
+# "(4 rows)", rutscht durch das grep und awk gibt "(4" als Datenbanknamen
+# zurueck - jede Nacht ein 14 Byte grosser Dump "(4-backup.bz2" neben den
+# echten. Der psql-Aufruf ist deshalb auf LC_ALL=C festgenagelt; nimmt man das
+# heraus, antwortet der Stub hier deutsch und die Pruefung faellt um.
+CONN=$(sed -n '/^db_connectivity() {/,/^}/p' "$SCRIPT")
+if [ -z "$CONN" ]; then
+  echo "FAIL  db_connectivity nicht gefunden - Skript umgebaut?"
+  FAILURES=$((FAILURES + 1))
+else
+  mkdir -p "$WORK/bin"
+  cat > "$WORK/bin/psql" <<'STUB'
+#!/bin/sh
+# So antwortet psql wirklich: uebersetzt wird nur die Fusszeile.
+if [ "${LC_ALL:-}" = "C" ]; then footer="(4 rows)"; else footer="(4 Zeilen)"; fi
+cat <<OUT
+ datname
+----------
+ postgres
+ ch_oddb
+ migel
+ yus
+$footer
+OUT
+STUB
+  chmod 755 "$WORK/bin/psql"
+
+  db_list() {
+    ( PGBINDIR=$WORK/bin
+      PARAM_PGHOST=
+      PGUSER=postgres
+      PGLOGDIR=$WORK/psql.log
+      timeinfo=jetzt
+      exclusions=${1:-}
+      eval "$CONN"
+      db_connectivity
+      echo $databases )
+  }
+
+  got=$(db_list)
+  if [ "$got" = "ch_oddb migel yus" ]; then
+    echo "ok    Datenbankliste ohne Fusszeile"
+  else
+    echo "FAIL  Datenbankliste: '$got' statt 'ch_oddb migel yus'"
+    FAILURES=$((FAILURES + 1))
+  fi
+
+  got=$(db_list "migel")
+  if [ "$got" = "ch_oddb yus" ]; then
+    echo "ok    Ausschluss greift weiterhin"
+  else
+    echo "FAIL  mit Ausschluss: '$got' statt 'ch_oddb yus'"
+    FAILURES=$((FAILURES + 1))
+  fi
+fi
+
 echo
 if [ "$FAILURES" = "0" ]; then
   echo "alle Pruefungen bestanden"

@@ -292,12 +292,16 @@ permissions_backup_log="0644"
         #
         # Obtain a list of available databases with reference to the user
         # defined exclusions
+# The footer of psql's output is filtered by name, so the query has to speak
+# English: under de_CH.UTF-8 it reads "(4 Zeilen)", grep -v "rows)" misses it
+# and awk hands back "(4" as a database name. That produced a nightly 14 byte
+# dump called "(4-backup.bz2" beside the real ones. LC_ALL=C pins it.
 db_connectivity() {
         tmp=`echo "($exclusions)" | sed 's/\ /\|/g'`
         if [ "$exclusions" = "" ]; then
-                databases=`$PGBINDIR/psql $PARAM_PGHOST -U $PGUSER -q -c "SELECT datname FROM pg_database WHERE datistemplate = false" template1 | sed -n 4,/\eof/p | grep -v rows\) | grep -v : | awk {'print $1'} || echo "Database connection could not be established at $timeinfo" >> $PGLOGDIR`
+                databases=`LC_ALL=C $PGBINDIR/psql $PARAM_PGHOST -U $PGUSER -q -c "SELECT datname FROM pg_database WHERE datistemplate = false" template1 | sed -n 4,/\eof/p | grep -v rows\) | grep -v : | awk {'print $1'} || echo "Database connection could not be established at $timeinfo" >> $PGLOGDIR`
         else
-                databases=`$PGBINDIR/psql $PARAM_PGHOST -U $PGUSER -q -c "SELECT datname FROM pg_database WHERE datistemplate = false" template1 | sed -n 4,/\eof/p | grep -v rows\) | grep -v : | grep -Ev $tmp | awk {'print $1'} || echo "Database connection could not be established at $timeinfo" >> $PGLOGDIR`
+                databases=`LC_ALL=C $PGBINDIR/psql $PARAM_PGHOST -U $PGUSER -q -c "SELECT datname FROM pg_database WHERE datistemplate = false" template1 | sed -n 4,/\eof/p | grep -v rows\) | grep -v : | grep -Ev $tmp | awk {'print $1'} || echo "Database connection could not be established at $timeinfo" >> $PGLOGDIR`
         fi
 }
  
