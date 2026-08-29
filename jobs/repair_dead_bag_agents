@@ -66,10 +66,10 @@ rows.each_with_index do |(term, target_id), i|
         # create_active_agent und delete_active_agent greifen direkt auf die
         # Ivar zu und scheitern dort mit NoMethodError.
         #
-        # @inactive_agents wird bewusst nicht angefasst: dort ist nil bei 6887
+        # @inactive_agents wird bewusst nicht angefasst: dort ist nil bei 6885
         # Compositions der Normalfall und kein Schaden. Hilfsstoffe kamen erst
         # 2015 dazu, alles Aeltere hat die Ivar nie bekommen, und der Reader
-        # liefert []. Das waeren 6887 Schreibvorgaenge fuer nichts.
+        # liefert []. Das waeren 6885 Schreibvorgaenge fuer nichts.
         if comp.instance_variable_get(:@active_agents).nil?
           befund << "@active_agents ist nil"
           leere_listen += 1

@@ -1071,12 +1071,12 @@ module ODDB
                 end
               }
             end
-            composition_in_db.active_agents.replace active_agents.compact
-            if composition_in_db.inactive_agents
-              composition_in_db.inactive_agents.replace inactive_agents.compact
-            else
-              composition_in_db.inactive_agents = inactive_agents.compact
-            end
+            # Nicht ueber die Reader: die liefern @ivar || [], sind also nie
+            # nil - der else-Zweig hier war toter Code, und das replace lief
+            # bei nil auf einer Wegwerfliste. Composition#replace_*_agents
+            # legt die Liste an, wo sie fehlt, und schreibt sie auch.
+            composition_in_db.replace_active_agents(active_agents.compact)
+            composition_in_db.replace_inactive_agents(inactive_agents.compact)
             composition_in_db.odba_store
             sequence.odba_store
           end

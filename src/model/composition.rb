@@ -80,6 +80,8 @@ module ODDB
       return agent if agent
       agent = ActiveAgent.new(substance_name)
       agent.sequence = @sequence
+      # Die Liste kann nil sein - der Reader faengt das ab, push nicht.
+      @active_agents ||= []
       @active_agents.push(agent)
       @active_agents.odba_isolated_store
       odba_store
@@ -153,6 +155,12 @@ module ODDB
       return agent if agent
       agent = InactiveAgent.new(substance_name)
       agent.sequence = @sequence
+      # Hilfsstoffe kamen erst 2015 dazu: 6885 aeltere Zusammensetzungen haben
+      # @inactive_agents nie bekommen. inactive_agents liefert dafuer [], push
+      # wirft NoMethodError - und der Fehler faellt in den bare rescue von
+      # SwissmedicPlugin#update_all_sequence_info, der ihn als
+      # "unparsed_composition" fortschreibt. Sichtbar waere er also nie.
+      @inactive_agents ||= []
       @inactive_agents.push(agent)
       @inactive_agents.odba_isolated_store
       odba_store
@@ -166,6 +174,34 @@ module ODDB
         @inactive_agents.odba_isolated_store
         active
       end
+    end
+
+    # Die Wirkstoffliste durch die uebergebene ersetzen.
+    #
+    # Zwei Gruende, warum das eine eigene Methode braucht und nicht am Aufrufer
+    # als active_agents.replace(...) stehen darf:
+    #
+    # 1. active_agents/inactive_agents liefern @ivar || [], also nie nil. Ein
+    #    replace darauf trifft bei nil eine Wegwerfliste und verwirft still,
+    #    was geparst wurde - und ein "if composition.inactive_agents" davor ist
+    #    immer wahr, der else-Zweig also toter Code. Genau so stand es im
+    #    Swissmedic-Import.
+    # 2. Die Liste ist ein eigenes ODBA-Objekt mit eigener odba_id. Ein
+    #    odba_store auf der Composition schreibt sie nur mit, wenn sie selbst
+    #    als unsaved gilt - nach einem reinen replace tut sie das nicht. Also
+    #    die Liste selbst schreiben, und zwar vor dem Halter.
+    def replace_active_agents(agents)
+      @active_agents ||= []
+      @active_agents.replace(agents)
+      @active_agents.odba_isolated_store
+      self
+    end
+
+    def replace_inactive_agents(agents)
+      @inactive_agents ||= []
+      @inactive_agents.replace(agents)
+      @inactive_agents.odba_isolated_store
+      self
     end
 
     def doses

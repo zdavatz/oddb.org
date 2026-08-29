@@ -139,6 +139,53 @@ module ODDB
       assert_equal([], @composition.instance_variable_get(:@active_agents))
     end
 
+    # Hilfsstoffe kamen erst 2015 dazu: 6885 Zusammensetzungen haben
+    # @inactive_agents nie bekommen. push wirft dort NoMethodError, und der
+    # Fehler landet im bare rescue des Swissmedic-Imports, der ihn als
+    # "unparsed_composition" fortschreibt - sichtbar wird er nie.
+    def test_create_inactive_agent__nil_list
+      @composition.instance_eval("@inactive_agents = nil", __FILE__, __LINE__)
+      agent = @composition.create_inactive_agent("substance_name")
+      assert_kind_of(ODDB::InactiveAgent, agent)
+      assert_equal([agent], @composition.instance_variable_get(:@inactive_agents))
+    end
+
+    def test_create_active_agent__nil_list
+      @composition.instance_eval("@active_agents = nil", __FILE__, __LINE__)
+      agent = @composition.create_active_agent("substance_name")
+      assert_kind_of(ODDB::ActiveAgent, agent)
+      assert_equal([agent], @composition.instance_variable_get(:@active_agents))
+    end
+
+    # Der Reader liefert @ivar || [], ist also nie nil - ein replace darauf
+    # trifft bei nil eine Wegwerfliste und verwirft still, was geparst wurde.
+    def test_replace_inactive_agents__nil_list
+      agent = flexmock("agent", same_as?: false)
+      @composition.instance_eval("@inactive_agents = nil", __FILE__, __LINE__)
+      @composition.replace_inactive_agents([agent])
+      assert_equal([agent], @composition.instance_variable_get(:@inactive_agents))
+      assert_equal([agent], @composition.inactive_agents)
+    end
+
+    def test_replace_active_agents__nil_list
+      agent = flexmock("agent", same_as?: false, is_active_agent: true)
+      @composition.instance_eval("@active_agents = nil", __FILE__, __LINE__)
+      @composition.replace_active_agents([agent])
+      assert_equal([agent], @composition.instance_variable_get(:@active_agents))
+    end
+
+    # Die Liste ist ein eigenes ODBA-Objekt: sie muss selbst geschrieben
+    # werden, ein odba_store auf der Composition nimmt sie nach einem reinen
+    # replace nicht mit.
+    def test_replace_active_agents__stores_the_list
+      agent = flexmock("agent", same_as?: false, is_active_agent: true)
+      agents = flexmock([])
+      agents.should_receive(:odba_isolated_store).once
+      @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
+      @composition.replace_active_agents([agent])
+      assert_equal([agent], @composition.instance_variable_get(:@active_agents))
+    end
+
     def test_create_active_agent
       result = @composition.create_active_agent("substance_name")
       assert_kind_of(ODDB::ActiveAgent, result)
