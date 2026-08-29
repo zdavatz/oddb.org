@@ -102,6 +102,36 @@ module ODDB
           assert_equal([2], @state.init)
         end
 
+        # Crawler schicken "month/Arial". Date.new nimmt das nicht und die
+        # Seite antwortete mit 500; jetzt faellt sie auf den Standardmonat
+        # zurueck.
+        def test_month_date_rejects_what_is_no_month
+          klass = ODDB::State::Drugs::RecentRegs
+          assert_equal(Date.new(2020, 3), klass.month_date("2020", "3"))
+          assert_nil(klass.month_date("2020", "Arial"))
+          assert_nil(klass.month_date("2020", "0"))
+          assert_nil(klass.month_date("2020", nil))
+          assert_nil(klass.month_date(nil, nil))
+        end
+
+        # Und der zweite Weg in denselben 500er: ohne gueltigen Monat und ohne
+        # Journal blieb @model nil, und delete_if lief darauf.
+        def test_init_without_a_date_returns_an_empty_model
+          log_group = flexmock("log_group", newest_date: nil, years: [2011], months: [2])
+          app = flexmock("app", log_group: log_group)
+          session = flexmock("session",
+            app: app,
+            user: @user,
+            lookandfeel: @lnf,
+            user_input: nil,
+            language: "language",
+            request_path: "request_path")
+          state = ODDB::State::Drugs::RecentRegs.new(session, @model)
+          # ohne Jahr keine Monatsliste - und vor allem keine Ausnahme
+          assert_equal([], state.init)
+          assert_equal([], state.model)
+        end
+
         def test_init__user_input
           skip "Don't know how to handle NoMethodError: undefined method `assertions' for #<FlexMock::TestUnitFrameworkAdapter"
           flexmock(@session) do |s|

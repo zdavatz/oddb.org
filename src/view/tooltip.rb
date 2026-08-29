@@ -5,9 +5,34 @@ module ODDB
   module View
     # see https://dojotoolkit.org/api/?qs=1.10/dijit/TooltipDialog
     class TooltipHelper
+      # ASCII-8BIT heisst in diesem Datenbestand zweierlei, und ein blosses
+      # encode("UTF-8") scheitert an beidem: aus einem binaeren String laesst
+      # sich kein Byte ueber 0x7F konvertieren, es wirft
+      # Encoding::UndefinedConversionError. Gemessen an der Index-Therapeuticus-
+      # Beschreibung zu Registrierung 29448, die als ASCII-8BIT gespeichert ist
+      # und UTF-8-Bytes traegt (195 169 = "e mit Akzent") - jede Packungsseite
+      # mit Tooltip antwortete beim ersten Aufruf mit 500.
+      #
+      # Also erst als UTF-8 lesen und pruefen; nur wenn das nicht aufgeht, ist
+      # es Latin-1 (so liegen die Kapiteltexte da, siehe View::Chapter). Ein
+      # Umetikettieren allein waere in dem Fall falsch und wuerde den Umlaut
+      # verlieren.
+      def self.to_utf8(content)
+        text = content.to_s
+        return text if text.encoding == Encoding::UTF_8 && text.valid_encoding?
+        if text.encoding == Encoding::ASCII_8BIT
+          tagged = text.dup.force_encoding("UTF-8")
+          return tagged if tagged.valid_encoding?
+          return text.dup.force_encoding("ISO-8859-1").encode("UTF-8")
+        end
+        text.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
+      rescue EncodingError
+        text.dup.force_encoding("UTF-8").scrub("?")
+      end
+
       def self.set_java_script(element, content, href = "none")
         return unless element.additional_javascripts
-        content = content.encode("UTF-8")
+        content = to_utf8(content)
         script = <<~EOS
           require([
               "dijit/TooltipDialog",

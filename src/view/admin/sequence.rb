@@ -29,6 +29,38 @@ require "util/pointerarray"
 module ODDB
   module View
     module Admin
+      # Ein Verweis kann ins Leere zeigen: das Objekt ist geloescht, der Stub
+      # steht noch in der Liste. Gemessen an ODDB::ActiveAgent#55257063, das in
+      # einem Array einer bag_composition von Registrierung 53663 haengt und
+      # nirgends mehr existiert - /de/oekk/show/reg/53663/seq/02 antwortete
+      # deswegen zuverlaessig mit 500.
+      #
+      # Dagegen hilft #respond_to? nicht mehr. Es loest den Stub auf und wirft
+      # dabei selbst ODBA::OdbaError, waehrend es bei einem Stub der falschen
+      # Klasse brav false liefert - nur ein rescue trennt "falsche Klasse" von
+      # "gibt es nicht mehr". Ohne das nimmt ein einziges Element die ganze
+      # Sequenzseite mit.
+      def self.resolvable_agents(agents)
+        return [] unless agents.respond_to?(:select)
+        agents.select do |agent|
+          agent.respond_to?(:substance)
+        rescue ODBA::OdbaError
+          false
+        end
+      end
+
+      # Dasselbe fuer die Frage, ob eine Spalte ueberhaupt gebraucht wird:
+      # gefragt wird die ganze Liste, und ein unaufloesbares Element darf die
+      # Antwort nicht verhindern.
+      def self.any_agent?(agents)
+        return false unless agents.respond_to?(:find)
+        !!agents.find do |agent|
+          yield agent
+        rescue ODBA::OdbaError
+          false
+        end
+      end
+
       class ActiveAgents < HtmlGrid::List
         COMPONENTS = {
           [0, 0] => :substances,
@@ -46,8 +78,8 @@ module ODDB
         LABELS = false
         def initialize(model, session, container = nil, use_bag_title = false)
           @use_bag_title = use_bag_title
-          components.delete([1, 0]) unless model.find { |x| x.dose && x.dose.qty != 0 }
-          components.delete([2, 0]) unless model.find { |x| x.more_info }
+          components.delete([1, 0]) unless Admin.any_agent?(model) { |x| x.dose && x.dose.qty != 0 }
+          components.delete([2, 0]) unless Admin.any_agent?(model) { |x| x.more_info }
           super(model, session, container)
           @grid.set_attribute("cellspacing", "2")
         end
@@ -100,8 +132,8 @@ module ODDB
         LEGACY_INTERFACE = false
         LABELS = false
         def initialize(model, session, container = nil)
-          components.delete([1, 0]) unless model.find { |x| x.dose && x.dose.qty != 0 }
-          components.delete([2, 0]) unless model.find { |x| x.more_info }
+          components.delete([1, 0]) unless Admin.any_agent?(model) { |x| x.dose && x.dose.qty != 0 }
+          components.delete([2, 0]) unless Admin.any_agent?(model) { |x| x.more_info }
           super
           @grid.set_attribute("cellspacing", "2")
         end
@@ -289,10 +321,7 @@ module ODDB
         end
 
         def active_agents(model, session = @session)
-          agents = model.active_agents
-          return nil unless agents.respond_to?(:size) && agents.size > 0
-          # One agent that does not resolve must not take the whole page down.
-          agents = agents.select { |agent| agent.respond_to?(:substance) }
+          agents = Admin.resolvable_agents(model.active_agents)
           return nil if agents.empty?
           elem = View::Admin::ActiveAgents.new(agents.sort { |a, b| a.substance.to_s <=> b.substance.to_s }, @session, self)
           elem.css_class = "left italic"
@@ -300,16 +329,16 @@ module ODDB
         end
 
         def bag_active_agents(model, session = @session)
-          agents = @bag_composition.active_agents
-          return nil unless agents.size > 0
+          agents = Admin.resolvable_agents(@bag_composition.active_agents)
+          return nil if agents.empty?
           elem = View::Admin::ActiveAgents.new(agents.sort { |a, b| a.substance.to_s <=> b.substance.to_s }, @session, self, true)
           elem.css_class = "left italic"
           elem
         end
 
         def inactive_agents(model, session = @session)
-          agents = model.inactive_agents
-          return nil unless agents and agents.respond_to?(:size) and agents.size > 0
+          agents = Admin.resolvable_agents(model.inactive_agents)
+          return nil if agents.empty?
           elem = View::Admin::InactiveAgents.new(agents.sort { |a, b| a.substance.to_s <=> b.substance.to_s }, @session, self)
           elem.css_class = "left italic"
           elem
@@ -334,7 +363,7 @@ module ODDB
         end
 
         def composition(model)
-          RootActiveAgents.new(model.active_agents, @session, self)
+          RootActiveAgents.new(Admin.resolvable_agents(model.active_agents), @session, self)
         end
       end
 

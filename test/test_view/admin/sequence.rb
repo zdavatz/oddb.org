@@ -6,6 +6,7 @@ $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require "minitest/autorun"
+require "odba"
 require "flexmock/minitest"
 require "stub/cgi"
 require "view/additional_information"
@@ -690,5 +691,63 @@ class TestSequenceBrokenReferences < Minitest::Test
     assert_nil(view.active_agents(model, @session))
     # active_agents itself not even a collection
     assert_nil(view.active_agents(flexmock("c", active_agents: nil), @session))
+  end
+  # Ein Verweis, der ins Leere zeigt, ist der andere Fall - und der teurere:
+  # das Objekt ist geloescht, der Stub steht noch in der Liste, und #respond_to?
+  # antwortet nicht mit false, sondern wirft beim Aufloesen selbst
+  # ODBA::OdbaError. Die Guards von oben halfen dagegen nicht.
+  class DanglingAgent
+    def respond_to?(*)
+      raise ODBA::OdbaError
+    end
+
+    def method_missing(*)
+      raise ODBA::OdbaError
+    end
+  end
+
+  class GoodAgent
+    def substance = RealSubstance.new
+
+    def dose = nil
+
+    def more_info = nil
+  end
+
+  def test_resolvable_agents_drops_what_cannot_be_resolved
+    good = GoodAgent.new
+    assert_equal([good], ODDB::View::Admin.resolvable_agents([DanglingAgent.new, good]))
+    assert_equal([], ODDB::View::Admin.resolvable_agents([DanglingAgent.new]))
+    assert_equal([], ODDB::View::Admin.resolvable_agents(nil))
+  end
+
+  def test_any_agent_survives_one_that_cannot_be_resolved
+    refute(ODDB::View::Admin.any_agent?([DanglingAgent.new]) { |x| x.dose })
+    assert(ODDB::View::Admin.any_agent?([DanglingAgent.new, GoodAgent.new]) { |x| x.substance })
+    refute(ODDB::View::Admin.any_agent?(nil) { |x| x.dose })
+  end
+
+  def test_active_agents_survives_a_dangling_agent
+    view = ODDB::View::Admin::CompositionList.allocate
+    view.instance_variable_set(:@session, @session)
+    view.instance_variable_set(:@lookandfeel, @lnf)
+    model = flexmock("composition", active_agents: [DanglingAgent.new])
+    assert_nil(view.active_agents(model, @session))
+  end
+
+  def test_inactive_agents_survives_a_dangling_agent
+    view = ODDB::View::Admin::CompositionList.allocate
+    view.instance_variable_set(:@session, @session)
+    view.instance_variable_set(:@lookandfeel, @lnf)
+    model = flexmock("composition", inactive_agents: [DanglingAgent.new])
+    assert_nil(view.inactive_agents(model, @session))
+  end
+
+  def test_bag_active_agents_survives_a_dangling_agent
+    view = ODDB::View::Admin::CompositionList.allocate
+    view.instance_variable_set(:@session, @session)
+    view.instance_variable_set(:@lookandfeel, @lnf)
+    view.instance_variable_set(:@bag_composition, flexmock("bag", active_agents: [DanglingAgent.new]))
+    assert_nil(view.bag_active_agents(nil, @session))
   end
 end
