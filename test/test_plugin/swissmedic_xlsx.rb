@@ -38,7 +38,14 @@ module ODDB
       mock_downloads
       ODDB::TestHelpers.vcr_setup
       @app = flexmock(ODDB::App.new)
-      @archive = ODDB::TEST_DATA_DIR
+      # Nicht TEST_DATA_DIR: das ist das getrackte Fixture-Verzeichnis, und das
+      # Plugin schreibt in sein Archiv. Hier war es schaerfer als in
+      # test_plugin/swissmedic.rb - Zeile 56 loescht @latest, also
+      # test/data/xls/Packungen-latest.xlsx, das test_plugin/xlsx_parser.rb,
+      # test_plugin/text_info.rb und test/integration/common.rb lesen. Ein Lauf
+      # dieser Datei nahm ihnen die Fixture weg. WORK_DIR ist das Scratch-
+      # Verzeichnis, das gleich darunter geleert wird.
+      @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(ODDB::WORK_DIR, verbose: true)
       FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, "xls", "Packungen-latest.xlsx"

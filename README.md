@@ -291,6 +291,8 @@ Posting is immediate; this API has no drafts, and images cannot be added to a po
 
 * There is test/wrk_performance.lua allows a stress test with a typical load. See test/wrk_performance.lua for details on howto run it
 
+* A test must never write into `test/data/`. `ODDB::TEST_DATA_DIR` holds tracked fixtures and `ODDB::WORK_DIR` (`data4tests` under test) is the scratch directory — a setup that begins by wiping the latter with `rm_rf` has already said which of the two it means. `test_plugin/swissmedic.rb` and `test_plugin/swissmedic_xlsx.rb` still handed `TEST_DATA_DIR` to `SwissmedicPlugin.new` as its **archive**, the directory the plugin downloads into, and the fallout reached other test files: `test/data/xls/Packungen-latest.xlsx` is read by `test_plugin/xlsx_parser.rb`, `test_plugin/text_info.rb` and `test/integration/common.rb`, and one of the two overwrote it on every run while the other deleted it. Three tests in `swissmedic.rb` had been failing on every checkout because of it — each asserts that `Packungen-latest.xlsx` does not exist, while `setup` deleted it and copied a fixture back onto it two lines later. Note the misleading assertion message, "A previous test did not clean up": it was the test's own setup.
+
 * `test/test_bin/` holds shell tests for the shell scripts, which `test/suite.rb` does not cover — it runs minitest against `src/`. Run them directly: `sh test/test_bin/healthcheck.sh`, `sh test/test_bin/schedule.sh`, `sh test/test_bin/pg_backup.sh`, `sh test/test_bin/install_crontab.sh`. They stub `curl`, `svc`, `svstat`, `id` and `install` on `PATH`, so none of them touches `/etc/service`, `/etc` or the running application.
 
 ## Local Documentation

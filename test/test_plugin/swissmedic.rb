@@ -60,7 +60,14 @@ module ODDB
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
       @app = flexmock(ODDB::App.new)
-      @archive = ODDB::TEST_DATA_DIR
+      # Nicht TEST_DATA_DIR: das ist das getrackte Fixture-Verzeichnis, und
+      # das Plugin schreibt in sein Archiv. test/data/xls/Packungen-latest.xlsx
+      # wird von test_plugin/xlsx_parser.rb, test_plugin/text_info.rb und
+      # test/integration/common.rb gelesen - dieses Setup hat es bei jedem Lauf
+      # ueberschrieben und den Arbeitsbaum schmutzig hinterlassen. WORK_DIR ist
+      # das Scratch-Verzeichnis, das gleich darunter geleert wird; text_info.rb
+      # macht es genau so.
+      @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(ODDB::WORK_DIR, verbose: true)
       FileUtils.mkdir_p(@archive)
       @plugin = flexmock("plugin_#{__LINE__}", SwissmedicPlugin.new(@app, @archive))
@@ -73,8 +80,11 @@ module ODDB
       FileUtils.rm(@latest) if File.exist?(@latest)
 
       @test_packages = File.join(ODDB::TEST_DATA_DIR, "xlsx/Packungen-2019.01.31.xlsx")
-      latest_to = File.join(ODDB::TEST_DATA_DIR, "xls/Packungen-latest.xlsx")
-      FileUtils.cp(@test_packages, latest_to, verbose: true, preserve: true)
+      # Frueher wurde @test_packages hier nach xls/Packungen-latest.xlsx
+      # kopiert. Kein Test in dieser Datei braucht das, und es hat den drei
+      # get_latest_file-Tests genau die Vorbedingung genommen, die sie in ihrer
+      # ersten Zeile behaupten - Zeile 73 loescht die Datei, die Kopie legte sie
+      # sofort wieder an, beides seit 9d2f3503 unter demselben Pfad.
       FileUtils.cp(prep_from, File.join(@archive, "xls", @@today.strftime("Präparateliste-%Y.%m.%d.xlsx")),
         verbose: true, preserve: true)
       FileUtils.cp(prep_from, File.join(@archive, "xls", "Erweiterte_Arzneimittelliste_HAM_31012019.xlsx"),
