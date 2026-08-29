@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+#
+# Entfernt ActiveAgents, die sich nicht mehr aufloesen lassen, aus den
+# Zusammensetzungen - und setzt @active_agents/@inactive_agents auf [], wo sie
+# nil sind.
+#
+# Gefunden am 29.08.2026 beim Lauf ueber alle 14314 Registrierungen: acht
+# Sequenzen tragen einen toten Wirkstoff, immer in der BAG-Zusammensetzung, nie
+# in der von Swissmedic. Die toten ids sind fortlaufend (55257061..63,
+# 55257069..72) und die Praeparate die alphabetisch ersten - die Handschrift
+# eines Jobs, der die Liste der Reihe nach abgearbeitet hat.
+#
+# Die Ursache stand bis heute in beiden BSV-Importen (bsv_fhir.rb, bsv_xml.rb):
+# agent.odba_delete lief unbedingt, auch wenn delete_active_agent den Agenten
+# nicht gefunden und also nichts ausgehaengt hatte. Sie rufen jetzt
+# Composition#delete_all_active_agents.
+#
+# Wiederherstellen laesst sich nichts: die Objekte sind seit Jahren weg, und
+# die BAG-Zusammensetzungen haben keinen source-Text, aus dem man sie
+# rekonstruieren koennte (anders als bei jobs/repair_broken_active_agents).
+# Der naechste BSV-Import setzt neue Wirkstoffe, sobald das Praeparat wieder in
+# der SL steht.
+#
+#   bundle exec ruby jobs/repair_dead_bag_agents           # nur berichten
+#   bundle exec ruby jobs/repair_dead_bag_agents --apply   # aufraeumen
+#
+$:.unshift File.expand_path("../src", __dir__)
+$:.unshift File.expand_path("..", __dir__)
+require "config"
+require "odba"
+require "util/oddbapp"
+require "etc/db_connection"
+
+apply = ARGV.include?("--apply")
+ODDB::App.new(auxiliary: true)
+undo = []
+tote_agenten = 0
+leere_listen = 0
+sequenzen = 0
+
+rows = ODBA.storage.dbi.select_all(
+  "SELECT search_term, target_id FROM oddb_persistence_pointer " \
+  "WHERE search_term ~ '^:!registration,[0-9]+\\.$'"
+)
+puts "#{rows.size} Registrierungen"
+
+rows.each_with_index do |(term, target_id), i|
+  print "  #{i}\r" if (i % 2000).zero?
+  iksnr = term[/\d+/]
+  reg = ODBA.cache.fetch(target_id.to_i, nil)
+  reg.each_sequence do |seq|
+    # Erst aufloesen. seq ist ein ODBA::Stub, und instance_variable_get greift
+    # auf den Stub selbst - dort liegen @odba_id und @odba_class, nie die Ivars
+    # des Objekts dahinter. Ein Methodenaufruf loest auf, ein Ivar-Zugriff
+    # nicht; das hat diese Sonde zuerst null finden lassen, wo es etwas zu
+    # finden gab.
+    seq = seq.odba_instance
+    [[:@compositions, "Swissmedic"], [:@bag_compositions, "BAG"]].each do |ivar, herkunft|
+      comps = seq.instance_variable_get(ivar)
+      next unless comps.is_a?(Array)
+      comps.each do |comp|
+        comp = comp.odba_instance
+        befund = []
+
+        # Fehlende Liste. active_agents liefert zwar [] fuer nil, aber
+        # create_active_agent und delete_active_agent greifen direkt auf die
+        # Ivar zu und scheitern dort mit NoMethodError.
+        #
+        # @inactive_agents wird bewusst nicht angefasst: dort ist nil bei 6887
+        # Compositions der Normalfall und kein Schaden. Hilfsstoffe kamen erst
+        # 2015 dazu, alles Aeltere hat die Ivar nie bekommen, und der Reader
+        # liefert []. Das waeren 6887 Schreibvorgaenge fuer nichts.
+        if comp.instance_variable_get(:@active_agents).nil?
+          befund << "@active_agents ist nil"
+          leere_listen += 1
+          if apply
+            # Die Liste zuerst schreiben, dann erst den Halter. Ein
+            # odba_isolated_store auf der Composition schreibt die neue Liste
+            # nicht mit: sie ist ein eigenes ODBA-Objekt mit eigener odba_id
+            # und wird im Dump der Composition durch einen Stub ersetzt. Wer
+            # nur die Composition speichert, tauscht also ein harmloses nil
+            # gegen eine Referenz ins Leere - hier einmal passiert und von Hand
+            # nachgezogen.
+            frisch = []
+            comp.instance_variable_set(:@active_agents, frisch)
+            frisch.odba_isolated_store
+            undo << "#{comp.odba_id} @active_agents war nil, neue Liste #{frisch.odba_id}"
+          end
+        end
+
+        # Tote Wirkstoffe. respond_to? loest den Stub auf und wirft dann;
+        # is_a? antwortet aus der Deklaration und sagt bis zuletzt ActiveAgent.
+        list = comp.instance_variable_get(:@active_agents)
+        if list.is_a?(Array)
+          tot = list.reject do |agent|
+            agent.respond_to?(:same_as?)
+          rescue ODBA::OdbaError
+            false
+          end
+          unless tot.empty?
+            heil = list.size - tot.size
+            ids = tot.collect do |a|
+              a.odba_id
+            rescue
+              "?"
+            end
+            befund << "#{tot.size} tote ActiveAgents (#{ids.join(", ")}), #{heil} heil"
+            tote_agenten += tot.size
+            if apply
+              comp.remove_unresolvable_active_agents
+              undo << "#{comp.odba_id} tote ActiveAgents entfernt: #{ids.join(",")}"
+            end
+          end
+        end
+
+        next if befund.empty?
+        sequenzen += 1
+        puts "\n#{iksnr}/#{seq.seqnr} #{seq.name_base} - #{herkunft}-Composition #{comp.odba_id}"
+        befund.each { |z| puts "  #{z}" }
+        comp.odba_isolated_store if apply
+      end
+    end
+  end
+rescue => e
+  warn "#{iksnr}: #{e.class}: #{e.message}\n    #{e.backtrace[0, 4].join("\n    ")}"
+end
+
+puts "\ntote ActiveAgents: #{tote_agenten}, fehlende Listen: #{leere_listen}, betroffene Compositions: #{sequenzen}"
+if apply
+  path = "log/repair_dead_bag_agents.undo"
+  File.open(path, "a") do |f|
+    f.puts("# #{Time.now}")
+    f.puts(undo)
+  end
+  puts "Protokoll: #{path}"
+else
+  puts "(Trockenlauf - mit --apply aufraeumen)"
+end

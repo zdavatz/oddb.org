@@ -1223,11 +1223,7 @@ module ODDB
       if !sequence.bag_compositions.empty?
         first_composition = sequence.bag_compositions[0]
         if first_composition.respond_to?(:active_agents)
-          first_composition.active_agents.each do |agent|
-            first_composition.delete_active_agent(agent)
-            agent.odba_delete
-            first_composition.odba_store
-          end
+          first_composition.delete_all_active_agents
         end
       end
 

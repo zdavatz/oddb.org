@@ -95,6 +95,59 @@ module ODDB
       end
     end
 
+    # Wirkstoffe entfernen, die sich nicht mehr aufloesen lassen.
+    #
+    # ODBA::Stub#is_a? antwortet aus der Deklaration, ohne aufzuloesen - ein
+    # totes Element sieht also bis zuletzt wie ein ActiveAgent aus. Erst
+    # respond_to? loest auf und wirft dann ODBA::OdbaError. Solange ein solches
+    # Element in der Liste steht, wirft jeder Vergleich darueber, und das kostet
+    # nicht diesen einen Eintrag, sondern die ganze Liste: Seite, Index, Import.
+    def remove_unresolvable_active_agents
+      @active_agents ||= []
+      # rescue geht nur in do...end, nicht in einem { }-Block.
+      tot = @active_agents.reject do |agent|
+        agent.respond_to?(:same_as?)
+      rescue ODBA::OdbaError
+        false
+      end
+      return 0 if tot.empty?
+      tot.each { |agent| drop_active_agent_by_identity(agent) }
+      LogFile.debug("Composition #{odba_id}: #{tot.size} tote ActiveAgents entfernt")
+      tot.size
+    end
+
+    # Alle Wirkstoffe entfernen und ihre Objekte loeschen.
+    #
+    # Beide BSV-Importe haben das von Hand gemacht und dabei acht tote
+    # Referenzen erzeugt, die jahrelang stehen blieben (55257061..72 in den
+    # Sequenzen 53662/01, 53662/02, 53663/02, 14825/03, 65069/01, 66687/01,
+    # 67064/01, 69144/01). Drei Fallen liegen hier:
+    #
+    # 1. delete_active_agent entfernt aus derselben Liste, ueber die die
+    #    Schleife laeuft - bei zwei Wirkstoffen wird der zweite nie besucht.
+    # 2. odba_delete lief unbedingt, auch wenn delete_active_agent nichts
+    #    gefunden und also nichts ausgehaengt hatte. Dann ist das Objekt weg
+    #    und die Referenz steht noch: genau ein toter Stub.
+    # 3. Steht schon einer drin, wirft jeder Vergleich darueber, denn
+    #    Array#delete vergleicht mit ==, und ActiveAgentCommon#== ruft
+    #    .substance auf dem Gegenueber auf. Der Fehler verschwand im rescue
+    #    des Plugins, und die Zusammensetzung wurde nie wieder aktualisiert.
+    #
+    # Deshalb: erst die unaufloesbaren wegwerfen, dann ueber eine Kopie gehen,
+    # und die Referenz immer vor dem Objekt loesen.
+    def delete_all_active_agents
+      @active_agents ||= []
+      geloescht = remove_unresolvable_active_agents
+      @active_agents.dup.each do |agent|
+        delete_active_agent(agent)
+        drop_active_agent_by_identity(agent)
+        agent.odba_delete
+        geloescht += 1
+      end
+      odba_store
+      geloescht
+    end
+
     def create_inactive_agent(substance_name)
       agent = inactive_agent(substance_name)
       return agent if agent
@@ -182,6 +235,16 @@ module ODDB
     end
 
     private
+
+    # Nie ueber == oder Array#delete: object_id steht auf ODBAs no_override
+    # (stub.rb:83) und loest den Stub nicht auf, equal? und == tun es.
+    # standard:disable Lint/IdentityComparison
+    def drop_active_agent_by_identity(agent)
+      return unless @active_agents.find { |x| x.object_id == agent.object_id }
+      @active_agents.reject! { |x| x.object_id == agent.object_id }
+      @active_agents.odba_isolated_store
+    end
+    # standard:enable Lint/IdentityComparison
 
     def adjust_types(values, app = nil)
       values = values.dup

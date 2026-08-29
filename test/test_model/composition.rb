@@ -71,6 +71,74 @@ module ODDB
       assert_equal([], @composition.instance_variable_get(:@active_agents))
     end
 
+    # Ein toter ActiveAgent - der Stub loest sich nicht mehr auf. is_a?
+    # antwortet weiterhin ODDB::ActiveAgent, weil es aus der Deklaration
+    # antwortet; erst respond_to? loest auf und wirft dann.
+    class DeadAgent
+      def respond_to?(*)
+        raise ODBA::OdbaError, "unable to replace"
+      end
+
+      def method_missing(*)
+        raise ODBA::OdbaError, "unable to replace"
+      end
+
+      def odba_id
+        55257061
+      end
+
+      def is_a?(klass)
+        klass == ODDB::ActiveAgent || super
+      end
+    end
+
+    def test_remove_unresolvable_active_agents
+      dead = DeadAgent.new
+      good = flexmock("agent", same_as?: false, is_active_agent: true)
+      agents = flexmock([good, dead], odba_isolated_store: nil)
+      @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
+      assert_equal(1, @composition.remove_unresolvable_active_agents)
+      assert_equal([good], @composition.instance_variable_get(:@active_agents))
+    end
+
+    def test_remove_unresolvable_active_agents__nothing_to_do
+      good = flexmock("agent", same_as?: false, is_active_agent: true)
+      agents = flexmock([good], odba_isolated_store: nil)
+      @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
+      assert_equal(0, @composition.remove_unresolvable_active_agents)
+      assert_equal([good], @composition.instance_variable_get(:@active_agents))
+    end
+
+    def test_remove_unresolvable_active_agents__nil_list
+      @composition.instance_eval("@active_agents = nil", __FILE__, __LINE__)
+      assert_equal(0, @composition.remove_unresolvable_active_agents)
+      assert_equal([], @composition.instance_variable_get(:@active_agents))
+    end
+
+    # Die Ursache der acht toten Referenzen: die alte Schleife lief ueber
+    # dieselbe Liste, aus der sie loeschte, und loeschte das Objekt auch dann,
+    # wenn die Referenz stehen blieb. Hier muessen beide Wirkstoffe weg sein.
+    def test_delete_all_active_agents
+      first = flexmock("first", same_as?: false, is_active_agent: true, odba_delete: nil)
+      second = flexmock("second", same_as?: false, is_active_agent: true, odba_delete: nil)
+      agents = flexmock([first, second], odba_isolated_store: nil)
+      @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
+      assert_equal(2, @composition.delete_all_active_agents)
+      assert_equal([], @composition.instance_variable_get(:@active_agents))
+    end
+
+    # Ein toter Agent in der Liste darf den Lauf nicht aufhalten: solange er
+    # drinsteht, wirft jeder Vergleich darueber, und im BSV-Import verschwand
+    # dieser Fehler in einem rescue - die Zusammensetzung wurde nie wieder
+    # aktualisiert.
+    def test_delete_all_active_agents__with_a_dead_one
+      good = flexmock("agent", same_as?: false, is_active_agent: true, odba_delete: nil)
+      agents = flexmock([good, DeadAgent.new], odba_isolated_store: nil)
+      @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
+      assert_equal(2, @composition.delete_all_active_agents)
+      assert_equal([], @composition.instance_variable_get(:@active_agents))
+    end
+
     def test_create_active_agent
       result = @composition.create_active_agent("substance_name")
       assert_kind_of(ODDB::ActiveAgent, result)
