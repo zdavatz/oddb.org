@@ -1,0 +1,60 @@
+#!/usr/local/bin/ruby
+# Baut die Jahresfeeds patinfo-<jahr>.rss aus den Aenderungen der Dokumente.
+#
+#   bundle exec ruby jobs/build_patinfo_year_feeds            # nur messen
+#   bundle exec ruby jobs/build_patinfo_year_feeds --apply
+#   bundle exec ruby jobs/build_patinfo_year_feeds --limit=200
+#
+# Das Gegenstueck zu build_fachinfo_year_feeds. --limit zaehlt hier
+# Registrierungen, nicht Dokumente: der Weg zu einer Patinfo geht ueber
+# Registrierung, Sequenz und Packung, weil der Diff so adressiert wird.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/patinfo_year_feeds"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+      limit = ARGV.find { |a| a.start_with?("--limit=") }&.split("=")&.last&.to_i
+      root = File.expand_path("../data/rss", File.dirname(__FILE__))
+
+      started = Time.now
+      builder = PatinfoYearFeeds.new(system, root: root, logger: ->(line) { puts line })
+      buckets = builder.collect(limit: limit)
+
+      puts
+      puts "Patinfos durchgegangen: #{builder.counts[:patinfos]}"
+      puts "Änderungen gefunden:    #{builder.counts[:entries]}"
+      PatinfoYearFeeds::LANGUAGES.each_value.to_a.uniq.each { |lang|
+        years = buckets[lang] || {}
+        next if years.empty?
+        total = years.values.sum(&:size)
+        puts format("  %-3s %6d Einträge in %2d Jahren  %d .. %d",
+          lang, total, years.size, years.keys.min, years.keys.max)
+        years.keys.sort.each { |year|
+          puts format("      %d %6d", year, years[year].size)
+        }
+      }
+
+      unless apply
+        puts
+        puts "ohne --apply nichts geschrieben"
+        next
+      end
+
+      written = builder.write(buckets, apply: true)
+      written += builder.write_latest(buckets, apply: true)
+      if (latest = builder.latest(buckets))
+        system.rss_updates["patinfo.rss"] = latest
+        system.odba_isolated_store
+        puts "rss_updates[patinfo.rss] = #{latest.inspect}"
+      end
+      puts
+      puts "#{written} Dateien geschrieben in #{(Time.now - started).round(1)}s"
+    end
+  end
+end

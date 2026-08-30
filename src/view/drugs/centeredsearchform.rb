@@ -383,6 +383,37 @@ module ODDB
         end
       end
 
+      # Die Patienteninformationen neben den Fachinformationen. Keine
+      # Vorschauliste wie dort: die Fachinfo-Liste kommt aus
+      # app.sorted_fachinfos, und eine Patinfo traegt kein revision-Datum,
+      # ueber das sich "die neuesten fuenf" ohne einen Lauf ueber alle
+      # Registrierungen bestimmen liessen. Zahl und Monat schreibt
+      # jobs/update_patinfo_rss_feeds nach rss_updates.
+      class PatinfoNews < RssPreview
+        COMPONENTS = {
+          [0, 0] => :rss_image,
+          [1, 0] => :title
+        }
+        CHANNEL = "patinfo.rss"
+
+        def rss_channel(model)
+          CHANNEL
+        end
+
+        def title(model)
+          month, number = @session.rss_updates[CHANNEL]
+          parts = []
+          # Erst nach dem ersten Lauf steht hier eine Zahl. "0 Änderungen"
+          # waere eine Aussage, die niemand gemessen hat.
+          parts << number if number.to_i > 0
+          parts << @lookandfeel.lookup(:patinfo_feed_title)
+          if month
+            parts.push("<br>", @lookandfeel.lookup("month_#{month.month}"), month.year)
+          end
+          html_feed_link(model, CHANNEL, parts.compact.join(" "))
+        end
+      end
+
       class SLPriceNews < RssPreview
         @@today ||= Date.today
         COMPONENTS = {
@@ -426,6 +457,9 @@ module ODDB
           content = []
           if @lookandfeel.enabled?(:fachinfo_rss)
             content.push FachinfoNews.new(model.fachinfo_news[0, 5], @session, self)
+          end
+          if @lookandfeel.enabled?(:patinfo_rss)
+            content.push PatinfoNews.new(:patinfo, @session, self)
           end
           if @lookandfeel.enabled?(:sl_introduction_rss)
             content.push SLPriceNews.new(:sl_introduction, @session, self)

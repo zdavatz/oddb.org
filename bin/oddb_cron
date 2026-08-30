@@ -239,8 +239,8 @@ health_log() {
   return 0
 }
 
-# The schedule, so /etc/crontab needs one line for all nine jobs instead of
-# nine. Fields: minute, hour, day-of-month ("*" for every day), job name.
+# The schedule, so /etc/crontab needs one line for all ten jobs instead of
+# ten. Fields: minute, hour, day-of-month ("*" for every day), job name.
 # Keep them sorted by time; cron itself no longer knows about any of this.
 #
 # import_bsv and import_swissmedic overlap deliberately - see above.
@@ -255,10 +255,16 @@ health_log() {
 # nothing new until the evening. update_today takes ~4 minutes, the feed ~5 for
 # de, 10 for de/fr/en together and 30 with the yearly feeds. There is no
 # data/rss/it - we currently have no Fachinfos in Italian, so that is expected.
+#
+# update_patinfo_rss_feeds follows it in the same slot and works the same way,
+# only without a big file: there is no patinfo.rss in the shape of fachinfo.rss
+# (248 MB of full texts), just the yearly files and a small patinfo.rss with
+# the newest changes, so the subscribe link on the home page finds something.
 SCHEDULE="
 19  1   *   rebuild_indices
 1   5   *   update_today
 1   5   *   update_fachinfo_rss_feeds
+1   5   *   update_patinfo_rss_feeds
 1   7   *   update_drugshortage_hpc_dhcp
 0   8   *   import_bsv
 15  8   *   import_swissmedic

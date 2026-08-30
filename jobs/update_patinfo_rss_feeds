@@ -1,0 +1,45 @@
+#!/usr/local/bin/ruby
+# Update Patinfo RSS Feeds
+#
+# Das Gegenstueck zu update_fachinfo_rss_feeds, nur ohne die grosse Datei:
+# fachinfo.rss traegt jede Fachinformation im Volltext und ist 248 MB. Hier
+# gibt es nur die Jahresdateien patinfo-<jahr>.rss und daneben patinfo.rss
+# mit den neuesten Aenderungen, damit der Abonnent-Link etwas findet.
+#
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/patinfo_year_feeds"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      puts "=" * 80
+      puts "Starting Patinfo RSS Feed Update - #{Time.now}"
+      puts "=" * 80
+
+      started = Time.now
+      builder = PatinfoYearFeeds.new(system,
+        root: File.expand_path("../data/rss", File.dirname(__FILE__)),
+        logger: ->(line) { puts line })
+      buckets = builder.collect
+      written = builder.write(buckets, apply: true)
+      written += builder.write_latest(buckets, apply: true)
+
+      # Die Startseite liest daraus "<Anzahl> Patinfo-Änderungen <Monat>".
+      if (latest = builder.latest(buckets))
+        system.rss_updates["patinfo.rss"] = latest
+      end
+      system.odba_isolated_store
+
+      puts "#{written} Dateien aus #{builder.counts[:entries]} Änderungen " \
+        "in #{builder.counts[:patinfos]} Patinfos, #{(Time.now - started).round(2)} Sekunden"
+      puts "=" * 80
+      puts "Patinfo RSS Feed Update Complete - #{Time.now}"
+      puts "=" * 80
+    end
+  end
+end

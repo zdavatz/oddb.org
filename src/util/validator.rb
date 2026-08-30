@@ -70,7 +70,7 @@ module ODDB
         "NE", "NW", "OW", "SG", "SH", "SO", "SZ", "TG",
         "TI", "UR", "VD", "VS", "ZG", "ZH"],
       channel: [
-        "fachinfo.rss", "feedback.rss", "minifi.rss",
+        "fachinfo.rss", "feedback.rss", "minifi.rss", "patinfo.rss",
         "price_cut.rss", "price_rise.rss", "sl_introduction.rss",
         "recall.rss", "hpc.rss"
       ],

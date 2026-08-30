@@ -45,10 +45,14 @@ module ODDB
     end
 
     class Fachinfo
-      attr_reader :registrations
+      # descriptions, weil YearFeeds#document_for die Sprache dort direkt
+      # nachschlaegt statt ueber #de/#fr - das echte SimpleLanguage#description
+      # faellt sonst auf die erste vorhandene Sprache zurueck.
+      attr_reader :registrations, :descriptions
       def initialize(registrations, documents)
         @registrations = registrations
         @documents = documents
+        @descriptions = documents
         registrations.each { |reg| reg.fachinfo ||= self }
       end
 

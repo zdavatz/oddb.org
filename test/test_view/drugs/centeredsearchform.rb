@@ -268,6 +268,37 @@ class TestFachinfoNews < Minitest::Test
   end
 end
 
+class TestPatinfoNews < Minitest::Test
+  def news(rss_updates)
+    lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      resource: "resource",
+      resource_global: "resource_global")
+    session = flexmock("session",
+      rss_updates: rss_updates,
+      lookandfeel: lookandfeel)
+    ODDB::View::Drugs::PatinfoNews.new(:patinfo, session)
+  end
+
+  def test_title
+    link = news({"patinfo.rss" => [Date.new(2026, 8, 20), 42]}).title(:patinfo)
+    assert_kind_of(HtmlGrid::Link, link)
+    assert_equal("42 lookup <br> lookup 2026", link.value)
+  end
+
+  # Vor dem ersten Lauf steht nichts in rss_updates. Dann steht dort auch
+  # keine Zahl - "0 Änderungen" waere eine Aussage, die niemand gemessen hat.
+  def test_title_without_a_run
+    assert_equal("lookup", news({}).title(:patinfo).value)
+  end
+
+  def test_rss_image_points_at_the_xml
+    assert_kind_of(HtmlGrid::Link, news({}).rss_image(:patinfo))
+  end
+end
+
 class TestSLPriceNews < Minitest::Test
   def test_title
     lookandfeel = flexmock("lookandfeel",
@@ -320,6 +351,7 @@ class TestGoogleAdSenseComposite < Minitest::Test
       l.should_receive(:enabled?).once.with(:hpc_rss).and_return(false)
       l.should_receive(:enabled?).once.with(:rss_box).and_return(true)
       l.should_receive(:enabled?).once.with(:fachinfo_rss).and_return(true)
+      l.should_receive(:enabled?).once.with(:patinfo_rss).and_return(true)
       l.should_receive(:resource)
       l.should_receive(:resource_global)
       l.should_receive(:enabled?).once.with(:sl_introduction_rss).and_return(true)
@@ -337,11 +369,12 @@ class TestGoogleAdSenseComposite < Minitest::Test
     flexmock(@model,
       fachinfo_news: [fachinfo_news])
     result = @composite.rss_feeds_left(@model, @session)
-    assert_equal(4, result.length)
+    assert_equal(5, result.length)
     assert_kind_of(ODDB::View::Drugs::FachinfoNews, result[0])
-    assert_kind_of(ODDB::View::Drugs::SLPriceNews, result[1])
+    assert_kind_of(ODDB::View::Drugs::PatinfoNews, result[1])
     assert_kind_of(ODDB::View::Drugs::SLPriceNews, result[2])
     assert_kind_of(ODDB::View::Drugs::SLPriceNews, result[3])
+    assert_kind_of(ODDB::View::Drugs::SLPriceNews, result[4])
   end
 
   def test_rss_feeds_right
