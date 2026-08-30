@@ -254,7 +254,8 @@ class TestFachinfoNews < Minitest::Test
       resource_global: "resource_global")
     session = flexmock("sesion",
       lookandfeel: lookandfeel,
-      language: "language")
+      language: "language",
+      rss_updates: {})
     revision = flexmock("revision",
       month: "month",
       year: "year")
@@ -265,6 +266,25 @@ class TestFachinfoNews < Minitest::Test
       registrations: [registration])
     news = ODDB::View::Drugs::FachinfoNews.new([model], session)
     assert_kind_of(HtmlGrid::Link, news.title([model]))
+  end
+
+  # Wie im Patinfo-Kasten: die Zahl der Aenderungen im neuesten Monat steht
+  # vorne, und der Monat kommt dann aus rss_updates statt aus dem
+  # revision-Datum der neuesten Fachinfo.
+  def test_title_with_a_change_count
+    lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      resource: "resource",
+      resource_global: "resource_global")
+    session = flexmock("session",
+      lookandfeel: lookandfeel,
+      language: "language",
+      rss_updates: {"fachinfo.rss" => [Date.new(2026, 8, 29), 1234]})
+    model = flexmock("model", revision: nil)
+    news = ODDB::View::Drugs::FachinfoNews.new([model], session)
+    assert_equal("1234 lookup <br> lookup 2026", news.title([model]).value)
   end
 end
 

@@ -38,7 +38,14 @@ module ODDB
       builder = FachinfoYearFeeds.new(system,
         root: File.expand_path("../data/rss", File.dirname(__FILE__)),
         logger: ->(line) { puts line })
-      written = builder.write(builder.collect, apply: true)
+      buckets = builder.collect
+      written = builder.write(buckets, apply: true)
+      # Die Startseite liest daraus "<Anzahl> Fachinfo-Änderungen <Monat>",
+      # genau wie im Patinfo-Kasten daneben.
+      if (latest = builder.latest(buckets))
+        system.rss_updates["fachinfo.rss"] = latest
+        puts "rss_updates[fachinfo.rss] = #{latest.inspect}"
+      end
       duration = Time.now - start_time
       puts "#{written} yearly feeds from #{builder.counts[:entries]} changes " \
         "in #{builder.counts[:fachinfos]} Fachinfos, #{duration.round(2)} seconds"

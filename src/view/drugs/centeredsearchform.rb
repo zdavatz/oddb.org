@@ -373,13 +373,21 @@ module ODDB
           "fachinfo.rss" if model.first
         end
 
+        # Wie im Patinfo-Kasten: die Zahl der Aenderungen im neuesten Monat
+        # vorneweg, aus rss_updates, das jobs/update_fachinfo_rss_feeds
+        # schreibt. Der Monat kommt von dort, wo er zu haben ist - vor dem
+        # ersten Lauf noch aus dem revision-Datum der neuesten Fachinfo, wie
+        # bisher.
         def title(model)
           fachinfo = model.first
-          return unless fachinfo && (month = fachinfo.revision)
-          html_feed_link(model, "fachinfo.rss",
-            [@lookandfeel.lookup(:fachinfo_news_title), "<br>",
-              @lookandfeel.lookup("month_#{month.month}"),
-              month.year].join(" "))
+          stored_month, number = @session.rss_updates["fachinfo.rss"]
+          month = stored_month || (fachinfo && fachinfo.revision)
+          return unless month
+          parts = []
+          parts << number if number.to_i > 0
+          parts.push(@lookandfeel.lookup(:fachinfo_changes_title), "<br>",
+            @lookandfeel.lookup("month_#{month.month}"), month.year)
+          html_feed_link(model, "fachinfo.rss", parts.join(" "))
         end
       end
 
@@ -406,7 +414,7 @@ module ODDB
           # Erst nach dem ersten Lauf steht hier eine Zahl. "0 Änderungen"
           # waere eine Aussage, die niemand gemessen hat.
           parts << number if number.to_i > 0
-          parts << @lookandfeel.lookup(:patinfo_feed_title)
+          parts << @lookandfeel.lookup(:patinfo_changes_title)
           if month
             parts.push("<br>", @lookandfeel.lookup("month_#{month.month}"), month.year)
           end

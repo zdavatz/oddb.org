@@ -52,6 +52,11 @@ module ODDB
       end
 
       written = builder.write(buckets, apply: true)
+      if (latest = builder.latest(buckets))
+        system.rss_updates["fachinfo.rss"] = latest
+        system.odba_isolated_store
+        puts "rss_updates[fachinfo.rss] = #{latest.inspect}"
+      end
       puts
       puts "#{written} Jahresdateien geschrieben in #{(Time.now - started).round(1)}s"
     end
