@@ -293,6 +293,15 @@ About 25000 in August 2026, on exactly the pages Google crawls. Four fixes, roug
 - **`yus` haengt an `odba (>= 1.1.6)`** und hat dieselbe Schwaeche, aber in seiner eigenen Datenbank (`dbname=yus`) - keine Kollision mit `ch_oddb`.
 - Regressionstests: `test/test_util/odba_id_patch.rb`, sieben Stueck. Der tragende faellt gegen den Originalstand durch (erwartet 101, bekommt 100).
 
+### odba 1.2.2, und warum wir trotzdem auf 1.1.9 bleiben (31.08.2026)
+
+- Beide Korrekturen sind als **odba 1.2.2** veroeffentlicht (`github.com/zdavatz/odba`, Tag `v1.2.2`): `Storage#next_id` holt die id aus der Sequenz `odba_id_seq`, die `#setup` anlegt, und `Cache#next_id` faengt nur noch `DRb::DRbError`. Drei Tests, jeder faellt gegen 1.2.1 durch; Gesamtlauf 220 Tests, 0 Fehler.
+- **Der Startwert der Sequenz wird berechnet und muss es**: ein blankes `CREATE SEQUENCE` beginnt bei 1 und vergibt ids neu, die es schon gibt. `MAX(odba_id) + ID_SEQUENCE_GAP`.
+- **`Gemfile` bleibt vorerst bei `odba 1.1.9`**, und `bundle install` aendert daran nichts - die Version ist gepinnt. Produktiv wirken beide Korrekturen ueber `src/util/odba_id_patch.rb`.
+- **Der Sprung auf 1.2.x wuerde die Seite beim ersten Start umbringen**: 1.2.0 hat `lib/odba/18_19_loading_compatibility.rb` geloescht, und `src/util/oddbapp.rb:12` verlangt es - sofortiger `LoadError` in allen vier Backends. Dazu sind es 3558 geaenderte Zeilen ueber 15 Dateien, fast alles der standardrb-Umbau von 1.2.0. Das ist genau die Form, in der bei sbsm 1.6.3 die Sanitisierung verschwunden ist; ein Upgrade will einzeln gelesen werden.
+- **`18_19_loading_compatibility` heisst irrefuehrend und darf nicht weg, obwohl wir auf Ruby 3.4 sind.** Es ist kein Shim, um *unter* 1.8/1.9 zu laufen, sondern um *Daten zu lesen, die dort geschrieben wurden*: es definiert `Date._load` und `Encoding::Character::UTF8._load`. Gemessen in `object`: **4217 Dumps im alten `u:\tDate`-Format** (Ruby 3.4 schreibt `U`, also `marshal_load`, und das ist vom Shim unberuehrt) und **129 mit `Encoding::Character::UTF8`** (83 `Text::Chapter`, 43 `InvoiceItem`, 2 `Descriptions`, 1 `LimitationText`). Nachgestellt: dasselbe Objekt laedt mit Shim als `ODDB::Text::Chapter` und ohne ihn mit `ArgumentError: undefined class/module Encoding::Character::UTF8`.
+- **Der Weg, ihn loszuwerden**, wenn man will: die rund 4346 Objekte einmal laden und neu schreiben - der neue Dump traegt dann `U` und einen gewoehnlichen String. Danach ist der Shim entbehrlich und das Gem-Upgrade moeglich. Vorher nicht.
+
 **Note on the test suite**: `bundle exec ruby test/suite.rb` exits **2**, not 0, and has done so throughout — two `google_ad_sense` failures left over from `ENABLED = false` in August, and `TestPreferences#test_prefs` raising `undefined method 'languages' for an instance of FlexMock`. 3821 runs over 63 files. Check the count and the names, not the exit status.
 
 ### The eight dead ActiveAgents, and where they came from (`jobs/repair_dead_bag_agents`, 29.08.2026)
