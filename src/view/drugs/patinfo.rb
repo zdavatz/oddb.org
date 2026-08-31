@@ -124,7 +124,7 @@ module ODDB
             @component_css_map.store([next_offset, 0], "chapter-tab bold")
             @css_map.store([next_offset, 0], "chapter-tab bold")
             next_offset += 1
-            @components.store([next_offset, 0], "&nbsp;")
+            components.store([next_offset, 0], "&nbsp;")
             colspan_map.store([next_offset, 0], XWIDTH - next_offset)
             @css_map.store([next_offset, 0], "chapter-tab bold")
           end
@@ -155,7 +155,13 @@ module ODDB
           new_pos[0] += 1
           css_map.store(new_pos, "chapter-tab")
           component_css_map.store(new_pos, "chapter-tab")
-          @components.store(new_pos, "&nbsp;")
+          # components und nicht @components: der Ivar wird erst von der
+          # Methode angelegt (`@components ||= COMPONENTS.dup`), und der
+          # unless-Block darueber, der sie sonst als erster ruft, wird bei
+          # einem [:create]-Pointer uebersprungen. Dann stand hier nil und
+          # die Seite antwortete 500 - /en/mobile/patinfo/reg/10999/seq/01/
+          # pack/022, dessen Patinfo nie einen richtigen Pointer bekommen hat.
+          components.store(new_pos, "&nbsp;")
           colspan_map.store(new_pos, xwidth - new_pos.at(0))
           super
         end

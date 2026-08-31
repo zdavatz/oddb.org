@@ -185,6 +185,20 @@ module ODDB
           chooser
         end
 
+        # Bei einem [:create]-Pointer ueberspringt init den unless-Block, der
+        # sonst als erster `components` ruft und den Ivar anlegt - danach
+        # stand @components.store auf nil und die Seite antwortete 500.
+        # /en/mobile/patinfo/reg/10999/seq/01/pack/022 war so ein Fall: das
+        # Patinfo hat nie einen richtigen Pointer bekommen.
+        def test_init_survives_a_create_pointer
+          pointer = flexmock("pointer", skeleton: [:create])
+          model = flexmock("patinfo", pointer: pointer)
+          session = flexmock("session", lookandfeel: @lnf, language: "de")
+          composite = ODDB::View::Drugs::PiChapterChooser.new(model, session)
+          assert(composite.send(:components).any?,
+            "init muss die Vorlage aus COMPONENTS behalten")
+        end
+
         def test_display_names_returns_the_chapter_names
           document = flexmock("document", empty?: nil, chapter_names: [:usage, :date])
           assert_equal([:usage, :date], chooser.display_names(document))

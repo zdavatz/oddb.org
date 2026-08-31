@@ -274,7 +274,14 @@ About 25000 in August 2026, on exactly the pages Google crawls. Four fixes, roug
 - No data repair was needed: the guard resets and persists on read, so each of the 39 heals the first time its page is opened.
 - Regression tests: `test/test_model/patinfo.rb`, three of them, two failing against the old code.
 
-**Note on the test suite**: `bundle exec ruby test/suite.rb` exits **2**, not 0, and has done so throughout — two `google_ad_sense` failures left over from `ENABLED = false` in August, and `TestPreferences#test_prefs` raising `undefined method 'languages' for an instance of FlexMock`. 3820 runs over 63 files. Check the count and the names, not the exit status.
+### The nil `@components`, and the reparses that were not needed (31.08.2026)
+
+- `PiChapterChooser#init` mixed the accessor `components` with the raw ivar `@components`. The accessor is `@components ||= COMPONENTS.dup`, and the `unless @model.pointer.skeleton == [:create]` block above is what calls it first — so with a **`[:create]` pointer** that block is skipped, the ivar stays nil, and `@components.store` at the end raises `undefined method 'store' for nil`. That was `/en/mobile/patinfo/reg/10999/seq/01/pack/022` (Osanit dentition), whose Patinfo never got a real pointer. Use the accessor; there is no raw `@components` left in the file. Regression test: `test/test_view/drugs/patinfo.rb`.
+- **The 17 `valid?=false` Patinfos needed no reparse, and running one would have done nothing.** The claim that they did was wrong, and what disproved it was one walk: **0 of the 17 are reachable from any live registration**, while all 7 valid ones are. The names the repair job printed came from sequences found in `object_connection` — and 11 of those 16 sequences are **dead objects** that still carry a `registration` reference (69929, 68488, 69134, and one "59354001", which is not even a valid IKSNR) but do not appear in `reg.sequences`.
+- **Every live sequence of those registrations has a `valid?=true` Patinfo with a real document** — Adempas, Tolison, Mekinist, Vyndaqel, Sitagliptin, Olmesartan, Berocca, Humira all have their texts. The 17 are orphans of superseded import generations, nothing links to them, and no page can render them.
+- 69929 and 68488 are exactly the registrations whose pointer strings carried **70 and 36 index rows**. A registration re-imported that often leaves a generation of sequence, package and patinfo objects behind each time. That is the pattern to look for when a count of "broken" objects seems high: **ask whether anything still reaches them before repairing or reparsing.**
+
+**Note on the test suite**: `bundle exec ruby test/suite.rb` exits **2**, not 0, and has done so throughout — two `google_ad_sense` failures left over from `ENABLED = false` in August, and `TestPreferences#test_prefs` raising `undefined method 'languages' for an instance of FlexMock`. 3821 runs over 63 files. Check the count and the names, not the exit status.
 
 ### The eight dead ActiveAgents, and where they came from (`jobs/repair_dead_bag_agents`, 29.08.2026)
 
