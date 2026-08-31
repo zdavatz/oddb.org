@@ -11,6 +11,7 @@ require "util/searchterms"
 require "model/registration_observer"
 require "diffy"
 require "util/today"
+require "util/logfile"
 
 module ODDB
   class Fachinfo
@@ -225,11 +226,21 @@ module ODDB
 
     def change_log
       @change_log ||= []
-      # Safety check: if somehow @change_log got corrupted, reset it
-      unless @change_log.is_a?(Array)
-        puts "WARNING: change_log was #{@change_log.class}, resetting to Array for #{iksnrs.inspect}"
+      # Safety check: if somehow @change_log got corrupted, reset it.
+      # is_a?(Array) allein reicht nicht - ein haengender Stub, der Array
+      # deklariert, antwortet daraus, ohne aufzuloesen, und erst der Zugriff
+      # wirft. Und ein puts aus einem Web-Prozess landet ungefiltert im
+      # Service-Log; dafuer gibt es LogFile.
+      usable = begin
+        @change_log.is_a?(Array) && @change_log.length >= 0
+      rescue
+        false
+      end
+      unless usable
+        LogFile.debug("#{self.class}: change_log was #{@change_log.class}, " \
+                      "resetting to Array for #{iksnrs.inspect}")
         @change_log = []
-        odba_store  # Persist the fix
+        odba_store # Persist the fix
       end
       @change_log
     end

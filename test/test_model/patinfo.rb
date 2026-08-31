@@ -220,6 +220,30 @@ class TestPatinfoDocument < Minitest::Test
       item
     end
 
+    # 39 von 29969 Dokumenten hielten am 31.08.2026 ein PatinfoDocument in
+    # @change_log; Session#request_path ruft darauf .select und die
+    # /diff/-Seite antwortete 500. Fachinfo hatte den Schutz, Patinfo nicht.
+    def test_change_log__holds_a_document
+      @document.instance_variable_set(:@change_log, ODDB::PatinfoDocument.new)
+      assert_equal([], @document.change_log)
+    end
+
+    # Ein haengender Stub deklariert Array und antwortet is_a?(Array) daraus,
+    # ohne aufzuloesen - erst der Zugriff wirft.
+    def test_change_log__holds_a_dangling_list
+      dangling = flexmock("dangling")
+      dangling.should_receive(:is_a?).with(Array).and_return(true)
+      dangling.should_receive(:length).and_raise(ODBA::OdbaError)
+      @document.instance_variable_set(:@change_log, dangling)
+      assert_equal([], @document.change_log)
+    end
+
+    def test_change_log__leaves_a_good_list_alone
+      items = [heil(1), heil(2)]
+      @document.change_log = items
+      assert_equal(items, @document.change_log)
+    end
+
     def test_keeps_the_history_when_the_duplicate_check_fails
       @document.change_log = [heil(1), kaputt, heil(2)]
       @document.add_change_log_item("alt", "neu", Date.new(2026, 8, 26))

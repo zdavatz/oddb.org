@@ -261,7 +261,20 @@ About 25000 in August 2026, on exactly the pages Google crawls. Four fixes, roug
 - **What writes a document into `@sequences` is not known.** Every assignment in `src/` hands over an Array. The near-consecutive ids 57617341/347/350/473/829 look like one job that died partway — the same signature as the dead BAG agents — but that is a hypothesis, not a finding.
 - Regression tests: `test/test_model/patinfo.rb`, both failing against the old code with the production error.
 
-**What was left after all this** (replaying every distinct url that 500'd on 30. and 31.08.): **42 of 46 answer 200**. Of the four, `hospitallist/range/a-d` answered 500 cold and 200 on the second request — the intermittency above, not a separate bug. The other three are two **new** defects of the same family, unrepaired: `@change_log` on a *document* holding a `PatinfoDocument` instead of an Array (`session.rb:327`, raises `private method 'select' called for an instance of ODDB::PatinfoDocument`, hits the `/diff/` pages of 56908 and 57175), and a nil `@components` in `view/drugs/patinfo.rb:158` (10999/01/022).
+**What was left after all this** (replaying every distinct url that 500'd on 30. and 31.08.): **42 of 46 answer 200**. Of the four, `hospitallist/range/a-d` answered 500 cold and 200 on the second request — the intermittency above, not a separate bug. Two of the remaining three were the `@change_log` fault below; the last is a nil `@components` in `view/drugs/patinfo.rb:158` (10999/01/022), still open.
+
+### `Fachinfo` had the guard, `Patinfo` never got it (`change_log`, 31.08.2026)
+
+- `Session#request_path` calls `found.patinfo.send(language).change_log.select` for a `/show/patinfo/…/diff/…` url. **39 of 29 969 documents hold a `PatinfoDocument` in `@change_log`**, and `.select` on one raises `private method 'select' called for an instance of ODDB::PatinfoDocument` — 500 on the diff pages of 56908/01/017 and 57175/01/008, both confirmed to be exactly those documents.
+- **`FachinfoDocument#change_log` has carried a "Safety check: if somehow @change_log got corrupted, reset it" for a long time. `PatinfoDocument#change_log` was the bare `@change_log ||= []`.** That asymmetry is the whole reason the failure shows up on Patinfo diffs and never on Fachinfo diffs — worth remembering as a search strategy: when one of the two classes is guarded, look at the sibling.
+- **`nil` is not damage here**: 6911 of the 29 969 have none, and the reader answers `[]`. The FI change log starts 06.11.2015 and the PI one 22.08.2017; older documents never had one.
+- The guard now probes instead of asking — `@change_log.is_a?(Array) && @change_log.length >= 0` inside a `begin/rescue`, because a dangling stub *declaring* `Array` answers `is_a?` from the declaration and only raises on the access. The Fachinfo one was hardened the same way, and its `puts` became `LogFile.debug`: a `puts` out of a web process lands unfiltered in the service log.
+- **`odba_store`, not `odba_isolated_store`**, to persist the reset. The fresh `[]` is its own ODBA object; `odba_store_unsaved` walks `odba_unsaved_neighbors` and takes it along, while the isolated call would leave a dangling stub — the trap from `repair_dead_bag_agents`, and the one case where the non-isolated call is the correct one.
+- The ids cluster in consecutive runs (57133525/526, 57133841/850, 58934175…269, 59171349…548), and **57133664 — one of the 24 Patinfos with a broken `@sequences` — sits inside the first run.** One event damaged both.
+- No data repair was needed: the guard resets and persists on read, so each of the 39 heals the first time its page is opened.
+- Regression tests: `test/test_model/patinfo.rb`, three of them, two failing against the old code.
+
+**Note on the test suite**: `bundle exec ruby test/suite.rb` exits **2**, not 0, and has done so throughout — two `google_ad_sense` failures left over from `ENABLED = false` in August, and `TestPreferences#test_prefs` raising `undefined method 'languages' for an instance of FlexMock`. 3820 runs over 63 files. Check the count and the names, not the exit status.
 
 ### The eight dead ActiveAgents, and where they came from (`jobs/repair_dead_bag_agents`, 29.08.2026)
 

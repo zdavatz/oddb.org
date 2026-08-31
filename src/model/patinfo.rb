@@ -159,6 +159,35 @@ module ODDB
     attr_writer :change_log
     def change_log
       @change_log ||= []
+      # 39 von 29969 Dokumenten hielten am 31.08.2026 hier ein
+      # PatinfoDocument statt der Liste. Session#request_path ruft darauf
+      # change_log.select, und die /diff/-Seite antwortete 500 -
+      # "private method 'select' called for an instance of
+      # ODDB::PatinfoDocument", z.B. auf 56908/01/017 und 57175/01/008.
+      #
+      # Fachinfo#change_log hat diesen Schutz seit laengerem, die
+      # Patinfo-Seite hat ihn nie bekommen. Genau deshalb faellt es auf den
+      # Patinfo-Diffs auf und nicht auf den Fachinfo-Diffs.
+      #
+      # is_a?(Array) allein reicht nicht: ein haengender Stub, der Array
+      # deklariert, antwortet daraus, ohne aufzuloesen, und erst der Zugriff
+      # wirft. Deshalb der Versuch statt der Frage.
+      usable = begin
+        @change_log.is_a?(Array) && @change_log.length >= 0
+      rescue
+        false
+      end
+      unless usable
+        LogFile.debug("#{self.class}: change_log was #{@change_log.class}, " \
+                      "resetting to Array for #{odba_id}")
+        @change_log = []
+        # odba_store und nicht odba_isolated_store: die Liste ist ein eigenes
+        # ODBA-Objekt und steht im Dump des Halters nur als Stub. Nur der
+        # nicht-isolierte Lauf nimmt sie ueber odba_unsaved_neighbors mit;
+        # isoliert bliebe ein haengender Stub zurueck.
+        odba_store
+      end
+      @change_log
     end
     CHAPTERS = [
       :name,
