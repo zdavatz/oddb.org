@@ -40,6 +40,13 @@
 require "odba/cache"
 require "odba/storage"
 
+# Seit odba 1.2.2 steckt beides im Gem selbst (Storage#id_sequence? und
+# das auf DRb::DRbError eingegrenzte rescue in Cache#next_id). Dann ist
+# hier nichts zu tun - der Patch bleibt nur liegen, damit ein Rueckschritt
+# auf 1.1.9 nicht still den Fehler zurueckholt und readonlyd seinen
+# require behaelt.
+return if ODBA::Storage.method_defined?(:id_sequence?)
+
 module ODBA
   class Storage
     ID_SEQUENCE = "odba_id_seq"
