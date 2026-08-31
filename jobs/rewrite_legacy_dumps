@@ -1,0 +1,239 @@
+#!/usr/local/bin/ruby
+# Schreibt Objekte neu, deren Dump noch in einer Marshal-Form von Ruby 1.8
+# steckt, damit `odba/18_19_loading_compatibility` entbehrlich wird.
+#
+#   bundle exec ruby jobs/rewrite_legacy_dumps                 # nur zaehlen
+#   bundle exec ruby jobs/rewrite_legacy_dumps --apply
+#   bundle exec ruby jobs/rewrite_legacy_dumps --apply --limit=200
+#   bundle exec ruby jobs/rewrite_legacy_dumps --apply --extent=ODDB::Log
+#   bundle exec ruby jobs/rewrite_legacy_dumps --verify           # ohne Shim laden
+#
+# Der Shim heisst irrefuehrend. Er ist keine Hilfe, um *unter* Ruby 1.8/1.9
+# zu laufen, sondern um *Daten zu lesen, die dort geschrieben wurden*: er
+# definiert `Date._load` und `Encoding::Character::UTF8._load`. Solange
+# solche Dumps in `object` liegen, kostet sein Entfernen genau diese
+# Objekte - nachgestellt am 31.08.2026: dasselbe Objekt laedt mit Shim als
+# ODDB::Text::Chapter und ohne ihn mit
+# "ArgumentError: undefined class/module Encoding::Character::UTF8".
+#
+# Gemessen am 31.08.2026, 4346 Objekte, ohne Ueberschneidung:
+#
+#   4217  u:\tDate                    InvoiceItem 3577, Registration 356,
+#                                     Log 267, MiniFi 10, LimitationText 4,
+#                                     IncompleteRegistration 3
+#    129  Encoding::Character::UTF8   Text::Chapter 83, InvoiceItem 43,
+#                                     Descriptions 2, LimitationText 1
+#
+# Ruby 3.4 schreibt ein Date als `U` (marshal_dump/marshal_load); der Shim
+# fasst diese Form nicht an, nur die alte kleingeschriebene `u`. Ein Date
+# laeuft mit und ohne Shim identisch durch den Rundlauf - geprueft.
+#
+# Geaendert wird nur die *Kodierung* des Dumps, nicht der Inhalt: das
+# Objekt wird geladen und unveraendert wieder geschrieben. Zur Sicherheit
+# wird der alte Dump vorher weggeschrieben; damit laesst sich jede Zeile
+# einzeln zurueckholen, denn ein neuer Dump macht den alten unauffindbar.
+#
+# Zwei Dinge waren beim ersten Anlauf falsch gedacht:
+#
+# Die alte Zeichenkette ist *keine Instanz* von
+# Encoding::Character::UTF8. Der Dump traegt Marshal-Typ `e`: ein String,
+# der mit dem Modul Encoding::Character::UTF8::Methods **erweitert**
+# wurde - genau dafuer definiert der Shim dieses ansonsten leere Modul.
+# `o.class` ist String, eine Suche nach der Klasse findet nichts, und ein
+# blosses Neuschreiben stellt die Erweiterung wieder her. Nur `plainify`,
+# das den Graphen durchlaeuft und solche Strings durch `dup` ersetzt (dup
+# uebernimmt die Singleton-Klasse nicht), wird sie los.
+#
+# Und der Lauf vom 31.08.2026 hat 4341 von 4346 erledigt. Die fuenf
+# uebrigen bleiben liegen, mit Grund:
+#
+#   3 ODDB::IncompleteRegistration - die Klasse gibt es nicht mehr, die
+#     Zeilen werfen "undefined class/module" mit *und ohne* Shim. Sie
+#     halten also niemanden auf; laden kann sie ohnehin nichts.
+#   2 ODDB::SimpleLanguage::Descriptions - hier schreibt odba_isolated_store
+#     die Zeile nicht neu (Laenge und Inhalt bleiben Byte fuer Byte
+#     gleich), und der geladene Graph enthaelt keinen erweiterten String,
+#     obwohl der Dump einen traegt. Ungeklaert; zwei Objekte, kein
+#     Seiteneffekt bemerkt.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    # Die beiden Marshal-Formen als Hex, so wie sie in object.content stehen.
+    LEGACY_FORMS = {
+      "u:\\tDate" => "753a0944617465",
+      "Encoding::Character::UTF8" => "456e636f64696e673a3a4368617261637465723a3a55544638"
+    }.freeze
+
+    # Nicht die Klasse, sondern das Modul: der Dump traegt Marshal-Typ `e`,
+    # also ein String, der mit Encoding::Character::UTF8::Methods
+    # *erweitert* wurde. Genau dafuer definiert der Shim dieses leere Modul.
+    # Die Klasse des Objekts ist String - eine Pruefung auf die Klasse findet
+    # nichts, und das Neuschreiben erzeugt die Erweiterung wieder.
+    LEGACY_MODULE = defined?(Encoding::Character::UTF8::Methods) ?
+      Encoding::Character::UTF8::Methods : Module.new
+
+    # Ersetzt jede Encoding::Character::UTF8 durch einen gewoehnlichen
+    # String, in Ivars, Arrays und Hashes. Geht nicht ueber ODBA::Stub
+    # hinaus: was dahinter liegt, ist ein eigenes Objekt mit eigener Zeile
+    # und wird fuer sich behandelt.
+    def self.plainify(obj, seen = {})
+      return obj if obj.nil? || obj.is_a?(ODBA::Stub)
+      return obj if seen[obj.object_id]
+      seen[obj.object_id] = true
+      case obj
+      when String
+        # dup uebernimmt die Singleton-Klasse nicht, die Erweiterung faellt
+        # damit weg; Inhalt und Kodierung bleiben.
+        obj.is_a?(LEGACY_MODULE) ? obj.dup : obj
+      when Array
+        obj.each_with_index { |v, i| obj[i] = plainify(v, seen) }
+        obj
+      when Hash
+        obj.keys.each { |k|
+          v = plainify(obj[k], seen)
+          nk = plainify(k, seen)
+          if nk.equal?(k)
+            obj[k] = v
+          else
+            obj.delete(k)
+            obj[nk] = v
+          end
+        }
+        obj
+      when Numeric, Symbol, Time, Date, TrueClass, FalseClass
+        obj
+      else
+        obj.instance_variables.each { |name|
+          val = obj.instance_variable_get(name)
+          fresh = plainify(val, seen)
+          obj.instance_variable_set(name, fresh) unless fresh.equal?(val)
+        }
+        obj
+      end
+    end
+
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+      verify = ARGV.include?("--verify")
+      limit = ARGV.find { |a| a =~ /^--limit=(\d+)/ } && $1.to_i
+      extent = ARGV.find { |a| a =~ /^--extent=(.+)/ } && $1
+
+      where = LEGACY_FORMS.values.collect { |hex| "content like '%#{hex}%'" }.join(" or ")
+      where = "(#{where})"
+      # Gebundener Parameter, nicht eingesetzt: dbi.quote gibt es in diesem
+      # Treiber nicht, und eine Klasse aus ARGV gehoert ohnehin nicht
+      # unformatiert in ein SQL.
+      args = []
+      if extent
+        where += " and extent = ?"
+        args << extent
+      end
+
+      # Nur wer noch da ist: die Zaehlung geht an die Datenbank, nicht an die
+      # Objekte - ein Laden aller 4346 waere teuer und wuerde nichts sagen.
+      LEGACY_FORMS.each { |name, hex|
+        n = ODBA.storage.dbi.select_one(
+          "select count(*) from object where content like '%#{hex}%'"
+        ).first
+        puts format("  %-28s %6d", name, n)
+      }
+      rows = ODBA.storage.dbi.select_all(
+        "select odba_id, extent from object where #{where} order by odba_id", *args
+      )
+      puts "#{rows.size} Objekt(e) mit einem Dump aus Ruby 1.8"
+      unless extent
+        rows.group_by { |_, e| e }.sort_by { |_, g| -g.size }.each { |e, g|
+          puts format("    %-34s %5d", e, g.size)
+        }
+      end
+
+      if verify
+        # Die eigentliche Probe: laedt es auch ohne die Klasse, die der Shim
+        # beisteuert? Vorher schlug genau das fehl.
+        Encoding::Character.send(:remove_const, :UTF8) if defined?(Encoding::Character::UTF8)
+        ok = 0
+        bad = []
+        rows.first(limit || rows.size).each do |id, _|
+          ODBA.cache.fetch(id.to_i, nil)
+          ok += 1
+        rescue => e
+          bad << "#{id}: #{e.class}: #{e.message[0, 60]}"
+        end
+        puts
+        puts "ohne Shim geladen: #{ok} ok, #{bad.size} Fehler"
+        bad.first(10).each { |b| puts "  #{b}" }
+        next
+      end
+
+      if rows.empty?
+        puts "nichts zu tun - der Shim kann weg"
+        next
+      end
+
+      unless apply
+        puts
+        puts "ohne --apply nichts geaendert"
+        exit 1
+      end
+
+      rows = rows.first(limit) if limit
+      undo = File.expand_path("../log/rewrite_legacy_dumps-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      written = 0
+      failed = []
+      File.open(undo, "w") { |fh|
+        rows.each_with_index { |(id, ext), i|
+          oid = id.to_i
+          begin
+            # Den alten Dump zuerst sichern: ein neuer macht ihn
+            # unauffindbar, und ein Marshal-Format laesst sich nicht
+            # zurueckrechnen.
+            old = ODBA.storage.dbi.select_one(
+              "select content from object where odba_id = ?", oid
+            ).first
+            obj = ODBA.cache.fetch(oid, nil)
+            fh.puts([oid, ext, old].join("\t"))
+            fh.flush
+            # Encoding::Character::UTF8 ist eine *Unterklasse von String*.
+            # Marshal schreibt sie deshalb in der Unterklassen-Form, _load
+            # wird nie gerufen, und beim Laden entsteht wieder eine echte
+            # Instanz dieser Klasse - ein blosses Neuschreiben aendert also
+            # nichts. Sie muss durch einen gewoehnlichen String ersetzt
+            # werden, und dafuer muss der Objektgraph durchlaufen werden.
+            plainify(obj)
+            # isolated: nur dieses Objekt. Die Kinder stehen im Dump ohnehin
+            # als Stub und aendern sich nicht.
+            obj.odba_isolated_store
+            fresh = ODBA.storage.dbi.select_one(
+              "select content from object where odba_id = ?", oid
+            ).first
+            if LEGACY_FORMS.values.any? { |hex| fresh.to_s.include?(hex) }
+              failed << "#{oid} (#{ext}): alte Form nach dem Schreiben noch da"
+            else
+              written += 1
+            end
+          rescue => e
+            failed << "#{oid} (#{ext}): #{e.class}: #{e.message[0, 60]}"
+          end
+          begin
+            ODBA.cache.fetch_cache_entry(oid)&.odba_retire(force: true)
+          rescue
+            nil
+          end
+          $stderr.print "\r  #{i + 1}/#{rows.size}" if (i % 100).zero?
+        }
+      }
+      $stderr.print "\r"
+      puts
+      puts "#{written} neu geschrieben, #{failed.size} nicht"
+      failed.first(20).each { |f| puts "  #{f}" }
+      puts "alte Dumps in #{undo} (Spalten: odba_id, extent, content)"
+      puts "zurueckholen: update object set content = '<content>' where odba_id = <id>"
+    end
+  end
+end
