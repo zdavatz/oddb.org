@@ -1,0 +1,156 @@
+#!/usr/local/bin/ruby
+# Findet Patinfos, deren @sequences keine Liste ist, und stellt die Liste
+# wieder her.
+#
+#   bundle exec ruby jobs/repair_patinfo_sequences            # nur melden
+#   bundle exec ruby jobs/repair_patinfo_sequences --apply
+#
+# Patinfo#_sequence_delegate ruft @sequences.first fuer company_name und
+# name_base. Steht dort statt der Liste ein PatinfoDocument, wirft das
+# "undefined method 'first' for an instance of ODDB::PatinfoDocument" und die
+# Seite antwortet 500 - z.B. /de/gcc/patinfo/reg/56221/seq/03/pack/009, das
+# am 30.08.2026 im Log stand.
+#
+# Gemessen am 31.08.2026 ueber alle 14554 Patinfo-Objekte: 24 kaputt, davon
+# 23 mit einem PatinfoDocument und eines mit einem SlEntry an der Stelle.
+#
+# Die Vorauswahl geht ueber alle Patinfos und nicht ueber object_connection.
+# Das war der erste Versuch und er ist zweimal falsch: eine Kante sagt nicht,
+# aus welchem Ivar sie kommt - 7 der 31 so gefundenen Patinfos hatten ein
+# vollkommen intaktes @sequences -, und ein @sequences, das nil ist oder auf
+# ein geloeschtes Objekt zeigt, hat gar keine brauchbare Kante. Ein Fetch pro
+# Objekt kostet etwa eine Minute; das ist der Preis fuer eine Zahl, die
+# stimmt.
+#
+# Wiederhergestellt wird aus den Sequenzen, die zurueckzeigen, und nur wenn
+# seq.patinfo wirklich dieses Patinfo ist - genau die Pruefung, die
+# Patinfo#article_codes mit "next unless seq.patinfo == self" selbst macht.
+# Findet sich keine, bleibt die Liste leer: die Seite lebt dann wieder, und
+# company_name/name_base liefern nil statt zu werfen.
+#
+# Das falsch abgelegte Dokument wird nicht geloescht, nur die Referenz
+# geraeumt - es kann anderswo haengen, und diese Entscheidung gehoert nicht
+# hierher.
+#
+# Reihenfolge beim Schreiben: die Liste ist ein eigenes ODBA-Objekt mit
+# eigener odba_id und steht im Dump des Halters nur als Stub. Sie muss
+# deshalb zuerst und fuer sich gespeichert werden, sonst tauscht man eine
+# kaputte Referenz gegen eine haengende - genau das ist bei
+# repair_dead_bag_agents einmal passiert. SequenceObserver#add_sequence macht
+# es richtig vor und wird hier benutzt.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+
+      ids = ODBA.storage.dbi.execute(
+        "select odba_id from object where extent = 'ODDB::Patinfo' order by odba_id"
+      ).fetch_all.collect { |row| row.first.to_i }
+      puts "#{ids.size} Patinfo-Objekte"
+
+      broken = []
+      ids.each_with_index { |oid, i|
+        pi = begin
+          ODBA.cache.fetch(oid, nil)
+        rescue
+          next
+        end
+        next unless pi.is_a?(ODDB::Patinfo)
+        seqs = pi.instance_variable_get(:@sequences)
+        held = begin
+          # respond_to? loest den Stub auf und sagt damit die Wahrheit; die
+          # deklarierte Klasse kann luegen.
+          seqs.respond_to?(:odba_instance) ? seqs.odba_instance : seqs
+        rescue => e
+          e
+        end
+        if held.is_a?(Array)
+          # Loslassen, sonst haelt der Lauf 14554 Patinfos samt Texten im
+          # Speicher. Die kaputten behalten wir, sie werden gleich gebraucht.
+          ODBA.cache.fetch_cache_entry(oid)&.odba_retire(force: true)
+        else
+          broken << [oid, held.class.to_s]
+        end
+        $stderr.print "\r  #{i}/#{ids.size}" if i % 1000 == 0
+      }
+      $stderr.print "\r"
+
+      if broken.empty?
+        puts "kein Patinfo mit kaputtem @sequences"
+        next
+      end
+
+      puts "#{broken.size} Patinfo(s) mit kaputtem @sequences:"
+      undo = File.expand_path("../log/repair_patinfo_sequences-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      repaired = 0
+      rebuilt = 0
+      File.open(undo, "w") { |fh|
+        broken.each { |oid, held_class|
+          pi = ODBA.cache.fetch(oid, nil)
+          held = pi.instance_variable_get(:@sequences)
+          held_id = (held.respond_to?(:odba_id) ? held.odba_id : nil)
+
+          # Die Sequenzen, die zurueckzeigen - und nur die, deren patinfo
+          # wirklich dieses ist.
+          rows = ODBA.storage.dbi.execute(<<~SQL, oid).fetch_all
+            select c.origin_id from object_connection c
+            join object s on s.odba_id = c.origin_id and s.extent = 'ODDB::Sequence'
+            where c.target_id = ?
+          SQL
+          sequences = rows.collect { |row|
+            seq = begin
+              ODBA.cache.fetch(row.first.to_i, nil)
+            rescue
+              nil
+            end
+            next unless seq.is_a?(ODDB::Sequence)
+            held_pi = begin
+              seq.patinfo
+            rescue
+              nil
+            end
+            seq if held_pi && held_pi.odba_id == oid
+          }.compact
+
+          name = begin
+            sequences.first&.name_base
+          rescue
+            nil
+          end
+          puts format("  %-10s %-22s -> %d Sequenz(en)%s", oid, held_class,
+            sequences.size, name ? " (#{name})" : "")
+          next unless apply
+
+          fh.puts([oid, held_class, held_id, sequences.collect(&:odba_id).join(",")].join("\t"))
+          fh.flush
+          # Erst die Liste selbst, dann der Halter - add_sequence macht beides
+          # in dieser Reihenfolge, deshalb hier nur der leere Anfang.
+          pi.sequences = []
+          pi.sequences.odba_isolated_store
+          pi.odba_isolated_store
+          sequences.each { |seq| pi.add_sequence(seq) }
+          repaired += 1
+          rebuilt += 1 unless sequences.empty?
+        }
+      }
+
+      unless apply
+        File.unlink(undo) if File.exist?(undo)
+        puts
+        puts "ohne --apply nichts geaendert"
+        # Damit ein Cron-Lauf sich meldet: ein stiller Fund waere kein Fund.
+        exit 1
+      end
+      puts
+      puts "#{repaired} repariert, davon #{rebuilt} mit wiederhergestellter Sequenz"
+      puts "rueckgaengig zu machen aus #{undo}"
+    end
+  end
+end

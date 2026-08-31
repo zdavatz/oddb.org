@@ -1,0 +1,110 @@
+#!/usr/local/bin/ruby
+# Raeumt die Zeilen aus dem Pointer-Index, die nicht zu dem Objekt fuehren,
+# das der Pointer benennt.
+#
+#   bundle exec ruby jobs/repair_pointer_index            # nur melden
+#   bundle exec ruby jobs/repair_pointer_index --apply
+#
+# Persistence::Pointer#resolve fragt zuerst find_by_pointer und geht erst
+# dann den Weg registration -> sequence -> package. Zeigt die Indexzeile auf
+# eine Array, kam die Array zurueck: eine leere Array ist wahr, also hat sie
+# den Gang kurzgeschlossen, und View::Drugs::PackageComposite#init starb an
+# @model.sequence - "undefined method 'sequence' for an instance of Array".
+#
+# Und es traf nicht jedes Mal. find_by_pointer endet in .first ueber eine
+# Abfrage ohne ORDER BY; bei zwei Zeilen zum selben Pointer entscheidet
+# Postgres, welche zuerst kommt. Deshalb antwortete
+# /de/gcc/show/reg/54880/seq/02/pack/002 dreimal 500 und Minuten spaeter 200,
+# ohne Neustart - genau das Muster, an dem eine Handprobe scheitert und ein
+# Crawler den Fehler sieht. Google hat die URL seit dem 03.05.2026 als
+# Serverfehler stehen.
+#
+# Zwei Sorten, beide werden gemeldet:
+#
+#   falsch   Das Ziel existiert, ist aber Array oder Hash. Das sind die
+#            gefaehrlichen: find_by_pointer liefert sie aus.
+#   verwaist Das Ziel gibt es nicht mehr - Reste der Reparaturen vom August
+#            (@sl_entry aus Package#checkout, die toten BAG-Agenten).
+#            find_by_pointer liefert dafuer schon nil, sie schaden nicht.
+#
+# Loeschen und nicht umbiegen: fuer 29 der 30 falschen Zeilen gibt es das
+# benannte Objekt nicht mehr, gemessen ueber den Gang. Ohne Indexzeile hebt
+# resolve mit UninitializedPathError ab, und daraus macht die Anwendung ein
+# 404 - die richtige Antwort fuer etwas, das es nicht gibt. Die eine
+# Ausnahme ist das Package 54880/02/002, das eine zweite, richtige Zeile
+# hat und danach wieder gefunden wird.
+#
+# Der Schutz im Code steht in Persistence::Pointer#resolve; dieser Lauf
+# raeumt die Daten.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+      index = "oddb_persistence_pointer"
+
+      # Die Frage geht an die Datenbank, nicht an die Objekte: extent haelt
+      # die Klasse, mit der das Objekt geschrieben wurde, und ein Ziel des
+      # Pointer-Index ist immer ein ODDB::-Objekt.
+      sql = <<~SQL
+        select p.origin_id, p.search_term, p.target_id, coalesce(o.extent, '')
+        from #{index} p
+        left join object o on o.odba_id = p.target_id
+        where o.odba_id is null or o.extent not like 'ODDB::%'
+        order by o.extent is null, p.search_term
+      SQL
+      rows = ODBA.storage.dbi.execute(sql).fetch_all
+
+      if rows.empty?
+        puts "keine fehlgeleiteten Zeilen in #{index}"
+        next
+      end
+
+      wrong, orphaned = rows.partition { |_, _, _, extent| !extent.to_s.empty? }
+      puts "#{rows.size} Zeile(n) in #{index} fuehren nicht zum benannten Objekt:"
+      puts "  #{wrong.size} zeigen auf ein Objekt der falschen Art (Array, Hash, ...)"
+      puts "  #{orphaned.size} zeigen auf ein Objekt, das es nicht mehr gibt"
+      puts
+
+      wrong.each { |_origin_id, term, target_id, extent|
+        puts format("  %-8s %-10s %s", extent, target_id, term[0, 84])
+      }
+      unless orphaned.empty?
+        puts
+        puts "  verwaist (Ziel geloescht), nach Form:"
+        orphaned.group_by { |_, term, _, _| term.gsub(/,[^!]*/, "") }
+          .sort_by { |_, group| -group.size }
+          .each { |shape, group| puts format("    %-56s %4d", shape[0, 56], group.size) }
+      end
+
+      undo = File.expand_path("../log/repair_pointer_index-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      unless apply
+        puts
+        puts "ohne --apply nichts geaendert"
+        # Damit ein Cron-Lauf sich meldet: ein stiller Fund waere kein Fund.
+        exit 1
+      end
+
+      deleted = 0
+      File.open(undo, "w") { |fh|
+        rows.each { |origin_id, term, target_id, extent|
+          fh.puts([origin_id, term, target_id, extent].join("\t"))
+          fh.flush
+          # Genau diese eine Zeile, nicht alles zum Pointer: 54880/02/002 hat
+          # daneben die richtige Zeile stehen, und die muss bleiben.
+          ODBA.storage.index_delete_target(index, origin_id, term, target_id)
+          deleted += 1
+        }
+      }
+      puts
+      puts "#{deleted} Zeile(n) geloescht, rueckgaengig zu machen aus #{undo}"
+      puts "(update_index #{index} <origin_id> <search_term> <target_id>)"
+    end
+  end
+end

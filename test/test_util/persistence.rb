@@ -295,6 +295,37 @@ module ODDB
       assert_equal("12346", obj.bar)
     end
 
+    # Der Index kann auf etwas zeigen, das kein Modellobjekt ist - am
+    # 31.08.2026 dreissig Zeilen in oddb_persistence_pointer, die eine Array
+    # oder eine Hash lieferten. Steht daneben die richtige Zeile, muss die
+    # genommen werden; der alte Weg endete in .first und nahm, was Postgres
+    # zuerst lieferte.
+    def test_resolve__index_holds_an_array_beside_the_object
+      object = StubPersistenceDiffable.new
+      flexmock(ODDB::Persistence).should_receive(:search_by_exact_pointer)
+        .and_return([[], object])
+      assert_equal(object, @pointer.resolve(StubPointerApp.new))
+    end
+
+    # Steht nur die falsche Zeile da, uebernimmt der Gang - so wie er es
+    # ohne Indexzeile taete.
+    def test_resolve__index_holds_only_an_array
+      flexmock(ODDB::Persistence).should_receive(:search_by_exact_pointer)
+        .and_return([[]])
+      obj = @pointer.resolve(StubPointerApp.new)
+      assert_equal(StubPointerBar, obj.class)
+      assert_equal("12346", obj.bar)
+    end
+
+    # Ist das Ziel geloescht, wirft das Aufloesen des Stubs. Auch dann muss
+    # der Gang uebernehmen und nicht die ganze Seite mitnehmen.
+    def test_resolve__index_target_is_gone
+      flexmock(ODDB::Persistence).should_receive(:search_by_exact_pointer)
+        .and_raise(RuntimeError, "dangling")
+      obj = @pointer.resolve(StubPointerApp.new)
+      assert_equal(StubPointerBar, obj.class)
+    end
+
     def test_fail_resolve1
       app = StubPointerApp2.new
       @pointer.directions[0] = [:fap, "9"]

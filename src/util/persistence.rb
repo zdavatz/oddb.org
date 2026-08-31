@@ -332,7 +332,29 @@ module ODDB
       end
 
       def resolve(hook)
-        Persistence.find_by_pointer(to_s) or begin
+        # Der Index kann auf etwas zeigen, das kein Modellobjekt ist. Gemessen
+        # am 31.08.2026: 30 Zeilen in oddb_persistence_pointer liefern eine
+        # Array oder eine Hash. Eine leere Array ist wahr, hat also den alten
+        # `find_by_pointer(to_s) or ...` kurzgeschlossen, und die Seite starb
+        # danach an @model.sequence - "undefined method 'sequence' for an
+        # instance of Array".
+        #
+        # Und es traf nicht jedes Mal: find_by_pointer endet in .first ueber
+        # eine Abfrage ohne ORDER BY, also entscheidet Postgres, welche von
+        # zwei Zeilen zuerst kommt. Dieselbe URL antwortete 500 und Minuten
+        # spaeter 200, ohne Neustart - Google hat
+        # /show/reg/54880/seq/02/pack/002 seit dem 03.05.2026 als Serverfehler
+        # stehen. Aufgeraeumt wird mit jobs/repair_pointer_index.
+        #
+        # search_by_exact_pointer gibt alle Zeilen her statt nur der ersten;
+        # es zaehlt die erste, die ein Modellobjekt ist. Der Gang unten ist
+        # dafuer kein Ersatz: er kommt mit @session.app als hook, und
+        # ODDB::App beantwortet respond_to?(:registration) mit false - das
+        # laeuft ueber method_missing. resolve wuerde also gleich im ersten
+        # Schritt mit InvalidPathError abheben. Der Index ist der Weg; er muss
+        # nur die richtige Zeile nehmen.
+        found = indexed_persistence
+        found or begin
           lasthook = hook
           laststep = []
           @directions.each { |step|
@@ -357,6 +379,22 @@ module ODDB
           }
           hook
         end
+      end
+
+      # is_a? loest einen Stub auf und sagt damit die Wahrheit, waehrend die
+      # deklarierte Klasse luegen kann. Ist das Ziel geloescht, wirft das
+      # Aufloesen - dann zaehlt der Treffer nicht und die naechste Zeile ist
+      # dran.
+      def indexed_persistence
+        Persistence.search_by_exact_pointer(to_s).find { |hit|
+          begin
+            hit.is_a?(Persistence)
+          rescue
+            false
+          end
+        }
+      rescue
+        nil
       end
 
       def skeleton

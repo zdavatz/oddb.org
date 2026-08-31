@@ -48,6 +48,24 @@ class TestPatinfo < Minitest::Test
     assert_equal "Company Name", @patinfo.company_name
   end
 
+  # 24 von 14554 Patinfos hielten am 31.08.2026 statt der Liste ein
+  # PatinfoDocument in @sequences; .first darauf antwortete mit 500 statt mit
+  # der Seite. Repariert wird mit jobs/repair_patinfo_sequences, hier steht,
+  # dass es die Seite nicht mehr mitnimmt.
+  def test_company_name__sequences_is_not_a_list
+    @patinfo.sequences = ODDB::PatinfoDocument.new
+    assert_nil @patinfo.company_name
+  end
+
+  # Ein haengender Stub deklariert Array und antwortet is_a?(Array) daraus,
+  # ohne aufzuloesen - erst der Zugriff wirft.
+  def test_name_base__sequences_raises
+    dangling = flexmock("dangling")
+    dangling.should_receive(:first).and_raise(RuntimeError, "dangling")
+    @patinfo.sequences = dangling
+    assert_nil @patinfo.name_base
+  end
+
   def test_name_base
     assert_nil @patinfo.name_base
     @patinfo.sequences.push flexmock(name_base: "Company Name")

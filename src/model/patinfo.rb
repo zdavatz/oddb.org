@@ -67,9 +67,26 @@ module ODDB
     private
 
     def _sequence_delegate(symbol)
-      if (seq = @sequences.first)
-        seq.send(symbol)
+      # @sequences ist nicht immer eine Liste. Am 31.08.2026 hielten 24 von
+      # 14554 Patinfos dort ein PatinfoDocument oder einen SlEntry, und
+      # .first darauf nahm die ganze Seite mit - 500 statt Fach- und
+      # Patienteninformation, z.B. auf
+      # /de/gcc/patinfo/reg/56221/seq/03/pack/009.
+      #
+      # is_a?(Array) allein reicht nicht: ein haengender Stub, der Array
+      # deklariert, antwortet daraus, ohne aufzuloesen, und erst .first
+      # wirft. Deshalb der Versuch statt der Frage.
+      #
+      # Das Schweigen hier ist Absicht und hat einen Gegenpart:
+      # jobs/repair_patinfo_sequences zaehlt die kaputten und meldet sich per
+      # Cron. Eine Seite, die eine Firmenbezeichnung weglaesst, ist besser
+      # als eine, die es gar nicht gibt.
+      seq = begin
+        @sequences.first
+      rescue
+        nil
       end
+      seq&.send(symbol)
     end
   end
 
