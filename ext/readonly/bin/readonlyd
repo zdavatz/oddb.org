@@ -10,6 +10,10 @@ require "models"
 require "readonly_server"
 require "util/oddbconfig"
 require "etc/db_connection"
+# Dieser Dienst haengt an derselben Datenbank wie die Rack-Backends, laedt
+# aber util/oddbapp nicht - ohne diese Zeile vergibt er odba_ids aus einem
+# eigenen Zaehler und ueberschreibt fremde Objekte. Siehe util/odba_id_patch.
+require "util/odba_id_patch"
 
 DRb.install_id_conv ODBA::DRbIdConv.new
 DRb.start_service(ODDB::READONLY_URI, ODDB::ReadonlyServer.new)

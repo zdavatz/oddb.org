@@ -6,6 +6,7 @@
 
 require "odba"
 require "util/odba_connection_patch"
+require "util/odba_id_patch"
 require "odba/index_definition"
 require "odba/drbwrapper"
 require "odba/18_19_loading_compatibility"
