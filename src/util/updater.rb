@@ -563,9 +563,27 @@ end
       log.notify("Error: #{subj}")
     end
 
+    # Ein Abschuss von aussen ist kein Fehler des Plugins. Bis zum
+    # 01.09.2026 fing der rescue darunter `Exception` und damit auch
+    # SignalException, Interrupt und SystemExit - ein `kill` auf den Job
+    # erzeugte eine Mail "Error: <subj>" mit "Plugin: <klass>" und einem
+    # Backtrace, der genau dort endete, wo der Prozess gerade stand.
+    # Am 01.09.2026 war das mitten im HTTP-Lesen von
+    # SwissmedicPlugin#get_latest_file, was wie ein kaputter Swissmedic-
+    # Import aussah und keiner war. Das Signal muss trotzdem durch, sonst
+    # laesst sich der Job nicht mehr beenden - also weiterwerfen, nur ohne
+    # Mail. Der aeussere blanke rescue faengt es nicht, der nimmt nur
+    # StandardError.
     def wrap_update(klass, subj, &block)
       begin
         block.call
+      # standardrb: Lint/ShadowedException. Fehlalarm - `Exception` steht
+      # hier *nach* den drei Signalklassen, faengt also weiter alles
+      # uebrige (StandardError und Freunde). Genau diese Reihenfolge ist
+      # der Zweck der Aenderung; die Regel sieht nur die Oberklasse.
+      rescue SignalException, Interrupt, SystemExit => e # standard:disable Lint/ShadowedException
+        LogFile.debug("#{klass} #{subj}: abgebrochen durch #{e.class} #{e.message}")
+        raise
       rescue Exception => e # RuntimeError, StandardError => e
         notify_error(klass, subj, e)
         raise
