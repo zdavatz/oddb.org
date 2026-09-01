@@ -41,6 +41,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ### Check the pointer index
 `bundle exec ruby jobs/repair_pointer_index` reports rows of the `oddb_persistence_pointer` index that do not lead to the object the pointer names; `--apply` deletes them and writes an undo log. Two sorts: rows whose target is an `Array` or `Hash` — those are the dangerous ones, `find_by_pointer` hands them out — and rows whose target no longer exists, which are inert leftovers of earlier repairs. Dry by default, exits non-zero on a find.
 
+### Correct the de-registration dates
+`bundle exec ruby jobs/fix_deregistration_dates` compares `inactive_date` against the Swissmedic Packungen lists in `data/xls` and reports what is wrong; `--apply` writes it and logs every change for undo.
+
 ### Check the Patinfo sequence lists
 `bundle exec ruby jobs/repair_patinfo_sequences` walks every Patinfo and reports those whose `@sequences` is not a list; `--apply` restores it from the sequences that point back and writes an undo log. It walks all ~14 500 objects rather than filtering on `object_connection`, which costs about a minute and is the only way to get a number that holds — an edge does not say which ivar it came from, and a nil or dangling `@sequences` has no usable edge at all. Dry by default, exits non-zero on a find.
 
@@ -251,6 +254,22 @@ On 1 September 2026 neither scheduled import ran, and each was self-inflicted in
 Both were re-run: BSV exit 0 at 10:11:12 with 40 price changes and 48 SL admissions plus the whole follower chain (SL update, Refdata, the 593-row med-drugs xls), Swissmedic exit 0 at 10:14:11 with a correct "no change" — Swissmedic still serves the file from 6 August, byte-identical at 3 274 214 bytes.
 
 One reading tip from that comparison: the SL flags in the med-drugs export sat on the same four numbers from 2 to 25 August (38/40/1/19) and moved again on 1 September (48/22/4/34). That is not a fix taking effect, it is simply the first fresh BAG export in the window. **An unchanged flag distribution across several runs means "no new export", not "broken".**
+
+### When was a registration struck off?
+
+`inactive_date` is meant to say when Swissmedic withdrew a registration. For 1555 of them it named the day we tidied up instead. On **27 September 2017** a one-off job (`jobs/fix_expired_packages`, committed the same day, removed as obsolete in November 2025) deactivated **2089 registrations at a stroke** and stamped `inactive_date: today` on all of them. Cardiolite carried that date while it had already dropped out of the Swissmedic list on **15 April 2008** — 3452 days out. Count "withdrawals per year" from that and 2017 stands out with 2322 against 150–470 in every other year, while the years before it are correspondingly thin.
+
+The evidence was already in the tree: `data/xls` holds **349 Swissmedic Packungen lists from 28 March 2008 onwards**. A registration that drops out between two lists is gone by the later one at the latest — month-grained, and three to nine years closer than the cleanup day. `jobs/fix_deregistration_dates` reads them and corrects the date; dry by default, `--apply` writes and logs every change to `log/fix_deregistration_dates-*.undo` as `iksnr, old, new`.
+
+**The first glob was too narrow and cost two thirds of the coverage.** `Packungen-*.xlsx` begins in 2014; Swissmedic delivered `.xls` until the end of 2013 and 108 of those are on disk. Including them raised the correctable dates from 348 to **1555** and dropped the undatable ones from 3995 to 2054.
+
+Three written forms of the same number turn up, and the change happens inside the `.xls` run: text with the leading zero (`"08537"`, until 2012), a float (`274.0`, 2013), and a plain number (`450`) in the `.xlsx`. **199 registrations begin with a zero** — 00268 M-M-R-II, 00300 Sérocytol, 08671 Alka-Seltzer — so a value has to be padded back to five digits or they are silently lost. Speed matters too: RubyXL needs 16 seconds per file against 0.2 for reading the raw sheet XML out of the zip, which is the difference between an hour and a minute over 241 files. The old `.xls` is not a zip and needs `Spreadsheet` at about three seconds each, so the whole run takes some eight minutes.
+
+**`BSV_per_*.xls` goes back to 2003 and still cannot be used.** Those list the Spezialitätenliste, not the authorisation, and leaving the reimbursement list is not being struck off. Measured for November 2008: 6621 registrations in the Packungen list against 3045 in the BSV one, so **3730 are authorised and simply not reimbursed**. A date taken from there would be wrong for more than half of them.
+
+The same caution applies within the Packungen lists: **dropping out is not the same as being withdrawn**. 41 *active* registrations have vanished from the list while their authorisation runs to 2028 or 2029 — all with zero packages, authorised but not marketed. So the job only ever corrects a date on a registration that is already inactive; it can neither deactivate nor reactivate anything. Four guards sit in front of every write: `inactive?` must hold, there must be no `manual_inactive_date` (60 have one, and that is a decision rather than a measurement), a date must already be there, and the existing date must be *later* than the evidence — an earlier one stands, because then somebody knew more than the list did.
+
+Result on 1 September 2026: 1555 corrected, then read back in a fresh process — 1555 of 1555 carry the new value, none wrong, none accidentally reactivated, the inactive total unchanged at 6824, and the count still sitting on 2017-09-27 down from 2089 to 734. Those 734 dropped out before the lists begin and cannot be dated at all; for them `expiration_date` is all there is, and it states a different fact — the nominal end of the authorisation, not the day it disappeared.
 
 ### A killed job is not a plugin error
 
