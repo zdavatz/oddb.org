@@ -1,0 +1,60 @@
+#!/usr/local/bin/ruby
+# Korrigiert `inactive_date` dort, wo es den Aufraeumtag nennt statt den
+# Tag der De-Registrierung - siehe src/util/deregistration_dates.rb.
+#
+#   bundle exec ruby jobs/fix_deregistration_dates            # nur zaehlen
+#   bundle exec ruby jobs/fix_deregistration_dates --apply
+#
+# Ohne --apply wird nichts geschrieben. Mit --apply entsteht
+# log/fix_deregistration_dates-<zeit>.undo mit je einer Zeile
+# "iksnr <tab> altes_datum <tab> neues_datum".
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/deregistration_dates"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+      dir = File.expand_path("../data/xls", File.dirname(__FILE__))
+
+      start = Time.now
+      source = DeregistrationDates.from_directory(dir)
+      puts format("%d Swissmedic-Listen gelesen (%s bis %s), %d IKSNR, %.1fs",
+        source.dates.size, source.dates.first, source.dates.last,
+        source.index.size, Time.now - start)
+      if source.dates.empty?
+        abort "keine Packungen-Listen in #{dir} - ohne die gibt es keine Datumsquelle"
+      end
+      puts
+
+      undo = File.expand_path(
+        "../log/fix_deregistration_dates-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__)
+      )
+      fixer = DeregistrationDates.new(source.index, source.dates,
+        apply: apply, undo_log: undo)
+
+      registrations = []
+      app.each_registration { |reg|
+        # instance_variable_get liest auf einem Stub dessen eigene Ivars;
+        # die Reader loesen auf, also erst aufloesen und dann fragen.
+        r = reg.respond_to?(:odba_instance) ? reg.odba_instance : reg
+        registrations << r if r.is_a?(ODDB::Registration)
+      }
+      puts "#{registrations.size} Registrierungen"
+      fixer.run(registrations)
+      fixer.report
+      puts
+      if apply
+        puts "alte Daten in #{undo}"
+        puts "zurueckholen: je Zeile inactive_date auf Spalte 2 setzen"
+      else
+        puts "ohne --apply nichts geaendert"
+      end
+    end
+  end
+end
