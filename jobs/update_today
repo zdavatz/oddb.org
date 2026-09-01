@@ -18,7 +18,17 @@ if File.exist?(today_file) && File.size(today_file) > 0
     regs_arg = registrations.join(' ')
     cmd = "bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both #{regs_arg} --reparse"
     puts "Running: #{cmd}"
-    system(cmd)
+    # Den Status durchreichen. Bis zum 01.09.2026 stand hier ein blosses
+    # system(cmd), dessen Rueckgabe verworfen wurde - der Job endete immer
+    # mit 0. An diesem Morgen starb der Reparse beim Hochfahren an einem
+    # toten @parts (Package 212202), 20 Registrierungen blieben ungeparst,
+    # und der cron-Wrapper schrieb "(exit 0)": keine Mail, kein Hinweis.
+    # Dieselbe Form wie beim BSV-Import, der zwei Monate lang nichts
+    # importierte und jeden Morgen Erfolg meldete.
+    unless system(cmd)
+      warn "update_textinfo_swissmedicinfo scheiterte (Status #{$?.exitstatus.inspect})"
+      exit 1
+    end
   end
 else
   puts "Warning: today file not found or empty at #{today_file}"

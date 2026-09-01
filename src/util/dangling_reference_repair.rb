@@ -66,22 +66,39 @@ module ODDB
       end
       tally(:"klasse_#{object.class.to_s.split("::").last}")
       cleared = []
+      fresh = []
       object.instance_variables.each do |name|
         var = object.instance_variable_get(name)
         next unless var.is_a?(ODBA::Stub)
         next unless targets.include?(var.odba_id)
         next unless really_missing?(var.odba_id)
-        object.instance_variable_set(name, empty_for(var))
+        replacement = empty_for(var)
+        object.instance_variable_set(name, replacement)
+        fresh.push(replacement) unless replacement.nil?
         cleared.push("#{name}=#{var.odba_id}")
         tally(name.to_s.delete("@").to_sym)
       end
       return tally(:nichts_zu_tun) if cleared.empty?
       tally(:objekte_bereinigt)
       @undo.push("#{odba_id} #{cleared.join(" ")}")
-      object.odba_isolated_store if @apply
+      store(object, fresh) if @apply
     rescue => error
       tally(:fehler)
       LogFile.debug("DanglingReferenceRepair #{odba_id}: #{error.class} #{error.message}")
+    end
+
+    # Die frische Liste zuerst und fuer sich. Sie ist ein eigenes ODBA-Objekt
+    # mit eigener odba_id und steht im Dump des Halters nur als Stub - wird
+    # sie nicht geschrieben, tauscht odba_isolated_store den toten Verweis
+    # gegen einen neuen toten aus. Gemessen am 01.09.2026 an Package 212202
+    # (31862/035): @parts zeigte auf 61866868, nach dem Lauf auf 62051253,
+    # und beide fehlen in object. Derselbe Fehler wie in repair_dead_bag_agents
+    # und repair_orphaned_change_logs; nil braucht das nicht, weil nil kein
+    # eigenes Objekt ist - deshalb sind die 3950 @sl_entry im August heil
+    # geblieben und nur die Array- und Hash-Faelle betroffen.
+    def store(object, fresh)
+      fresh.each { |value| value.odba_isolated_store }
+      object.odba_isolated_store
     end
 
     # Nicht der Eingabedatei glauben: zwischen ihrer Erzeugung und diesem Lauf
