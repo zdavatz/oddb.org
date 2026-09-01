@@ -145,7 +145,7 @@ GEM
       racc (~> 1.4)
     nori (2.6.0)
     observer (0.1.2)
-    odba (1.2.2)
+    odba (1.2.3)
       drb
       observer
       stringio
@@ -382,7 +382,7 @@ DEPENDENCIES
   nkf
   nokogiri
   observer
-  odba (= 1.2.2)
+  odba (= 1.2.3)
   oddb2tdat
   optimist
   ox

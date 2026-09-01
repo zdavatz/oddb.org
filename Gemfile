@@ -10,7 +10,7 @@ gem "bigdecimal", require: false
 gem "mutex_m", require: false
 gem "drb", require: false
 gem "nkf", require: false
-gem "odba", "1.2.2"
+gem "odba", "1.2.3"
 gem "htmlgrid", "1.2.2"
 gem "sbsm", "1.6.1"
 gem "ydbd-pg", "0.5.9"
