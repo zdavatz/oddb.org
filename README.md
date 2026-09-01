@@ -41,6 +41,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ### Check the pointer index
 `bundle exec ruby jobs/repair_pointer_index` reports rows of the `oddb_persistence_pointer` index that do not lead to the object the pointer names; `--apply` deletes them and writes an undo log. Two sorts: rows whose target is an `Array` or `Hash` — those are the dangerous ones, `find_by_pointer` hands them out — and rows whose target no longer exists, which are inert leftovers of earlier repairs. Dry by default, exits non-zero on a find.
 
+### Deactivate registrations Swissmedic no longer lists
+`bundle exec ruby jobs/deactivate_vanished_registrations` reports registrations that are still active but have dropped out of the Packungen lists and whose authorisation has expired; `--apply` deactivates them with the date of the first list that missed them.
+
 ### Correct the de-registration dates
 `bundle exec ruby jobs/fix_deregistration_dates` compares `inactive_date` against the Swissmedic Packungen lists in `data/xls` and reports what is wrong; `--apply` writes it and logs every change for undo.
 
@@ -270,6 +273,18 @@ Three written forms of the same number turn up, and the change happens inside th
 The same caution applies within the Packungen lists: **dropping out is not the same as being withdrawn**. 41 *active* registrations have vanished from the list while their authorisation runs to 2028 or 2029 — all with zero packages, authorised but not marketed. So the job only ever corrects a date on a registration that is already inactive; it can neither deactivate nor reactivate anything. Four guards sit in front of every write: `inactive?` must hold, there must be no `manual_inactive_date` (60 have one, and that is a decision rather than a measurement), a date must already be there, and the existing date must be *later* than the evidence — an earlier one stands, because then somebody knew more than the list did.
 
 Result on 1 September 2026: 1555 corrected, then read back in a fresh process — 1555 of 1555 carry the new value, none wrong, none accidentally reactivated, the inactive total unchanged at 6824, and the count still sitting on 2017-09-27 down from 2089 to 734. Those 734 dropped out before the lists begin and cannot be dated at all; for them `expiration_date` is all there is, and it states a different fact — the nominal end of the authorisation, not the day it disappeared.
+
+### 987 registrations Swissmedic had stopped listing
+
+The counterpart to correcting the dates: **987 registrations still counted as active** while they had dropped out of the Packungen lists, the oldest of them back in 2008. `jobs/deactivate_vanished_registrations` deactivates them with the date of the first list that missed them. Active went from 7490 to 6503, inactive from 6824 to 7811; read back in a fresh process, 987 of 987 carry the right date and none is still active. Undo in `log/deactivate_vanished-*.undo`.
+
+**`inactive_date` means "no longer in the Swissmedic list on this day", not "the authorisation expired on this day".** That is not a comment somewhere but what `SwissmedicPlugin#deactivate` does: when a registration falls out of the Packungen file the import writes `inactive_date: @@today`. So the reconstructed date is the same quantity the import writes daily. The end of the authorisation lives in `expiration_date`, a separate field — I briefly confused the two and was about to switch to `expiration_date`; the code that maintains the field settled it.
+
+Three exclusions, each measured and each necessary. 6299 are in the current list. 163 were never in one, among them authorisations newer than the last snapshot (70893 Comirnaty XFG, 70418 Triofan Levodrop). And **41 vanished while their authorisation runs to 2028 or 2029**, all with zero packages — authorised but not marketed. Dropping out of the list is not being struck off, and without that exclusion all 41 would have been deactivated wrongly. The arithmetic closes afterwards: 6503 active = 6299 listed + 163 + 41.
+
+A counter that merges two cases hides exactly this. `deregistered_on` returns nil both for "never listed" and for "still in the newest list"; the report called both `nie_gelistet` and showed 6462, so the fact that 6299 of them were a different case altogether was invisible. They are counted apart now.
+
+Reading the 349 lists takes seven minutes, nearly all of it the 108 old `.xls`. The index is therefore cached beside them as `data/xls/.packungen_index.tsv`, keyed on file count plus newest mtime: 410 seconds to build, 0.09 to reuse, byte-identical. `data/xls/` is gitignored.
 
 ### A killed job is not a plugin error
 
