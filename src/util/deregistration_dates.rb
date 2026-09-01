@@ -46,7 +46,7 @@ module ODDB
     # keine Korrektur wert.
     TOLERANCE_DAYS = 45
 
-    attr_reader :counts, :dates, :index, :changes, :deactivations
+    attr_reader :counts, :dates, :index, :changes, :deactivations, :deleted
 
     # index: { "00450" => Date } - letztes Auftreten je IKSNR.
     # dates: alle Snapshot-Daten, sortiert.
@@ -57,6 +57,9 @@ module ODDB
       # "nicht geprueft" - dann deaktiviert #vanished nichts, denn ohne
       # diese Liste laesst sich eine Exportzulassung nicht erkennen.
       @authorised = opts[:authorised] || {}
+      # { "46466" => Date } - fruehestes Flag 14 je IKSNR aus med-drugs.
+      # Rueckfall fuer alles, was vor der ersten Packungsliste verschwand.
+      @deleted = opts[:deleted] || {}
       @apply = opts[:apply]
       @undo_log = opts[:undo_log]
       @counts = Hash.new(0)
@@ -80,6 +83,16 @@ module ODDB
     # zugelassen. Am 01.09.2026 waren 369 von 987 Deaktivierungen genau
     # das und mussten zurueckgenommen werden.
     PREPARATIONS = "Präparateliste-latest.xlsx"
+    # Die dritte Quelle, und sie reicht am weitesten zurueck: unsere eigenen
+    # med-drugs-Exporte, 439 Stueck seit dem 13.10.2003. Jede ist eine
+    # Aenderungsliste, und Flag 14 in Spalte A heisst :delete - der Tag, an
+    # dem der Export eine Loeschung gemeldet hat. Das ist wieder ein
+    # Beobachtungsdatum, aber ein zeitnahes (Wochen), nicht ein Aufraeumlauf
+    # dreizehn Jahre spaeter. 930 Registrierungen, die in keiner
+    # Packungsliste je standen, werden damit datierbar (Stand 01.09.2026).
+    MED_DRUGS_GLOB = "med-drugs-*.xls"
+    MED_DRUGS_CACHE = ".meddrugs_deleted.tsv"
+    DELETE_FLAG = "14"
 
     def self.from_directory(dir, cache: true)
       paths = Dir.glob(File.join(dir, SNAPSHOT_GLOB), File::FNM_EXTGLOB).sort
@@ -206,6 +219,75 @@ module ODDB
       found
     end
 
+    # Fruehestes Loeschdatum je IKSNR aus den med-drugs-Exporten. Gecacht
+    # wie der Packungsindex, aus demselben Grund: 439 .xls zu je einer
+    # Sekunde.
+    def self.deleted_in(dir, cache: true)
+      paths = Dir.glob(File.join(dir, MED_DRUGS_GLOB)).sort
+      # Zahl und juengster Name, nicht die mtime: med-drugs-20040115.xls ist
+      # kaputt (RuntimeError beim Oeffnen), und Spreadsheet setzt ihr bei
+      # jedem Versuch eine neue mtime - ein mtime-Stempel passte deshalb
+      # nie zweimal, und der Cache wurde bei jedem Lauf neu gebaut (130 s).
+      # Die datierten Namen sind unveraenderlich; ein neuer Export ist ein
+      # neuer Name.
+      stamp = "#{paths.size}\t#{File.basename(paths.last.to_s)}"
+      cache_file = File.join(dir, MED_DRUGS_CACHE)
+      if cache && File.exist?(cache_file)
+        lines = File.readlines(cache_file, chomp: true)
+        if lines.shift == stamp
+          return lines.to_h { |line|
+            k, v = line.split("\t")
+            [k, Date.parse(v)]
+          }
+        end
+      end
+      deleted = build_deleted(paths)
+      if cache
+        File.open(cache_file, "w") { |file|
+          file.puts(stamp)
+          deleted.each { |k, d| file.puts("#{k}\t#{d}") }
+        }
+      end
+      deleted
+    rescue
+      {}
+    end
+
+    def self.build_deleted(paths)
+      require "spreadsheet"
+      Spreadsheet.client_encoding = "UTF-8"
+      deleted = {}
+      paths.each { |path|
+        date = med_drugs_date_of(path) or next
+        begin
+          Spreadsheet.open(path) { |book|
+            book.worksheet(0).each_with_index { |row, i|
+              # Drei Kopfzeilen: Titel, englische und deutsche Spaltennamen.
+              next if i < 3
+              flags = row[0].to_s.strip.split(",")
+              next unless flags.include?(DELETE_FLAG)
+              nr = iksnr_from(row[1]) or next
+              deleted[nr] = date if deleted[nr].nil? || deleted[nr] > date
+            }
+          }
+        rescue
+          # Zwei der 439 Dateien sind kaputt (20040115, 20080401: OLE-
+          # Fehler). Zwei fehlende Stichtage sind hinnehmbar, ein Abbruch
+          # nicht.
+          next
+        end
+      }
+      deleted
+    end
+
+    # med-drugs-20040115.xls -> Date
+    def self.med_drugs_date_of(path)
+      File.basename(path)[/med-drugs-(\d{4})(\d{2})(\d{2})\.xls\z/] or return nil
+      Date.new($1.to_i, $2.to_i, $3.to_i)
+    rescue Date::Error
+      nil
+    end
+
     # Der erste Snapshot nach dem letzten Auftritt: bis dahin war sie da,
     # dort nicht mehr. nil, wenn sie noch in der neuesten Liste steht oder
     # nie in einer stand.
@@ -227,6 +309,15 @@ module ODDB
       current = reg.inactive_date
       return tally(:ohne_datum) unless current.respond_to?(:year)
       truth = deregistered_on(reg.iksnr)
+      source = :packungsliste
+      if truth.nil?
+        # Vor der ersten Packungsliste (2008-03-28) bleibt nur der Tag, an
+        # dem unser med-drugs-Export die Loeschung gemeldet hat. Nur als
+        # Rueckfall: stand die Registrierung je in einer Packungsliste,
+        # ist die feiner und gewinnt.
+        truth = @deleted[reg.iksnr.to_s]
+        source = :med_drugs
+      end
       return tally(:nicht_datierbar) if truth.nil?
       diff = (current - truth).to_i
       return tally(:stimmt) if diff.abs <= TOLERANCE_DAYS
@@ -234,6 +325,7 @@ module ODDB
       # Liste - das ueberschreiben wir nicht.
       return tally(:frueher_als_beleg) if diff.negative?
       tally(:korrigiert)
+      tally(:"korrigiert_via_#{source}")
       @changes.push([reg.iksnr, current, truth, diff])
       @undo.push("#{reg.iksnr}\t#{current}\t#{truth}")
       if @apply

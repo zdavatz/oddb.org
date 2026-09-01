@@ -35,8 +35,13 @@ module ODDB
         "../log/fix_deregistration_dates-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
         File.dirname(__FILE__)
       )
+      start = Time.now
+      deleted = DeregistrationDates.deleted_in(dir)
+      puts format("%d Loeschungen aus den med-drugs-Exporten (%s bis %s), %.1fs",
+        deleted.size, deleted.values.min, deleted.values.max, Time.now - start)
+      puts
       fixer = DeregistrationDates.new(source.index, source.dates,
-        apply: apply, undo_log: undo)
+        apply: apply, undo_log: undo, deleted: deleted)
 
       registrations = []
       app.each_registration { |reg|

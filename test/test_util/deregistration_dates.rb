@@ -27,8 +27,9 @@ module ODDB
       @index = {"00450" => Date.new(2014, 2, 17), "00999" => Date.new(2026, 8, 6)}
     end
 
-    def fixer(apply: false, authorised: {"70001" => true})
-      DeregistrationDates.new(@index, DATES, apply: apply, authorised: authorised)
+    def fixer(apply: false, authorised: {"70001" => true}, deleted: {})
+      DeregistrationDates.new(@index, DATES, apply: apply,
+        authorised: authorised, deleted: deleted)
     end
 
     def registration(opts = {})
@@ -218,6 +219,45 @@ module ODDB
       reg.should_receive(:inactive_date=).never
       assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
       assert_equal(1, f.counts[:keine_praeparateliste])
+    end
+
+    # --- med-drugs als dritte Quelle ---
+
+    # Vor der ersten Packungsliste (2008-03-28) bleibt nur der Tag, an dem
+    # unser med-drugs-Export die Loeschung gemeldet hat (Flag 14). Kontexin
+    # Retard stand auf 2017-09-27 und war laut med-drugs seit 2004-10-13 weg.
+    def test_a_registration_before_the_lists_is_dated_from_med_drugs
+      f = fixer(apply: true, deleted: {"46466" => Date.new(2004, 10, 13)})
+      reg = registration(iksnr: "46466")
+      reg.should_receive(:inactive_date=).with(Date.new(2004, 10, 13)).once
+      reg.should_receive(:odba_isolated_store).once
+      assert_equal(Date.new(2004, 10, 13), f.examine(reg))
+      assert_equal(1, f.counts[:korrigiert])
+      assert_equal(1, f.counts[:korrigiert_via_med_drugs])
+    end
+
+    # Stand sie je in einer Packungsliste, ist die feiner und gewinnt -
+    # auch wenn med-drugs ein anderes Datum kennt.
+    def test_the_package_list_wins_over_med_drugs
+      f = fixer(apply: true, deleted: {"00450" => Date.new(2004, 10, 13)})
+      reg = registration
+      reg.should_receive(:inactive_date=).with(Date.new(2014, 6, 12)).once
+      reg.should_receive(:odba_isolated_store).once
+      f.examine(reg)
+      assert_equal(1, f.counts[:korrigiert_via_packungsliste])
+      assert_equal(0, f.counts[:korrigiert_via_med_drugs])
+    end
+
+    def test_without_either_source_it_stays_undatable
+      f = fixer(apply: true)
+      f.examine(registration(iksnr: "12345"))
+      assert_equal(1, f.counts[:nicht_datierbar])
+    end
+
+    def test_the_med_drugs_date_comes_from_the_file_name
+      assert_equal(Date.new(2004, 1, 15),
+        DeregistrationDates.med_drugs_date_of("data/xls/med-drugs-20040115.xls"))
+      assert_nil(DeregistrationDates.med_drugs_date_of("data/xls/med-drugs-latest.xls"))
     end
 
     def test_the_snapshot_date_comes_from_the_file_name
