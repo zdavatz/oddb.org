@@ -335,6 +335,13 @@ table.tabnavigation td {
 table.tabnavigation td:first-child {
   padding : 4px 2px 4px 5px;
 }
+/* Der Trennstrich zwischen den Zonen: dieselbe Schrift wie die Links,
+   sonst steht ein 14px-Strich neben 13px-fettem Text sichtbar zu hoch. */
+table.tabnavigation td.tabnavigation-divider {
+  font-size      : 13px;
+  font-weight    : bold;
+  vertical-align : middle;
+}
 table.tabnavigation td:last-child {
   padding : 4px 5px 4px 2px;
 }

@@ -33,7 +33,12 @@ module ODDB
           components.store(pos, zone)
           component_css_map.store(pos, "tabnavigation")
           if idx > 0
-            components.store([idx * 2 - 1, 0], :tabnavigation_divider)
+            # Der Strich bekommt eine eigene Klasse, sonst erbt seine Zelle
+            # td { font-size: 14px } und steht neben den 13px-fetten Links
+            # sichtbar zu hoch. Ohne Klasse laesst er sich nicht ansprechen.
+            divider = [idx * 2 - 1, 0]
+            components.store(divider, :tabnavigation_divider)
+            component_css_map.store(divider, "tabnavigation-divider")
           end
         }
       end
@@ -50,7 +55,12 @@ module ODDB
           components.store(pos, zone)
           component_css_map.store(pos, "tabnavigation")
           if idx > 0
-            components.store([idx * 2 - 1, 0], :tabnavigation_divider)
+            # Der Strich bekommt eine eigene Klasse, sonst erbt seine Zelle
+            # td { font-size: 14px } und steht neben den 13px-fetten Links
+            # sichtbar zu hoch. Ohne Klasse laesst er sich nicht ansprechen.
+            divider = [idx * 2 - 1, 0]
+            components.store(divider, :tabnavigation_divider)
+            component_css_map.store(divider, "tabnavigation-divider")
           end
         }
       end

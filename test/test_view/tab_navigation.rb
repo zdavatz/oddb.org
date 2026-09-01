@@ -29,14 +29,25 @@ module ODDB
         @composite = ODDB::View::TabNavigation.new(@model, @session)
       end
 
+      # Die Trennzelle zwischen zwei Zonen traegt seit 01.09.2026 eine
+      # eigene Klasse: ohne sie erbt sie td { font-size: 14px } und der
+      # Strich steht neben den 13px-fetten Links sichtbar zu hoch.
       def test_init
-        expected = {[0, 0] => "tabnavigation", [2, 0] => "tabnavigation"}
+        expected = {
+          [0, 0] => "tabnavigation",
+          [1, 0] => "tabnavigation-divider",
+          [2, 0] => "tabnavigation"
+        }
         assert_equal(expected, @composite.init)
       end
 
       def test_init__enabled
         flexmock(@lnf, enabled?: true)
-        expected = {[0, 0] => "tabnavigation", [2, 0] => "tabnavigation"}
+        expected = {
+          [0, 0] => "tabnavigation",
+          [1, 0] => "tabnavigation-divider",
+          [2, 0] => "tabnavigation"
+        }
         assert_equal(expected, @composite.init)
       end
 
