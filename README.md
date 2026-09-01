@@ -42,7 +42,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 `bundle exec ruby jobs/repair_pointer_index` reports rows of the `oddb_persistence_pointer` index that do not lead to the object the pointer names; `--apply` deletes them and writes an undo log. Two sorts: rows whose target is an `Array` or `Hash` — those are the dangerous ones, `find_by_pointer` hands them out — and rows whose target no longer exists, which are inert leftovers of earlier repairs. Dry by default, exits non-zero on a find.
 
 ### Deactivate registrations Swissmedic no longer lists
-`bundle exec ruby jobs/deactivate_vanished_registrations` reports registrations that are still active but have dropped out of the Packungen lists and whose authorisation has expired; `--apply` deactivates them with the date of the first list that missed them.
+`bundle exec ruby jobs/deactivate_vanished_registrations` reports registrations that are still active but have dropped out of the Packungen lists **and are no longer in `Präparateliste-latest.xlsx`**; `--apply` deactivates them with the date of the first list that missed them. The Präparateliste is required — without it an export authorisation, which has no Swiss package and so never appears in the Packungen list, cannot be told from one that was struck off.
 
 ### Correct the de-registration dates
 `bundle exec ruby jobs/fix_deregistration_dates` compares `inactive_date` against the Swissmedic Packungen lists in `data/xls` and reports what is wrong; `--apply` writes it and logs every change for undo.
