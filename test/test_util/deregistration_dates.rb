@@ -107,6 +107,86 @@ module ODDB
       assert_equal(1, f.counts[:nicht_datierbar])
     end
 
+    # --- verschwundene, noch aktive Registrierungen ---
+
+    def vanished_reg(opts = {})
+      reg = flexmock("registration")
+      reg.should_receive(:iksnr).and_return(opts.fetch(:iksnr, "00450"))
+      reg.should_receive(:inactive?).and_return(opts.fetch(:inactive, false))
+      reg.should_receive(:renewal_flag).and_return(opts[:renewal])
+      reg.should_receive(:expiration_date).and_return(opts.fetch(:expiry, Date.new(2015, 1, 1)))
+      reg
+    end
+
+    def test_a_vanished_and_expired_registration_is_deactivated
+      reg = vanished_reg
+      reg.should_receive(:inactive_date=).with(Date.new(2014, 6, 12)).once
+      reg.should_receive(:odba_isolated_store).once
+      f = fixer(apply: true)
+      assert_equal(Date.new(2014, 6, 12), f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:deaktiviert])
+    end
+
+    # 41 Registrierungen sind aus der Packungsliste gefallen, waehrend ihre
+    # Zulassung bis 2028/2029 laeuft - alle mit null Packungen. Aus der
+    # Liste fallen heisst "keine Packung im Handel", nicht "widerrufen".
+    def test_a_registration_still_authorised_is_left_alone
+      f = fixer(apply: true)
+      reg = vanished_reg(expiry: Date.new(2029, 12, 19))
+      reg.should_receive(:inactive_date=).never
+      assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:zulassung_laeuft])
+    end
+
+    # Wer nie in einer Liste stand, ist nicht verschwunden - darunter die
+    # frisch Zugelassenen, die nach dem letzten Snapshot kamen.
+    def test_a_registration_never_listed_is_left_alone
+      f = fixer(apply: true)
+      reg = vanished_reg(iksnr: "70893")
+      reg.should_receive(:inactive_date=).never
+      assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:nie_gelistet])
+    end
+
+    # Zwei verschiedene Gruende, nicht anzufassen, und der Bericht muss
+    # sie auseinanderhalten: 6299 stehen noch in der neuesten Liste, 163
+    # standen nie in einer.
+    def test_a_registration_still_in_the_newest_list_is_counted_separately
+      f = fixer(apply: true)
+      reg = vanished_reg(iksnr: "00999")
+      reg.should_receive(:inactive_date=).never
+      f.vanished(reg, Date.new(2026, 9, 1))
+      assert_equal(1, f.counts[:noch_gelistet])
+      assert_equal(0, f.counts[:nie_gelistet])
+    end
+
+    def test_a_pending_renewal_is_left_alone
+      f = fixer(apply: true)
+      reg = vanished_reg(renewal: true)
+      reg.should_receive(:inactive_date=).never
+      assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:verlaengerung])
+    end
+
+    def test_an_already_inactive_registration_is_left_alone
+      f = fixer(apply: true)
+      reg = vanished_reg(inactive: true)
+      reg.should_receive(:inactive_date=).never
+      f.vanished(reg, Date.new(2026, 9, 1))
+      assert_equal(1, f.counts[:inaktiv])
+    end
+
+    # Ohne Verfalldatum bleibt das Verschwinden aus der Liste der einzige
+    # Beleg, und der genuegt.
+    def test_a_registration_without_an_expiry_is_deactivated
+      reg = vanished_reg(expiry: nil)
+      reg.should_receive(:inactive_date=).once
+      reg.should_receive(:odba_isolated_store).once
+      f = fixer(apply: true)
+      f.vanished(reg, Date.new(2026, 9, 1))
+      assert_equal(1, f.counts[:deaktiviert])
+    end
+
     def test_the_snapshot_date_comes_from_the_file_name
       assert_equal(Date.new(2026, 8, 6),
         DeregistrationDates.date_of("data/xls/Packungen-2026.08.06.xlsx"))

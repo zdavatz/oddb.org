@@ -1,0 +1,57 @@
+#!/usr/local/bin/ruby
+# Deaktiviert Registrierungen, die aus den Swissmedic-Packungslisten
+# verschwunden sind und deren Zulassung abgelaufen ist - mit dem Datum der
+# ersten Liste, in der sie fehlten. Siehe
+# src/util/deregistration_dates.rb.
+#
+#   bundle exec ruby jobs/deactivate_vanished_registrations           # zaehlen
+#   bundle exec ruby jobs/deactivate_vanished_registrations --apply
+#
+# Nicht angefasst wird, wer nie in einer Liste stand (frisch zugelassen),
+# wessen Zulassung heute noch laeuft (zugelassen, aber nicht vermarktet)
+# und wer eine Verlaengerung angemeldet hat.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/deregistration_dates"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+      dir = File.expand_path("../data/xls", File.dirname(__FILE__))
+
+      start = Time.now
+      source = DeregistrationDates.from_directory(dir)
+      puts format("%d Swissmedic-Listen gelesen (%s bis %s), %d IKSNR, %.1fs",
+        source.dates.size, source.dates.first, source.dates.last,
+        source.index.size, Time.now - start)
+      abort "keine Packungen-Listen in #{dir}" if source.dates.empty?
+      puts
+
+      undo = File.expand_path(
+        "../log/deactivate_vanished-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__)
+      )
+      job = DeregistrationDates.new(source.index, source.dates,
+        apply: apply, undo_log: undo)
+
+      registrations = []
+      app.each_registration { |reg|
+        r = reg.respond_to?(:odba_instance) ? reg.odba_instance : reg
+        registrations << r if r.is_a?(ODDB::Registration)
+      }
+      puts "#{registrations.size} Registrierungen"
+      job.run(registrations, :vanished)
+      job.report
+      puts
+      if apply
+        puts "alte Werte in #{undo} (Spalten: iksnr, expiration_date, gesetztes inactive_date)"
+      else
+        puts "ohne --apply nichts geaendert"
+      end
+    end
+  end
+end

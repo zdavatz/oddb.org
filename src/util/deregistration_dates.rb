@@ -46,7 +46,7 @@ module ODDB
     # keine Korrektur wert.
     TOLERANCE_DAYS = 45
 
-    attr_reader :counts, :dates, :index, :changes
+    attr_reader :counts, :dates, :index, :changes, :deactivations
 
     # index: { "00450" => Date } - letztes Auftreten je IKSNR.
     # dates: alle Snapshot-Daten, sortiert.
@@ -60,12 +60,57 @@ module ODDB
       # Was geaendert wuerde, auch im Trockenlauf - eine Zahl allein
       # laesst sich nicht nachpruefen.
       @changes = []
+      @deactivations = []
     end
 
-    def self.from_directory(dir)
+    # Das Lesen der 349 Listen dauert acht Minuten, fast alles davon die
+    # 108 alten .xls. Der Index haengt nur an den Dateien, und die aendern
+    # sich einmal im Monat - also einmal lesen und ablegen. Der Stempel
+    # zaehlt Dateien und nimmt die neueste mtime; kommt eine Liste dazu,
+    # passt er nicht mehr und der Cache wird verworfen.
+    CACHE = ".packungen_index.tsv"
+
+    def self.from_directory(dir, cache: true)
+      paths = Dir.glob(File.join(dir, SNAPSHOT_GLOB), File::FNM_EXTGLOB).sort
+      stamp = "#{paths.size}\t#{paths.collect { |p| File.mtime(p).to_i }.max}"
+      cache_file = File.join(dir, CACHE)
+      if cache && (cached = read_cache(cache_file, stamp))
+        return cached
+      end
+      source = build(paths)
+      write_cache(cache_file, stamp, source) if cache
+      source
+    end
+
+    def self.read_cache(path, stamp)
+      return nil unless File.exist?(path)
+      lines = File.readlines(path, chomp: true)
+      return nil unless lines.shift == stamp
       index = {}
       dates = []
-      Dir.glob(File.join(dir, SNAPSHOT_GLOB), File::FNM_EXTGLOB).sort.each { |path|
+      lines.each { |line|
+        key, value = line.split("\t")
+        (key == "!") ? dates << Date.parse(value) : index[key] = Date.parse(value)
+      }
+      new(index, dates)
+    rescue
+      nil
+    end
+
+    def self.write_cache(path, stamp, source)
+      File.open(path, "w") { |file|
+        file.puts(stamp)
+        source.dates.each { |date| file.puts("!\t#{date}") }
+        source.index.each { |key, date| file.puts("#{key}\t#{date}") }
+      }
+    rescue
+      nil
+    end
+
+    def self.build(paths)
+      index = {}
+      dates = []
+      paths.each { |path|
         date = date_of(path)
         next unless date
         dates << date
@@ -141,8 +186,8 @@ module ODDB
       @dates.find { |date| date > last }
     end
 
-    def run(registrations)
-      registrations.each { |reg| examine(reg) }
+    def run(registrations, mode = :examine)
+      registrations.each { |reg| send(mode, reg) }
       flush_undo
       @counts
     end
@@ -179,6 +224,52 @@ module ODDB
       nil
     end
 
+    # Registrierungen, die aus den Swissmedic-Listen verschwunden sind und
+    # bei uns noch als aktiv stehen. Zwei Ausnahmen, beide gemessen und
+    # beide notwendig:
+    #
+    #   * Wer nie in einer Liste stand, ist nicht "verschwunden" - das sind
+    #     419, darunter die frisch zugelassenen (70893 Comirnaty XFG,
+    #     70418 Triofan Levodrop), die nach dem letzten Snapshot kamen.
+    #   * Wessen Zulassung heute noch laeuft, ist nicht widerrufen. 41 sind
+    #     aus der Packungsliste gefallen, obwohl ihre Zulassung bis 2028
+    #     oder 2029 reicht - alle mit null Packungen: zugelassen, aber
+    #     nicht vermarktet. Aus der Liste fallen heisst "keine Packung im
+    #     Handel", nicht "Zulassung erloschen".
+    #
+    # Und ein `renewal_flag` heisst, dass eine Verlaengerung laeuft.
+    def vanished(reg, today = Date.today)
+      return tally(:inaktiv) if reg.inactive?
+      truth = deregistered_on(reg.iksnr)
+      if truth.nil?
+        # nil heisst zweierlei: nie in einer Liste gestanden, oder noch in
+        # der neuesten. Beide bleiben unangetastet, aber sie im Bericht
+        # zusammenzuwerfen verschleiert, wovon 6299 die eine und 163 die
+        # andere Sorte sind.
+        return tally(@index.key?(reg.iksnr.to_s) ? :noch_gelistet : :nie_gelistet)
+      end
+      return tally(:verlaengerung) if reg.renewal_flag
+      expiry = reg.expiration_date
+      return tally(:zulassung_laeuft) if expiry.respond_to?(:year) && expiry > today
+      tally(:deaktiviert)
+      @deactivations.push([reg.iksnr, expiry, truth])
+      @undo.push("#{reg.iksnr}\t#{expiry}\t#{truth}")
+      if @apply
+        reg.inactive_date = truth
+        reg.odba_isolated_store
+      end
+      truth
+    rescue => error
+      tally(:fehler)
+      nr = begin
+        reg.iksnr
+      rescue
+        "?"
+      end
+      LogFile.debug("DeregistrationDates vanished #{nr}: #{error.class} #{error.message}")
+      nil
+    end
+
     def tally(key)
       @counts[key] += 1
       nil
@@ -195,6 +286,18 @@ module ODDB
       @counts.sort_by { |_key, count| -count }.each { |key, count|
         puts format("  %-20s %7d", key, count)
       }
+      unless @deactivations.empty?
+        puts
+        puts "=== deaktiviert (Verfall -> gesetztes Datum) ==="
+        @deactivations.sort_by { |_, _, set| set }.first(10).each { |iksnr, expiry, set|
+          puts format("  %-6s Verfall %-11s -> weg seit %s", iksnr, expiry || "keiner", set)
+        }
+        puts
+        puts "=== gesetzte Daten nach Jahr ==="
+        @deactivations.group_by { |_, _, set| set.year }.sort.each { |year, rows|
+          puts format("  %s  %5d", year, rows.size)
+        }
+      end
       return if @changes.empty?
       puts
       puts "=== groesste Verschiebungen ==="
