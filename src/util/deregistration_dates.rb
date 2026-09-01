@@ -36,7 +36,9 @@ require "zip"
 
 module ODDB
   class DeregistrationDates
-    SNAPSHOT_GLOB = "Packungen-*.xlsx"
+    # Beide Formate: Swissmedic hat bis Ende 2013 .xls geliefert, seit 2014
+    # .xlsx. Zusammen decken sie 2008-03-28 bis heute ab.
+    SNAPSHOT_GLOB = "Packungen-*.xls{,x}"
     SHEET = "xl/worksheets/sheet1.xml"
     # Kopfzeilen der Swissmedic-Datei; die Daten beginnen bei 7.
     FIRST_DATA_ROW = 7
@@ -63,7 +65,7 @@ module ODDB
     def self.from_directory(dir)
       index = {}
       dates = []
-      Dir.glob(File.join(dir, SNAPSHOT_GLOB)).sort.each { |path|
+      Dir.glob(File.join(dir, SNAPSHOT_GLOB), File::FNM_EXTGLOB).sort.each { |path|
         date = date_of(path)
         next unless date
         dates << date
@@ -77,8 +79,22 @@ module ODDB
     # Packungen-2026.08.06.xlsx -> Date. Packungen-latest.xlsx traegt kein
     # Datum und wird uebergangen - es ist eine Kopie der neuesten Liste.
     def self.date_of(path)
-      File.basename(path)[/Packungen-(\d{4})\.(\d{2})\.(\d{2})\.xlsx\z/] or return nil
+      File.basename(path)[/Packungen-(\d{4})\.(\d{2})\.(\d{2})\.xlsx?\z/] or return nil
       Date.new($1.to_i, $2.to_i, $3.to_i)
+    end
+
+    # Aus einer Zelle der Spalte A eine IKSNR machen, oder nil. Die Formate
+    # sind uneinheitlich, und zwar innerhalb der .xls-Reihe: bis 2013 steht
+    # dort Text mit fuehrender Null ("08537"), danach eine Zahl (274.0),
+    # und im .xlsx eine Zahl ohne fuehrende Null. Kopfzeilen fallen von
+    # selbst weg, weil sie diesem Muster nicht entsprechen.
+    def self.iksnr_from(value)
+      text = value.is_a?(Numeric) ? value.to_i.to_s : value.to_s.strip
+      text = text.sub(/\.0\z/, "")
+      return nil unless /\A0*\d{1,5}\z/.match?(text)
+      number = text.to_i
+      return nil if number.zero?
+      "%05d" % number
     end
 
     # Nur Spalte A, und ohne den XLSX-Leser: RubyXL braucht 16 Sekunden je
@@ -90,11 +106,28 @@ module ODDB
     # findet man die 199 alten Registrierungen nicht wieder, die mit einer
     # Null beginnen (00268 M-M-R-II, 00300 Serocytol, 08671 Alka-Seltzer).
     def self.iksnrs_in(path)
+      return iksnrs_in_xls(path) if File.extname(path) == ".xls"
       found = {}
       Zip::File.open(path) { |zip|
         entry = zip.find_entry(SHEET) or return found.keys
         entry.get_input_stream.read.scan(/<c r="A(\d+)"[^>]*><v>(\d+)</) { |row, value|
-          found["%05d" % value.to_i] = true if row.to_i >= FIRST_DATA_ROW
+          next if row.to_i < FIRST_DATA_ROW
+          nr = iksnr_from(value) and found[nr] = true
+        }
+      }
+      found.keys
+    end
+
+    # Das alte Format ist kein Zip, hier hilft nur ein Excel-Leser. Rund
+    # eine Sekunde je Datei - bei 108 Dateien vertretbar, und es sind die
+    # Jahre 2008 bis 2013, die sonst ganz fehlen.
+    def self.iksnrs_in_xls(path)
+      require "spreadsheet"
+      Spreadsheet.client_encoding = "UTF-8"
+      found = {}
+      Spreadsheet.open(path) { |book|
+        book.worksheet(0).each { |row|
+          nr = iksnr_from(row[0]) and found[nr] = true
         }
       }
       found.keys

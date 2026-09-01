@@ -113,6 +113,32 @@ module ODDB
       assert_nil(DeregistrationDates.date_of("data/xls/Packungen-latest.xlsx"))
     end
 
+    # Swissmedic lieferte bis Ende 2013 .xls, seither .xlsx. Wer nur den
+    # neuen Namen kennt, verliert die Jahre 2008 bis 2013 - 108 Listen.
+    def test_the_old_xls_files_count_too
+      assert_equal(Date.new(2008, 3, 28),
+        DeregistrationDates.date_of("data/xls/Packungen-2008.03.28.xls"))
+    end
+
+    # Drei Schreibweisen derselben Nummer, und alle kommen vor: Text mit
+    # fuehrender Null (.xls bis 2012), Gleitkommazahl (.xls 2013), Zahl
+    # ohne fuehrende Null (.xlsx).
+    def test_every_written_form_of_an_iksnr_yields_the_same_number
+      assert_equal("08537", DeregistrationDates.iksnr_from("08537"))
+      assert_equal("00274", DeregistrationDates.iksnr_from(274.0))
+      assert_equal("00274", DeregistrationDates.iksnr_from("274.0"))
+      assert_equal("00450", DeregistrationDates.iksnr_from("450"))
+      assert_equal("62822", DeregistrationDates.iksnr_from(62822))
+    end
+
+    def test_a_header_cell_is_not_an_iksnr
+      assert_nil(DeregistrationDates.iksnr_from("Zulassungs-Nummer"))
+      assert_nil(DeregistrationDates.iksnr_from(nil))
+      assert_nil(DeregistrationDates.iksnr_from(""))
+      assert_nil(DeregistrationDates.iksnr_from(0))
+      assert_nil(DeregistrationDates.iksnr_from("1229108977"))
+    end
+
     # Die IKSNR steht in der Datei als blanke Zahl - `00450` als `450`.
     # Ohne das Auffuellen findet man die 199 Registrierungen mit fuehrender
     # Null nicht wieder.
