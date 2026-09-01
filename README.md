@@ -113,11 +113,11 @@ The fix is a Postgres sequence, `odba_id_seq`, created at `MAX(odba_id) + 100000
 
 Note `ext/readonly/bin/readonlyd`: it requires `etc/db_connection` directly and never loads `oddbapp`, so it needs the patch required explicitly. That is also the argument for releasing the fix in odba itself rather than living with a monkey-patch — the next process added that way brings the bug back silently, and `yus` depends on `odba (>= 1.1.6)` with the same weakness in its own database.
 
-### odba 1.2.2, and why the Gemfile still says 1.1.9
+### odba 1.2.2 and 1.2.3, and why the shim stays
 
 Both fixes are released as odba 1.2.2 (`github.com/zdavatz/odba`, tag `v1.2.2`): `Storage#next_id` takes the id from the `odba_id_seq` sequence that `#setup` creates, and `Cache#next_id` catches only `DRb::DRbError` so a peer conflict reaches the retry. The sequence's start value is computed from `MAX(odba_id)` plus a gap and has to be — a plain `CREATE SEQUENCE` starts at 1 and would re-issue ids that already exist.
 
-The Gemfile moved to `odba 1.2.2` on 31.08.2026. Note that `bundle install` alone would never have done it — the version is pinned exactly, so the Gemfile line had to change.
+The Gemfile moved to `odba 1.2.2` on 31.08.2026 and to `odba 1.2.3` on 01.09.2026 (see below). Note that `bundle install` alone would never have done it — the version is pinned exactly, so the Gemfile line had to change.
 
 Two things had to happen first. 1.2.0 deleted `lib/odba/18_19_loading_compatibility.rb` while `oddbapp.rb` required it, which would have been an immediate `LoadError` in all four backends; that file now lives unchanged in the tree as `src/util/odba_18_19_compat.rb`, because the two `Descriptions` objects that would not migrate still need it. And `src/util/odba_id_patch.rb` disables itself with `return if ODBA::Storage.method_defined?(:id_sequence?)` — it stays on disk so that dropping back to 1.1.9 does not quietly reintroduce the id collisions, and so `readonlyd` keeps its require. Its tests were rewritten to assert the guarantee (is there a shared id source at all; does a peer conflict yield a new id) rather than our implementation, which after the upgrade would have been testing a no-op and staying green.
 
@@ -226,7 +226,11 @@ Two things worth carrying away from that hunt. `ODBA::Stub#is_a?` answers from t
 
 On 1 September 2026 the Fach- and Patinfo texts of **twenty registrations** were not reparsed. Three separate faults had to line up, and the chain is more useful than any of them on its own.
 
-`rebuild_indices` runs at 01:19 and failed on the last three indices in the definition file — `oddb_package_name_with_size` and its two siblings — with `invalid reference (druby://127.0.0.1:10000)`. `Util::Job.run` registers the job's cache with the **running application** through `system.peer_cache`, and the application holds that reference for the whole 42-minute run; a restart of port 8012 inside that window invalidates it, and the healthcheck only notices a backend that has been silent for a full minute. All 35 indices had been green from 27 to 31 August.
+`rebuild_indices` runs at 01:19 and failed on the last three indices in the definition file — `oddb_package_name_with_size` and its two siblings — with `invalid reference (druby://127.0.0.1:10000)`. `Util::Job.run` registers the job's cache with the **running application** through `system.peer_cache`; when that reference goes stale, `peer.reserve_next_id` throws on the next `next_id`.
+
+**That it reached the caller at all was a mistake of mine in odba 1.2.2**, on the first night under that version. 1.1.9 had `peer.reserve_next_id id rescue DRb::DRbError` — a modifier rescue with **no class**, absorbing every StandardError. 1.2.2 narrowed it to `DRb::DRbError` so that the `OdbaDuplicateIdError` a peer raises would reach the retry, which was the right intent; but `invalid reference` is a **`RangeError`** (`drb.rb:372`), not a `DRbError`. The dates line up: the Gemfile moved to 1.2.2 on 31.08. at 19:08, `invalid reference` appears in no cron log before that run, and all 35 indices were green from 27 to 31 August.
+
+odba 1.2.3 catches `OdbaDuplicateIdError` first and re-raises it, and swallows every other StandardError from a peer the way 1.1.9 did. Two regression tests, one per direction; the stale-reference one fails against 1.2.2 with the production error. **The lesson is the class, not the intent** — narrowing a bare rescue means knowing everything it used to catch, and here the gap between a correct intent and an outage was three indices and a missed reparse.
 
 An index without a table is a *deferred* index, and `ODBA::Cache#setup` fills it in the next process that starts — **before that process does any work of its own**. That is the amplification. `update_today` at 05:01 never reached its reparse; it died on the way up, in `IndexCommon#fill` → `Package#name_with_size` → `Package#size` → `@parts`.
 
@@ -235,6 +239,18 @@ One object was enough. Package 212202 (31862/035, Maliasin 100 mg) held a stub i
 **Repairing it made things worse on the first attempt**, in exactly the way this file already describes twice. `DanglingReferenceRepair` set `@parts = []` and stored the holder; the fresh `[]` is its own ODBA object and appears in the holder's dump only as a stub, so the dead reference 61866868 was swapped for a fresh dead reference 62051253. The job reported "1 cleaned" both times — only re-reading in a **new process** showed it. `store` now writes the list first and on its own. `nil` needs none of this because nil is not an object, which is why the 3950 `@sl_entry` cases of the August repair came through intact and only the Array and Hash ones did not.
 
 And none of it was reported. `jobs/update_today` ended in a bare `system(cmd)` whose return value nobody looked at, so the job exited 0, the cron wrapper wrote `(exit 0)`, and no mail went out — the same shape as the BSV import that reported success every morning for two months while importing nothing. It passes the status through now. Note also that `update_fachinfo_rss_feeds` ran normally five minutes later, because the crashed job had created the first index's table on its way down and it was no longer deferred: one job dies, the next is green again, which is how something like this survives without a log. Regression tests are in `test/test_util/dangling_reference_repair.rb`; the two load-bearing ones fail against the old code.
+
+### A killed job is not a plugin error
+
+`Updater#wrap_update` caught `rescue Exception`, so `SignalException`, `Interrupt` and `SystemExit` went through `notify_error` as well. A `kill` on a job therefore produced a mail headed **"Error: swissmedic"** with `Plugin: ODDB::SwissmedicPlugin` and a backtrace ending wherever the process happened to be — on 1 September 2026 inside the HTTP read of `SwissmedicPlugin#get_latest_file`. It reads as a broken Swissmedic import and was nothing of the kind: the run thirty seconds later finished with exit 0 and correctly established that Swissmedic still serves the file from 6 August, byte-identical at 3 274 214 bytes.
+
+The three signal classes are now caught **before** `rescue Exception`, logged, and **re-raised** without a mail. Re-raising is the load-bearing half: the outer bare rescue takes only `StandardError`, so the signal still ends the job. Every genuine plugin exception is reported exactly as before. standardrb flags this as `Lint/ShadowedException`, which is a false positive — `Exception` sits *after* the three and still catches everything else — and is disabled in place with the reason.
+
+No log says who sent the SIGTERM: neither cron nor `oddb_cron healthcheck` ever sends TERM to a job, the healthcheck knowing only the four rack services. That leaves the terminal, `screen`, or a `kill` by hand.
+
+The interrupted download left nothing half-written, which is where this could have become expensive: a truncated `Packungen-*.xlsx` on one side of the comparison produces exactly the `SwissmedicDiff SUSPECT` mass diff that ruined the med-drugs export in July. `get_latest_file` only writes the dated file once it differs from `Packungen-latest.xlsx`.
+
+Regression tests: `test/test_util/updater.rb`, five of them; the two load-bearing ones fail against the old code.
 
 ### A cron entry that lived in the repository and never ran
 
