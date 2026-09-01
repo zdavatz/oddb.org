@@ -35,8 +35,14 @@ module ODDB
         "../log/deactivate_vanished-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
         File.dirname(__FILE__)
       )
+      authorised = DeregistrationDates.authorised_in(dir)
+      if authorised.empty?
+        abort "#{DeregistrationDates::PREPARATIONS} fehlt in #{dir} - ohne sie " \
+          "ist eine Exportzulassung nicht von einer erloschenen zu unterscheiden"
+      end
+      puts "#{authorised.size} Zulassungen in der Praeparateliste"
       job = DeregistrationDates.new(source.index, source.dates,
-        apply: apply, undo_log: undo)
+        apply: apply, undo_log: undo, authorised: authorised)
 
       registrations = []
       app.each_registration { |reg|

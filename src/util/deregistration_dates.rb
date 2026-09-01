@@ -53,6 +53,10 @@ module ODDB
     def initialize(index, dates, opts = {})
       @index = index
       @dates = dates.sort
+      # Alles, was Swissmedic heute als Zulassung fuehrt. Leer heisst
+      # "nicht geprueft" - dann deaktiviert #vanished nichts, denn ohne
+      # diese Liste laesst sich eine Exportzulassung nicht erkennen.
+      @authorised = opts[:authorised] || {}
       @apply = opts[:apply]
       @undo_log = opts[:undo_log]
       @counts = Hash.new(0)
@@ -69,6 +73,13 @@ module ODDB
     # zaehlt Dateien und nimmt die neueste mtime; kommt eine Liste dazu,
     # passt er nicht mehr und der Cache wird verworfen.
     CACHE = ".packungen_index.tsv"
+    # Die zweite Quelle, und ohne sie ist die erste gefaehrlich: die
+    # Praeparateliste fuehrt die *Zulassungen*, die Packungsliste nur die
+    # Packungen. Eine Exportzulassung hat keine Packung fuer den Schweizer
+    # Markt und steht deshalb nie in der Packungsliste - sie ist trotzdem
+    # zugelassen. Am 01.09.2026 waren 369 von 987 Deaktivierungen genau
+    # das und mussten zurueckgenommen werden.
+    PREPARATIONS = "Präparateliste-latest.xlsx"
 
     def self.from_directory(dir, cache: true)
       paths = Dir.glob(File.join(dir, SNAPSHOT_GLOB), File::FNM_EXTGLOB).sort
@@ -178,6 +189,23 @@ module ODDB
       found.keys
     end
 
+    # Die IKSNR aller heute gefuehrten Zulassungen, aus
+    # Präparateliste-latest.xlsx. Gleicher Trick wie bei der Packungsliste:
+    # Spalte A aus dem rohen Sheet-XML, das spart den XLSX-Leser.
+    def self.authorised_in(dir)
+      path = File.join(dir, PREPARATIONS)
+      return {} unless File.exist?(path)
+      found = {}
+      Zip::File.open(path) { |zip|
+        entry = zip.find_entry(SHEET) or return found
+        entry.get_input_stream.read.scan(/<c r="A(\d+)"[^>]*><v>(\d+)</) { |row, value|
+          next if row.to_i < FIRST_DATA_ROW
+          nr = iksnr_from(value) and found[nr] = true
+        }
+      }
+      found
+    end
+
     # Der erste Snapshot nach dem letzten Auftritt: bis dahin war sie da,
     # dort nicht mehr. nil, wenn sie noch in der neuesten Liste steht oder
     # nie in einer stand.
@@ -239,7 +267,13 @@ module ODDB
     #
     # Und ein `renewal_flag` heisst, dass eine Verlaengerung laeuft.
     def vanished(reg, today = Date.today)
+      return tally(:keine_praeparateliste) if @authorised.empty?
       return tally(:inaktiv) if reg.inactive?
+      # Steht sie in der Praeparateliste, ist sie zugelassen - Punkt. Das
+      # Verfalldatum taugt dafuer nicht: Exportzulassungen tragen oft gar
+      # keines ("unbegrenzt"), und ein `expiry > today` laesst nil glatt
+      # durch.
+      return tally(:zugelassen) if @authorised.key?(reg.iksnr.to_s)
       truth = deregistered_on(reg.iksnr)
       if truth.nil?
         # nil heisst zweierlei: nie in einer Liste gestanden, oder noch in

@@ -27,8 +27,8 @@ module ODDB
       @index = {"00450" => Date.new(2014, 2, 17), "00999" => Date.new(2026, 8, 6)}
     end
 
-    def fixer(apply: false)
-      DeregistrationDates.new(@index, DATES, apply: apply)
+    def fixer(apply: false, authorised: {"70001" => true})
+      DeregistrationDates.new(@index, DATES, apply: apply, authorised: authorised)
     end
 
     def registration(opts = {})
@@ -176,15 +176,48 @@ module ODDB
       assert_equal(1, f.counts[:inaktiv])
     end
 
-    # Ohne Verfalldatum bleibt das Verschwinden aus der Liste der einzige
-    # Beleg, und der genuegt.
-    def test_a_registration_without_an_expiry_is_deactivated
+    # Dieser Test stand hier zuerst genau andersherum ("ohne Verfalldatum
+    # ist das Verschwinden der einzige Beleg, und der genuegt") und hat
+    # damit den Fehler festgeschrieben, der am 01.09.2026 369 von 987
+    # Deaktivierungen falsch gemacht hat. Eine Exportzulassung traegt oft
+    # gar kein Verfalldatum ("unbegrenzt"), fiel also durch den Riegel
+    # `expiry > today` glatt hindurch. Ohne Verfalldatum sagt allein die
+    # Praeparateliste, ob die Zulassung noch besteht.
+    def test_a_registration_without_an_expiry_but_still_authorised_is_left_alone
+      f = fixer(apply: true, authorised: {"00450" => true})
+      reg = vanished_reg(expiry: nil)
+      reg.should_receive(:inactive_date=).never
+      assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:zugelassen])
+    end
+
+    def test_a_registration_without_an_expiry_and_not_authorised_is_deactivated
       reg = vanished_reg(expiry: nil)
       reg.should_receive(:inactive_date=).once
       reg.should_receive(:odba_isolated_store).once
       f = fixer(apply: true)
       f.vanished(reg, Date.new(2026, 9, 1))
       assert_equal(1, f.counts[:deaktiviert])
+    end
+
+    # Eine Exportzulassung hat keine Packung fuer den Schweizer Markt und
+    # steht deshalb nie in der Packungsliste - zugelassen ist sie trotzdem.
+    def test_an_export_authorisation_is_never_deactivated
+      f = fixer(apply: true, authorised: {"00450" => true})
+      reg = vanished_reg(expiry: Date.new(2010, 1, 1))
+      reg.should_receive(:inactive_date=).never
+      assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:zugelassen])
+    end
+
+    # Ohne die Praeparateliste laesst sich das nicht unterscheiden - dann
+    # darf gar nichts deaktiviert werden.
+    def test_without_the_preparations_list_nothing_is_deactivated
+      f = fixer(apply: true, authorised: {})
+      reg = vanished_reg
+      reg.should_receive(:inactive_date=).never
+      assert_nil(f.vanished(reg, Date.new(2026, 9, 1)))
+      assert_equal(1, f.counts[:keine_praeparateliste])
     end
 
     def test_the_snapshot_date_comes_from_the_file_name
