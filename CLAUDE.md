@@ -447,7 +447,18 @@ None of this repairs the underlying data; it stops one broken reference from tak
 - **Vier Ausschluesse, jeder gemessen und jeder noetig.** 6714 stehen in der Praeparateliste (zugelassen). 147 standen nie in einer Packungsliste - darunter Zulassungen, die nach dem letzten Snapshot kamen (70893 Comirnaty XFG, 70418 Triofan Levodrop). 6 stehen noch in der aktuellen Packungsliste. Und 5 sind verschwunden, waehrend ihre Zulassung bis 2028/2029 laeuft, alle mit null Packungen: zugelassen, aber nicht vermarktet.
 - **Ein Zaehler, der zwei Faelle zusammenwirft, verschleiert genau das.** `deregistered_on` liefert `nil` sowohl fuer "nie gelistet" als auch fuer "steht noch in der neuesten Liste"; der Bericht meldete beides als `nie_gelistet` = 6462, und dass davon 6299 ein voellig anderer Fall sind, war nicht zu sehen. Getrennt gezaehlt.
 - **Das Lesen der 349 Listen dauert sieben Minuten**, fast alles davon die 108 alten `.xls` (`Spreadsheet`, ~3 s je Datei; das neue Format 0.2 s ueber das rohe Sheet-XML). Der Index liegt deshalb als `data/xls/.packungen_index.tsv` daneben, verschluesselt mit Dateizahl und neuester mtime: **410 s bauen, 0.09 s wiederverwenden**, Inhalt identisch. `data/xls/` ist gitignoriert.
-- **Offen, und wichtiger als die Reparatur: der Rueckstand waechst weiter.** Die 987 verteilen sich nicht auf ein Ereignis, sondern gleichmaessig ueber 2008–2026 (50, 43, 53, 31, 53, 74, 43, **55 allein 2026**), und im laufenden Jahr auf **jede** Monatspublikation: 8 am 07.01., 4 am 04.02., 2 am 05.03., 1 am 09.04., 1 am 06.05., 25 am 05.06., 8 am 04.07., 6 am 06.08. Der Swissmedic-Import uebersieht also Monat fuer Monat einige Registrierungen, die aus der Liste fallen - 40 bis 70 im Jahr. Warum, ist **nicht gemessen**; naheliegende Kandidaten sind ein Lauf, der zwischen zwei datierten Listen ausfiel (dann sieht der naechste Diff die Zwischendatei nie), und der Unterschied zwischen `registration_deletions` und `sequence_deletions` in `SwissmedicPlugin#deactivate`. Bis das geklaert ist, muss `jobs/deactivate_vanished_registrations` gelegentlich nachlaufen - er ist mit dem Cache in Sekunden durch.
+- **Es gibt kein laufendes Leck, und die gegenteilige Notiz hier war mein Auswertungsfehler.** Ich hatte gemeldet, der Rueckstand wachse weiter - 55 allein 2026, verteilt auf jede Monatspublikation. Nach Abzug der Exportzulassungen bleibt davon **nichts**:
+
+  | Jahr | echter Rueckstand | davon Exportzulassungen |
+  |---|---|---|
+  | 2022 | 15 | 16 |
+  | 2023 | 14 | 39 |
+  | 2024 | 14 | 60 |
+  | 2025 | **1** | 42 |
+  | 2026 | **0** | 55 |
+
+  Die 55 aus 2026 und 42 aus 2025 waren samt und sonders Exportzulassungen. Der echte Rueckstand liegt historisch (2011–2019: 42, 47, 82, 51, 70, 58, 39, 60, 34) und laeuft danach aus. **Der Swissmedic-Import deaktiviert korrekt**; ein wiederkehrender Lauf von `jobs/deactivate_vanished_registrations` ist nicht noetig.
+- **Die Lehre steckt in der Reihenfolge**: die auffaellige Zahl (55 im laufenden Jahr, 25 an einem Tag) sah nach einem aktiven Fehler aus und war ein Artefakt der Auswahl. Erst die Frage "was sind das fuer Praeparate?" hat es aufgeloest - die 25 vom 05.06.2026 waren 24 Provokations-Tests von Dermapharm und ein Dienogest, alle mit `pack=0` und ohne Verfalldatum. **Wer einen Block gleichartiger Nummern sieht, soll die Objekte anschauen, bevor er eine Ursache sucht.**
 - Regressionstests: `test/test_util/deregistration_dates.rb`, 22 Stueck.
 
 ### Ein abgeschossener Job ist kein Plugin-Fehler (01.09.2026)
