@@ -222,6 +222,26 @@ Two things worth carrying away from that hunt. `ODBA::Stub#is_a?` answers from t
 
 `jobs/repair_broken_active_agents` rebuilds a lost agent from the composition text by position, and refuses to act unless the intact neighbours sit where the text puts them.
 
+### One index that did not get built, and the job it killed the next morning
+
+On 1 September 2026 the Fach- and Patinfo texts of **twenty registrations** were not reparsed. Three separate faults had to line up, and the chain is more useful than any of them on its own.
+
+`rebuild_indices` runs at 01:19 and failed on the last three indices in the definition file — `oddb_package_name_with_size` and its two siblings — with `invalid reference (druby://127.0.0.1:10000)`. `Util::Job.run` registers the job's cache with the **running application** through `system.peer_cache`, and the application holds that reference for the whole 42-minute run; a restart of port 8012 inside that window invalidates it, and the healthcheck only notices a backend that has been silent for a full minute. All 35 indices had been green from 27 to 31 August.
+
+An index without a table is a *deferred* index, and `ODBA::Cache#setup` fills it in the next process that starts — **before that process does any work of its own**. That is the amplification. `update_today` at 05:01 never reached its reparse; it died on the way up, in `IndexCommon#fill` → `Package#name_with_size` → `Package#size` → `@parts`.
+
+One object was enough. Package 212202 (31862/035, Maliasin 100 mg) held a stub in `@parts` to a deleted object. Measured across every dangling edge in the database: **one package out of 14581**. The rest sit on `Hash`, `SimpleLanguage::Descriptions` and `Array`, which no index walks.
+
+**Repairing it made things worse on the first attempt**, in exactly the way this file already describes twice. `DanglingReferenceRepair` set `@parts = []` and stored the holder; the fresh `[]` is its own ODBA object and appears in the holder's dump only as a stub, so the dead reference 61866868 was swapped for a fresh dead reference 62051253. The job reported "1 cleaned" both times — only re-reading in a **new process** showed it. `store` now writes the list first and on its own. `nil` needs none of this because nil is not an object, which is why the 3950 `@sl_entry` cases of the August repair came through intact and only the Array and Hash ones did not.
+
+And none of it was reported. `jobs/update_today` ended in a bare `system(cmd)` whose return value nobody looked at, so the job exited 0, the cron wrapper wrote `(exit 0)`, and no mail went out — the same shape as the BSV import that reported success every morning for two months while importing nothing. It passes the status through now. Note also that `update_fachinfo_rss_feeds` ran normally five minutes later, because the crashed job had created the first index's table on its way down and it was no longer deferred: one job dies, the next is green again, which is how something like this survives without a log. Regression tests are in `test/test_util/dangling_reference_repair.rb`; the two load-bearing ones fail against the old code.
+
+### A cron entry that lived in the repository and never ran
+
+`update_patinfo_rss_feeds` was added to `bin/oddb_cron` on 30 August 2026 and had not run once by 1 September — there was no `log/cron/update_patinfo_rss_feeds-*.log` in any month. cron calls `/usr/local/sbin/oddb_cron`, and that copy still dated from 28 August, because `bin/install_crontab --apply` was never run afterwards. A job that does not run also does not fail, so nothing complained.
+
+This is the same trap as `etc/20_oddb.org.rack.conf` against the live Apache configuration: the file in the tree is not the file in use. `diff /usr/local/sbin/oddb_cron bin/oddb_cron` is the whole check and belongs to every change to `SCHEDULE`.
+
 ### The eight dead ActiveAgents, and the lists that were never there
 
 Walking all 15018 registrations on 29.08.2026 turned up eight sequences carrying an `ActiveAgent` that no longer resolves — always in the BAG composition, never in the Swissmedic one, and the dead ids consecutive (55257061..63, 55257069..72) on the alphabetically first drugs. That is the handwriting of a job that worked through the list in order and died after the eighth.
