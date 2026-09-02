@@ -33,7 +33,7 @@ The codebase is cross-platform (Linux and macOS). System-level calls (e.g. memor
 
 ### Multi-Service Architecture
 
-The app runs alongside several daemons (in `ext/`): export, meddata, refdata, swissindex, fiparse, swissreg. External services: Yus (auth, port 9997), MIGEL (port 33000). The main app listens on port 10000.
+The app runs alongside several daemons (in `ext/`): export, meddata, refdata, readonly, fiparse. Each is a daemontools service; `/etc/service/<name>` is a symlink to `svc/<name>/` in this checkout (gitignored). `swissreg` (code removed 2025) and `swissindex_nonpharma` (dead host) were removed as services on 02.09.2026; `ext/swissindex/` stays because `src/plugin/swissindex.rb` loads it for MIGEL. External services: Yus (auth, port 9997), MIGEL (port 33000). The main app listens on port 10000.
 
 **Important:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). Code changes to `ext/fiparse/src/` require restarting this daemon with `sudo svc -h /etc/service/fiparse` (HUP signal) for changes to take effect. The main app calls `@parser.parse_fachinfo_html(...)` via DRb, so the fiparse daemon must be running with the current code.
 
