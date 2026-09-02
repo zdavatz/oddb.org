@@ -342,7 +342,16 @@ module ODDB
           source = :verfall
         end
       end
-      return tally(:nicht_datierbar) if truth.nil?
+      if truth.nil?
+        # Nach einer Korrektur aus dem Verfalldatum steht dieses in
+        # `inactive_date`, `current == CLEANUP_DAY` ist dann falsch und der
+        # Rueckfall oben greift nicht mehr - der Datensatz faellt zurueck in
+        # :nicht_datierbar und sieht aus wie unerledigte Arbeit. Gemessen am
+        # 02.09.2026: 1150 statt 864, obwohl 286 davon datiert sind. Getrennt
+        # zaehlen, damit die Zahl liest, was sie meint.
+        return tally(:aus_verfall_datiert) if current == reg.expiration_date
+        return tally(:nicht_datierbar)
+      end
       diff = (current - truth).to_i
       return tally(:stimmt) if diff.abs <= TOLERANCE_DAYS
       # Frueher als der Beleg heisst, dass jemand mehr wusste als die

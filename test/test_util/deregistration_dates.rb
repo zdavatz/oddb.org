@@ -257,6 +257,36 @@ module ODDB
       assert_equal(1, f.counts[:nicht_datierbar])
     end
 
+    # Nach der Korrektur steht das Verfalldatum in `inactive_date`, der
+    # Rueckfall greift nicht mehr, und ohne diese Trennung faellt der
+    # Datensatz zurueck in :nicht_datierbar - 1150 statt 864 am
+    # 02.09.2026, obwohl 286 davon erledigt sind.
+    def test_a_date_taken_from_the_expiry_is_not_counted_as_undatable
+      f = fixer(apply: true)
+      f.examine(registration(iksnr: "12345", current: Date.new(2007, 10, 31),
+        expiry: Date.new(2007, 10, 31)))
+      assert_equal(1, f.counts[:aus_verfall_datiert])
+      assert_equal(0, f.counts[:nicht_datierbar])
+    end
+
+    # Ohne Verfalldatum bleibt es undatierbar - 808 der 1150 tragen keines.
+    def test_without_an_expiry_it_is_still_undatable
+      f = fixer(apply: true)
+      f.examine(registration(iksnr: "12345", current: Date.new(2007, 10, 31)))
+      assert_equal(1, f.counts[:nicht_datierbar])
+      assert_equal(0, f.counts[:aus_verfall_datiert])
+    end
+
+    # Ein Verfalldatum, das nicht dem gespeicherten Tag entspricht, sagt
+    # nichts - der Datensatz ist weiterhin unerledigt.
+    def test_an_expiry_that_differs_leaves_it_undatable
+      f = fixer(apply: true)
+      f.examine(registration(iksnr: "12345", current: Date.new(2007, 10, 31),
+        expiry: Date.new(2005, 3, 1)))
+      assert_equal(1, f.counts[:nicht_datierbar])
+      assert_equal(0, f.counts[:aus_verfall_datiert])
+    end
+
     # --- dritter Rueckfall: das Verfalldatum, nur am Aufraeumtag ---
 
     # Der Produktionsfall: alle 286, die am 27.09.2017 stehenblieben,
