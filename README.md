@@ -304,7 +304,7 @@ Five of them sit on a bulk day and still stay put: four on 2004-12-31 (132 regis
 
 ### 987 registrations Swissmedic had stopped listing
 
-The counterpart to correcting the dates: registrations that still count as active while they have dropped out of the Packungen lists, the oldest of them back in 2008. `jobs/deactivate_vanished_registrations` deactivates them with the date of the first list that missed them. Final state: **618 deactivated**, active from 7490 to 6872, inactive from 6824 to 7442. Undo in `log/deactivate_vanished-*.undo`.
+The counterpart to correcting the dates: registrations that still count as active while they have dropped out of the Packungen lists, the oldest of them back in 2008. `jobs/deactivate_vanished_registrations` deactivates them with the date of the first list that missed them. State on 1 September 2026: **618 deactivated**, active from 7490 to 6872, inactive from 6824 to 7442 — one more followed on 2 September, see below. Undo in `log/deactivate_vanished-*.undo`.
 
 **The first attempt deactivated 987, and 369 of those were wrong.** They are *Exportzulassungen* — authorised for export, with no package for the Swiss market, and therefore never in the Packungen list at all. Reading only that list cannot tell them apart from a registration that was struck off. They were reverted to `inactive_date = nil` (safe: not one registration in the whole database carries an `inactive_date` in the future), and a fresh process confirms none of the 369 is still inactive.
 
