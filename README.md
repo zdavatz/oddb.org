@@ -491,6 +491,7 @@ Posting is immediate; this API has no drafts, and images cannot be added to a po
 
 * To build your local documentation do:
   * rdoc1.9 --op documentation
+* Arbeitsregeln fuer Claude Code stehen in `CLAUDE.md` (nur was ueberall gilt); die Vorfall-Historie je Teilsystem liegt unter `.claude/skills/<name>/SKILL.md` und wird bei passender Aufgabe geladen. Neue Notizen gehoeren in den passenden Skill.
 
 ## Install
 

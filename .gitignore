@@ -51,3 +51,6 @@ devenv.local.nix
 .pre-commit-config.yaml
 
 ext/fiparse/test/dumps/
+
+# Claude Code: persoenliche Berechtigungen, nicht teilen
+.claude/settings.local.json
