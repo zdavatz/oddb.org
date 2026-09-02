@@ -38,6 +38,9 @@ module ODDB
       reg.should_receive(:inactive?).and_return(opts.fetch(:inactive, true))
       reg.should_receive(:manual_inactive_date).and_return(opts[:manual])
       reg.should_receive(:inactive_date).and_return(opts.fetch(:current, Date.new(2017, 9, 27)))
+      # Wird nur auf dem Aufraeumtag gelesen, und dort ist nil der
+      # Normalfall: 808 der 1150 Undatierbaren tragen gar keines.
+      reg.should_receive(:expiration_date).and_return(opts[:expiry])
       reg
     end
 
@@ -252,6 +255,73 @@ module ODDB
       f = fixer(apply: true)
       f.examine(registration(iksnr: "12345"))
       assert_equal(1, f.counts[:nicht_datierbar])
+    end
+
+    # --- dritter Rueckfall: das Verfalldatum, nur am Aufraeumtag ---
+
+    # Der Produktionsfall: alle 286, die am 27.09.2017 stehenblieben,
+    # tragen ein Verfalldatum, und jedes liegt 2002-2013. Der Aufraeumjob
+    # hat sie genau deswegen deaktiviert - `expiration_date < 2017-08`
+    # war sein Kriterium.
+    def test_the_cleanup_day_falls_back_to_the_expiry
+      f = fixer(apply: true)
+      reg = registration(iksnr: "51780", expiry: Date.new(2007, 10, 31))
+      reg.should_receive(:inactive_date=).with(Date.new(2007, 10, 31)).once
+      reg.should_receive(:odba_isolated_store).once
+      assert_equal(Date.new(2007, 10, 31), f.examine(reg))
+      assert_equal(1, f.counts[:korrigiert])
+      assert_equal(1, f.counts[:korrigiert_via_verfall])
+    end
+
+    # Die Begruendung haengt am Aufraeumjob, also gilt sie nur fuer
+    # dessen Tag. 2012-08-07 und die anderen grossen Tage sind normale
+    # Importtage - dort hat der Import echt gemessen.
+    def test_another_day_does_not_fall_back_to_the_expiry
+      f = fixer(apply: true)
+      reg = registration(iksnr: "51780", current: Date.new(2012, 8, 7),
+        expiry: Date.new(2007, 10, 31))
+      reg.should_receive(:inactive_date=).never
+      f.examine(reg)
+      assert_equal(1, f.counts[:nicht_datierbar])
+      assert_equal(0, f.counts[:korrigiert])
+    end
+
+    # Ein Verfall nach dem Aufraeumtag belegt kein frueheres Ende.
+    def test_an_expiry_after_the_cleanup_day_is_no_evidence
+      f = fixer(apply: true)
+      reg = registration(iksnr: "51780", expiry: Date.new(2018, 3, 1))
+      reg.should_receive(:inactive_date=).never
+      f.examine(reg)
+      assert_equal(1, f.counts[:nicht_datierbar])
+    end
+
+    def test_without_an_expiry_the_cleanup_day_stays_undatable
+      f = fixer(apply: true)
+      reg = registration(iksnr: "51780")
+      reg.should_receive(:inactive_date=).never
+      f.examine(reg)
+      assert_equal(1, f.counts[:nicht_datierbar])
+    end
+
+    # Rangfolge: gemessen schlaegt hergeleitet.
+    def test_the_package_list_wins_over_the_expiry
+      f = fixer(apply: true)
+      reg = registration(expiry: Date.new(2007, 10, 31))
+      reg.should_receive(:inactive_date=).with(Date.new(2014, 6, 12)).once
+      reg.should_receive(:odba_isolated_store).once
+      f.examine(reg)
+      assert_equal(1, f.counts[:korrigiert_via_packungsliste])
+      assert_equal(0, f.counts[:korrigiert_via_verfall])
+    end
+
+    def test_med_drugs_wins_over_the_expiry
+      f = fixer(apply: true, deleted: {"51780" => Date.new(2004, 10, 13)})
+      reg = registration(iksnr: "51780", expiry: Date.new(2007, 10, 31))
+      reg.should_receive(:inactive_date=).with(Date.new(2004, 10, 13)).once
+      reg.should_receive(:odba_isolated_store).once
+      f.examine(reg)
+      assert_equal(1, f.counts[:korrigiert_via_med_drugs])
+      assert_equal(0, f.counts[:korrigiert_via_verfall])
     end
 
     def test_the_med_drugs_date_comes_from_the_file_name

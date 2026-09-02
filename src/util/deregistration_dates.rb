@@ -45,6 +45,18 @@ module ODDB
     # Unterhalb dessen ist die Abweichung der Monatsraster der Listen und
     # keine Korrektur wert.
     TOLERANCE_DAYS = 45
+    # Der Tag, an dem `jobs/fix_expired_packages` (einmalig, 27.09.2017,
+    # am 12.11.2025 aus dem Baum entfernt) 2089 Registrierungen auf einen
+    # Schlag deaktiviert und ihnen `inactive_date: today` gegeben hat.
+    # Sein Kriterium war `expiration_date < 2017-08` - das Verfalldatum
+    # ist hier also nicht ein fremdes Feld, sondern der Ausloeser der
+    # Deaktivierung, und damit der beste Beleg, den es fuer diese Gruppe
+    # gibt. Nur fuer diesen einen Tag: die anderen grossen Tage
+    # (2012-08-07, 2011-07-04, 2014-03-06 ...) sind normale Importtage in
+    # der ersten Monatswoche, an denen der Import echt bemerkt hat, dass
+    # etwas aus der Packungsdatei fiel - die sind aus den Snapshots
+    # datierbar und brauchen diesen Rueckfall nicht.
+    CLEANUP_DAY = Date.new(2017, 9, 27)
 
     attr_reader :counts, :dates, :index, :changes, :deactivations, :deleted
 
@@ -317,6 +329,18 @@ module ODDB
         # ist die feiner und gewinnt.
         truth = @deleted[reg.iksnr.to_s]
         source = :med_drugs
+      end
+      if truth.nil? && current == CLEANUP_DAY
+        # Dritter Rueckfall, nur fuer den Aufraeumtag: das Verfalldatum.
+        # Es ist keine Messung des Tages, an dem Swissmedic sie aus der
+        # Liste nahm - aber es ist eine untere Schranke dafuer, und der
+        # gespeicherte 27.09.2017 ist nachweislich falsch. Spaeter als der
+        # Aufraeumtag taugt es nicht als Beleg.
+        expiry = reg.expiration_date
+        if expiry.respond_to?(:year) && expiry < CLEANUP_DAY
+          truth = expiry
+          source = :verfall
+        end
       end
       return tally(:nicht_datierbar) if truth.nil?
       diff = (current - truth).to_i
