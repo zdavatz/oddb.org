@@ -1118,9 +1118,13 @@
 
   /* "WHO-DDD" und "DrugBank.ca" bleiben je ein Stueck: der Bindestrich ist
      fuer den Umbruch eine Gelegenheit wie jede andere, und anywhere macht es
-     nicht besser. Der lange, mit &nbsp; zusammengeklebte Teil davor braucht
-     anywhere weiterhin. */
-  td.atc a {
+     nicht besser. Aber nicht td.atc a: der ATC-Text selbst ist auch ein
+     Link (<a name="A11AA03">), und mit nowrap darauf wurde er wieder das
+     744px-Wort, das die ganze Trefferliste breiter als das Telefon machte
+     (gemessen 16.09.2026, "supradyn": Tabelle 768px). Nur die zwei Marken
+     hinten, erkennbar an href oder class. */
+  td.atc a[href],
+  td.atc a.square {
     white-space: nowrap;
   }
 
