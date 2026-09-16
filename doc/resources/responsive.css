@@ -1005,6 +1005,22 @@
     background: none;
   }
 
+  /* Dasselbe fuer abgelaufene Packungen: oddb.css legt das Grau
+     (tr.expired td, #CCC) und die Transparenz auf jede Zelle einzeln. Als
+     Flex-Items fuellen die Zellen die Karte nicht mehr, und aus einer grauen
+     Zeile wurden graue Balken hinter Name, Packungsgroesse und Wirkstoffen
+     mit weissen Luecken dazwischen (gesehen 16.09.2026, "supradyn" auf dem
+     Telefon). Die Karte als Ganzes bekommt den Ton; td.list in der Auswahl,
+     damit (0,3,2) auch die Dunkelmodus-Regel (0,2,2) schlaegt. currentColor
+     statt einer festen Farbe, damit es im Dunkelmodus stimmt. */
+  tr.expired:has(> td.col-name_base) {
+    background-color: color-mix(in srgb, currentColor 9%, transparent);
+  }
+
+  tr.expired:has(> td.col-name_base) > td.list {
+    background: none;
+  }
+
   /* Marken auf Fingergroesse - aber nicht die, die mitten im Namen stehen
      (das "T" fuer teilbar) oder im ATC-Band ("DrugBank.ca"): die zerschlagen
      als 44px-Kloetze die Zeile, in der sie stehen. */
