@@ -51,6 +51,9 @@ Vorfall-Historie und Regeln aus `CLAUDE.md` (ausgelagert am 02.09.2026). Neue No
 - Verify by measuring, not by looking: headless Chromium, `document.body.scrollWidth` against `clientWidth`, and a contrast walk over every leaf element. Snap Chromium cannot write to `/tmp` and hangs on `file://` — write screenshots under `$HOME` and serve pages over `127.0.0.1`. **Measure every flavor**: gcc and mobile build the same list differently, and a fix verified on one broke the other three times.
 - **`responsive.css` is inlined into every page and is always current; `compactdetail.js` is a file the browser caches.** A change to the script needs a reload without cache to be visible.
 
+- **Whatever a rule says about `td.atc a` hits the group title too** — the ATC text itself is `<a name="A11AA03">`. `white-space: nowrap` meant for WHO-DDD and DrugBank.ca made the long titles an unbreakable 744px word again and the result list 768px wide (16.09.2026, "supradyn"; ponstan's short title hid it). The marks are addressed as `a[href]` and `a.square`.
+- **Per-cell backgrounds turn into stripes in a card.** `tr.expired td { background-color: #CCC }` in oddb.css colours each cell, and flex items do not fill the row. Same lesson as `td.bg`: the card gets the colour (`currentColor` mix, so dark mode follows), the cells `background: none`; `td.list` in the selector to outscore the dark.css rule at (0,2,2).
+
 ### External links open in a new tab (`doc/resources/javascript/externallinks.js`)
 
 - Every link to a foreign host gets `target="_blank"` and `rel="noopener noreferrer"` — without `noopener` the opened page can reach back through `window.opener`.
