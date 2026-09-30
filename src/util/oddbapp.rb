@@ -2245,6 +2245,28 @@ module ODDB
       end
     end
 
+    # Resident memory of this process in bytes. Until 30.09.2026 the limit
+    # below was checked against field 23 of /proc/<pid>/stat, which is vsize:
+    # the virtual address space, into which every thread reserves its own
+    # stack and malloc arena. With ~50 slow requests hanging, oddb reached
+    # 6144 MB of vsize at under 1 GB resident, exited, and a scraper kept it
+    # in a restart loop for 45 minutes. Field 24 is rss in pages.
+    def self.resident_bytes
+      if File.exist?("/proc/#{$$}/stat")
+        # comm (field 2) is in parentheses and may contain spaces; count
+        # from after the closing one. rss is field 24, i.e. index 21 there.
+        stat = File.read("/proc/#{$$}/stat")
+        stat[(stat.rindex(")") + 2)..].split(" ").at(21).to_i * PAGE_SIZE
+      else
+        `ps -o rss= -p #{$$}`.strip.to_i * 1024
+      end
+    end
+    PAGE_SIZE = begin
+      Integer(`getconf PAGESIZE`.strip)
+    rescue ArgumentError, SystemCallError
+      4096
+    end
+
     def log_size
       @@size_logger ||= nil
       @@size_logger ||= Thread.new {
@@ -2270,7 +2292,7 @@ module ODDB
             lastthreads = threads
             threads = Thread.list.size
             lastbytes = bytes
-            bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
+            bytes = App.resident_bytes
             mbytes = (bytes / (2**20)).to_i
 
             # Shutdown if more than #{max_threads} threads are created, probably because of spiders
