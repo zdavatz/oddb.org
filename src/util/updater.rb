@@ -35,6 +35,7 @@ require "plugin/refdata"
 require "plugin/swissindex"
 require "plugin/mail_order_price"
 require "util/oddbconfig"
+require "util/price_archives"
 
 module ODDB
   class Updater
@@ -410,7 +411,18 @@ end
     end
 
     def update_price_feeds(month = @@today)
-      RssPlugin.new(@app).update_price_feeds(month)
+      result = RssPlugin.new(@app).update_price_feeds(month)
+      update_price_archives(month)
+      result
+    end
+
+    # The live feeds above hold one month and are overwritten on every run;
+    # the /rss_html/ pages read the monthly archives beside them. Until
+    # 02.10.2026 nothing wrote those after the one-off backfill in August,
+    # so the pages stopped at August. Write the month just published.
+    def update_price_archives(month = @@today)
+      archives = PriceArchives.new(@app, root: RSS_PATH)
+      archives.write(archives.collect(months: [month.strftime("%Y-%m")]))
     end
 
     def update_swissmedic_feeds(month = @@today)

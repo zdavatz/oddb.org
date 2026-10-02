@@ -1810,6 +1810,7 @@ module ODDB
       start = Time.now
       @unknown_user = unknown_user
       @app = app
+      @auxiliary = auxiliary
       super()
       ODDB::LogFile.debug("process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds") unless defined?(Minitest)
       @rss_mutex = Mutex.new
@@ -1842,6 +1843,35 @@ module ODDB
       end
     rescue => error
       ODDB::LogFile.debug("Error initializing #{error} #{error.backtrace[0..10].join("\n")} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
+    end
+
+    # What the home page's RSS box reads: channel => [date, count]. The jobs
+    # write it into the database (@rss_updates is serialised inside the
+    # OddbPrevalence root, Plugin#update_rss_feeds stores it), but a running
+    # server holds the root object it loaded at start and never sees that.
+    # Nobody noticed while oddb left on its "memory" limit ten times a day;
+    # since the limit measures RSS (30.09.2026) the process stayed up for 32
+    # hours and the box still said September on 2 October, with October in
+    # the database. A server therefore re-reads the hash from the stored root,
+    # at most every RSS_UPDATES_TTL seconds. Jobs (auxiliary) do not: they
+    # are the writers, and a re-read between assignment and store would
+    # throw their own change away.
+    RSS_UPDATES_TTL = 300
+    def rss_updates
+      @cache_mutex.synchronize do
+        refresh_rss_updates unless @auxiliary
+        @system.rss_updates
+      end
+    end
+
+    def refresh_rss_updates(now = Time.now)
+      return if @rss_updates_read && now - @rss_updates_read < RSS_UPDATES_TTL
+      @rss_updates_read = now
+      dump = ODBA.storage.restore_named("oddbapp") or return
+      stored = ODBA.marshaller.load(dump).instance_variable_get(:@rss_updates)
+      @system.instance_variable_set(:@rss_updates, stored) if stored.is_a?(Hash)
+    rescue DBI::DatabaseError, ODBA::OdbaError, TypeError, ArgumentError => error
+      ODDB::LogFile.debug("refresh_rss_updates: #{error.class} #{error.message}")
     end
 
     def method_missing(m, *args, &block)
