@@ -27,7 +27,8 @@ trap 'rm -rf "$WORK"' EXIT INT TERM
 # Every job named in the schedule has to exist, or cmd_job exits 2.
 for job in rebuild_indices update_today update_fachinfo_rss_feeds \
            update_drugshortage_hpc_dhcp import_bsv import_swissmedic \
-           update_drugshortage import_whocc import_refdata_nat; do
+           update_drugshortage import_whocc import_refdata_nat \
+           update_patinfo_rss_feeds repair_fachinfo_references; do
   : > "$WORK/root/jobs/$job"
 done
 
@@ -97,11 +98,12 @@ run_at 33 13 25
 assert "no job dispatched" "$(wc -l < "$WORK/order" | tr -d ' ')" "0"
 assert "exit 0"            "$(cat "$WORK/status")" "0"
 
-echo "05:01 runs update_today and then the feed, in that order"
+echo "05:01 runs update_today and then the two feeds, in that order"
 run_at 1 5 25
-assert "two jobs"       "$(wc -l < "$WORK/order" | tr -d ' ')" "2"
+assert "three jobs"     "$(wc -l < "$WORK/order" | tr -d ' ')" "3"
 assert "update_today first" "$(sed -n 1p "$WORK/order")" "update_today"
 assert "feed second"        "$(sed -n 2p "$WORK/order")" "update_fachinfo_rss_feeds"
+assert "patinfo feed third" "$(sed -n 3p "$WORK/order")" "update_patinfo_rss_feeds"
 
 echo "the feed no longer runs in the evening"
 run_at 1 19 25
@@ -115,7 +117,7 @@ assert "nothing on the 21st" "$(wc -l < "$WORK/order" | tr -d ' ')" "0"
 
 echo "a failing job is reported, and does not stop the next one"
 JOB_EXIT=3 run_at 1 5 25
-assert "both still ran" "$(wc -l < "$WORK/order" | tr -d ' ')" "2"
+assert "all still ran"  "$(wc -l < "$WORK/order" | tr -d ' ')" "3"
 assert "exit 1"         "$(cat "$WORK/status")" "1"
 
 echo "the log keeps each job's output"

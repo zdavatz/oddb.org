@@ -260,6 +260,11 @@ health_log() {
 # only without a big file: there is no patinfo.rss in the shape of fachinfo.rss
 # (248 MB of full texts), just the yearly files and a small patinfo.rss with
 # the newest changes, so the subscribe link on the home page finds something.
+#
+# import_refdata_nat runs for about six and a half hours and holds log/job.pid
+# all that time. Started at 20:01 it was still running at 01:19 and
+# rebuild_indices ended with "Duplicate Job" (12.10.2026: 20:01 to 02:28). At
+# 16:10 it starts after update_drugshortage (15:50) and is done near 22:40.
 SCHEDULE="
 19  1   *   rebuild_indices
 1   5   *   update_today
@@ -270,7 +275,7 @@ SCHEDULE="
 15  8   *   import_swissmedic
 50  15  *   update_drugshortage
 50  8   20  import_whocc
-1   20  11  import_refdata_nat
+10  16  11  import_refdata_nat
 30  6   5   repair_fachinfo_references
 "
 
