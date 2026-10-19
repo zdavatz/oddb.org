@@ -18,6 +18,65 @@ module ODBA
       /connection not open/i
     ].freeze
 
+    # Waiting for a free connection instead of being handed nil.
+    #
+    # Upstream next_connection does `@connections.shift` and yields whatever
+    # comes out - nil when all five connections are in use. The caller then
+    # raises NoMethodError ("undefined method 'select_one' for nil"), which
+    # method_missing treats as a lost connection: it sleeps, calls reconnect,
+    # and reconnect disconnects every idle connection and opens five new ones
+    # while other threads are mid-query on theirs. And the ensure pushed the
+    # nil back, so the pool kept handing it out. With more than five threads
+    # wanting the database at once this never settles: on 19.10.2026 a
+    # scraper kept 50-100 requests in flight and oddb finished none of them
+    # for half an hour, until it exited at 100 threads and started over.
+    #
+    # Now a thread waits (up to CHECKOUT_TIMEOUT) for a connection to come
+    # back, nil is never pushed, and running out is not mistaken for a dead
+    # connection.
+    CHECKOUT_TIMEOUT = 30
+
+    class CheckoutTimeout < StandardError; end
+
+    def next_connection # :nodoc:
+      conn = nil
+      @mutex.synchronize {
+        @available ||= ConditionVariable.new
+        deadline = Time.now + CHECKOUT_TIMEOUT
+        while (conn = @connections.shift).nil?
+          remaining = deadline - Time.now
+          raise CheckoutTimeout, "no database connection free after #{CHECKOUT_TIMEOUT}s" if remaining <= 0
+          @available.wait(@mutex, remaining)
+        end
+      }
+      yield(conn)
+    ensure
+      if conn
+        @mutex.synchronize {
+          @connections.push(conn)
+          @available&.signal
+        }
+      end
+    end
+
+    # connect pushes the new connections; wake anyone waiting for them.
+    def connect # :nodoc:
+      @mutex.synchronize {
+        _connect
+        @available ||= ConditionVariable.new
+        @available.broadcast
+      }
+    end
+
+    def reconnect # :nodoc:
+      @mutex.synchronize {
+        _disconnect
+        _connect
+        @available ||= ConditionVariable.new
+        @available.broadcast
+      }
+    end
+
     alias_method :_original_method_missing, :method_missing
 
     def method_missing(method, *args, &block)

@@ -287,35 +287,59 @@ class OddbPrevalence
   end
 
   def company(ean13_or_oid)
-    return company_by_gln(ean13_or_oid) if ean13_or_oid.to_s.match(VALID_EAN13)
+    return indexed_company_by_gln(ean13_or_oid) if ean13_or_oid.to_s.match(VALID_EAN13)
     @companies[ean13_or_oid.to_i]
   end
 
   def pharmacy_by_gln(gln)
     return nil unless gln.to_s.match(VALID_EAN13)
-    company_by_gln(gln.to_s)
+    indexed_company_by_gln(gln.to_s)
   end
 
+  # Every company or doctor, walked. Loads all of them from the database for
+  # one lookup; the Refdata imports need it, because they must recognise
+  # entries created since the last index rebuild, and they run in their own
+  # process. Web requests use the indexed_* variants below.
   def company_by_gln(gln)
     return nil unless gln.to_s.match(VALID_EAN13)
-    @companies.values.each { |company|
-      if company && company.respond_to?(:ean13) &&
-          company.ean13.to_s == gln.to_s
-        return company
-      end
-    }
-    nil
+    @companies.values.find(&gln_matcher(gln))
   end
 
   def doctor_by_gln(gln)
     return nil unless gln.to_s.match(VALID_EAN13)
-    @doctors.values.each { |doctor|
-      if doctor && doctor.respond_to?(:ean13) && doctor.ean13.to_s == gln.to_s
-        return doctor
-      end
-    }
-    nil
+    @doctors.values.find(&gln_matcher(gln))
   end
+
+  # A GLN from a web request is looked up in the index.
+  #
+  # Until 19.10.2026 /pharmacy/ean/<gln> and /doctor/ean/<gln> went through
+  # company_by_gln and doctor_by_gln above - inside ODDB::App#method_missing,
+  # under the one mutex every request shares. A scraper asking for those
+  # pages kept one thread loading every doctor from the database while 20-100
+  # others queued behind the mutex; after a restart, with nothing cached, no
+  # request finished at all and the process exited at 100 threads, in a loop
+  # for half an hour. Company#search_terms and Doctor#search_terms include the
+  # ean13, so company_index and doctor_index answer it. A company or doctor
+  # created today is found after the nightly rebuild_indices (01:19).
+  def indexed_company_by_gln(gln)
+    indexed_by_gln(gln, "company_index")
+  end
+
+  def indexed_doctor_by_gln(gln)
+    indexed_by_gln(gln, "doctor_index")
+  end
+
+  def indexed_by_gln(gln, index_name)
+    return nil unless gln.to_s.match(VALID_EAN13)
+    retrieve_from_index(index_name, gln.to_s).find(&gln_matcher(gln))
+  end
+  private :indexed_by_gln
+
+  def gln_matcher(gln)
+    gln = gln.to_s
+    ->(item) { item && item.respond_to?(:ean13) && item.ean13.to_s == gln }
+  end
+  private :gln_matcher
 
   def hospital_by_gln(gln)
     return nil unless gln.to_s.match(VALID_EAN13)
@@ -1189,12 +1213,12 @@ class OddbPrevalence
   end
 
   def search_doctors(key)
-    return [doctor_by_gln(key)] if key.to_s.match(VALID_EAN13)
+    return [indexed_doctor_by_gln(key)] if key.to_s.match(VALID_EAN13)
     retrieve_from_index("doctor_index", key)
   end
 
   def search_companies(key)
-    result = [company_by_gln(key)].compact if key.to_s.match(VALID_EAN13)
+    result = [indexed_company_by_gln(key)].compact if key.to_s.match(VALID_EAN13)
     return [] unless result && result.size > 0
     return result unless result.first.is_pharmacy?
     companies = retrieve_from_index("company_index", key)
@@ -1299,7 +1323,7 @@ class OddbPrevalence
   end
 
   def search_registration_holder(key)
-    result = [company_by_gln(key)] if key.to_s.match(VALID_EAN13)
+    result = [indexed_company_by_gln(key)].compact if key.to_s.match(VALID_EAN13)
     return result if result and result.size > 0 and result.first.business_area.to_s == ODDB::BA_type::BA_pharma.to_s
     companies = retrieve_from_index("company_index", key)
     companies.find_all { |item| item.business_area.to_s == ODDB::BA_type::BA_pharma.to_s }
@@ -1827,6 +1851,7 @@ module ODDB
       end
       return if auxiliary
       reset
+      warm_up unless defined?(Minitest)
       log_size
       DRb.install_id_conv ODBA::DRbIdConv.new
       @cache_mutex.synchronize do
@@ -1843,6 +1868,20 @@ module ODDB
       end
     rescue => error
       ODDB::LogFile.debug("Error initializing #{error} #{error.backtrace[0..10].join("\n")} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
+    end
+
+    # Loads the registrations before the port opens. The first request after a
+    # start otherwise does it - bulk-restoring the whole hash under
+    # @cache_mutex, which every request waits on. That took about a minute on
+    # 19.10.2026; generika, which has no Anubis in front, received more than
+    # 100 requests in that minute, exited at 100 threads before the load was
+    # done, and restarted into the same thing.
+    def warm_up
+      start = Time.now
+      count = @system.registrations.size
+      ODDB::LogFile.debug("warm_up: #{count} registrations in #{(Time.now - start).round(1)}s")
+    rescue StandardError => error
+      ODDB::LogFile.debug("warm_up failed: #{error.class} #{error.message}")
     end
 
     # What the home page's RSS box reads: channel => [date, count]. The jobs

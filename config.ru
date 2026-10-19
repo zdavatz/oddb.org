@@ -64,6 +64,17 @@ begin # with a rescue
       puts "caught USR1 signal, clearing Sessions\n"
       $oddb.clear
     }
+    # TTIN writes every thread's backtrace to log/threads-<pid>.txt. Added on
+    # 19.10.2026 to see where requests hung; no mutex in a trap handler, so a
+    # plain File, not the logger.
+    trap("TTIN") {
+      File.open(File.expand_path("log/threads-#{Process.pid}.txt", __dir__), "w") { |fh|
+        Thread.list.each { |t|
+          fh.puts "== #{t.inspect}"
+          fh.puts((t.backtrace || []).first(40))
+        }
+      }
+    }
     trap("USR2") {
       puts "caught USR2 signal, flushing stdout...\n"
       $stdout.flush
@@ -88,6 +99,10 @@ begin # with a rescue
     use(Rack::Static, urls: ["/doc/"])
     require "util/swiyu_middleware"
     use ODDB::SwiyuMiddleware
+    # Anonymous requests get a quick 503 once 20 are in flight; logged-in
+    # users always pass. See src/util/load_shedder.rb (19.10.2026).
+    require "util/load_shedder"
+    use ODDB::LoadShedder
     use Rack::ContentLength
     SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 

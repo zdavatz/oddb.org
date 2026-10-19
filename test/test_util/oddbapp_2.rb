@@ -273,7 +273,19 @@ class TestOddbApp2 < Minitest::Test
     company.business_area = ODDB::BA_type::BA_public_pharmacy
     @app.companies = {company.oid => company}
     assert_equal(company, @app.company_by_gln(gln))
+    # the web path asks the index, not the hash
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("company_index", gln.to_s, nil).and_return([company])
     assert_equal(company, @app.company(TEST_EAN13))
+  end
+
+  def test_company_by_gln_does_not_walk_all_companies
+    company = ODDB::Company.new
+    company.ean13 = TEST_EAN13
+    @app.companies = {company.oid => company}
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).and_return([])
+    assert_nil(@app.indexed_company_by_gln(TEST_EAN13))
+    assert_nil(@app.pharmacy(TEST_EAN13))
+    assert_equal(company, @app.company_by_gln(TEST_EAN13))
   end
 
   def test_company_by_name1
@@ -771,6 +783,8 @@ class TestOddbApp2 < Minitest::Test
     doctor.ean13 = gln
     @app.doctors = {doctor.oid => doctor}
     assert_equal(doctor, @app.doctor_by_gln(gln))
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("doctor_index", gln.to_s, nil).and_return([doctor])
+    assert_equal([doctor], @app.search_doctors(gln))
   end
 
   def test_doctor_by_gln_as_int
@@ -779,6 +793,19 @@ class TestOddbApp2 < Minitest::Test
     doctor.ean13 = gln
     @app.doctors = {doctor.oid => doctor}
     assert_equal(doctor, @app.doctor_by_gln(gln))
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("doctor_index", gln.to_s, nil).and_return([doctor])
+    assert_equal([doctor], @app.search_doctors(gln))
+  end
+
+  def test_doctor_by_gln_does_not_walk_all_doctors
+    doctor = ODDB::Doctor.new
+    doctor.ean13 = TEST_EAN13
+    @app.doctors = {doctor.oid => doctor}
+    other = ODDB::Doctor.new
+    other.ean13 = "7601000000000"
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).and_return([other])
+    assert_nil(@app.indexed_doctor_by_gln(TEST_EAN13), "a near hit in the index is not taken")
+    assert_equal(doctor, @app.doctor_by_gln(TEST_EAN13))
   end
 
   def test_hospital_by_gln
@@ -801,6 +828,7 @@ class TestOddbApp2 < Minitest::Test
     pharmacy = @app.create_company
     pharmacy.ean13 = gln
     pharmacy.business_area = ODDB::BA_type::BA_hospital_pharmacy
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("company_index", gln.to_s, nil).and_return([pharmacy])
     assert_equal(pharmacy, @app.pharmacy_by_gln(gln))
   end
 
@@ -809,6 +837,7 @@ class TestOddbApp2 < Minitest::Test
     pharmacy = @app.create_company
     pharmacy.ean13 = gln
     pharmacy.business_area = ODDB::BA_type::BA_public_pharmacy
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("company_index", gln.to_s, nil).and_return([pharmacy])
     assert_equal(pharmacy, @app.pharmacy_by_gln(gln))
   end
 
@@ -820,6 +849,7 @@ class TestOddbApp2 < Minitest::Test
     @app.companies = {company.oid => company}
     assert_equal([], @app.search_pharmacies("0"))
     assert_equal(company, @app.company_by_gln(TEST_EAN13))
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("company_index", TEST_EAN13.to_s, nil).and_return([company])
     assert_equal(1, @app.search_pharmacies(TEST_EAN13).size)
     assert_equal(0, @app.search_registration_holder(TEST_EAN13).size)
   end
@@ -832,6 +862,7 @@ class TestOddbApp2 < Minitest::Test
     @app.companies = {company.oid => company}
     assert_equal([], @app.search_pharmacies("0"))
     assert_equal([], @app.search_companies("0"))
+    flexmock(ODBA.cache).should_receive(:retrieve_from_index).with("company_index", TEST_EAN13.to_s, nil).and_return([company])
     assert_equal([company], @app.search_registration_holder(TEST_EAN13))
     assert_equal(company, @app.company_by_gln(TEST_EAN13))
     assert_equal(0, @app.search_pharmacies(TEST_EAN13).size)
