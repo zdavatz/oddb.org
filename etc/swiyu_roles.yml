@@ -8,7 +8,7 @@
 # "permissions" lists fine-grained action/key pairs checked by allowed?(action, key).
 # "association" links a user to an ODBA-persisted object (e.g., Company) by odba_id.
 
-accepted_issuer_did: "did:tdw:QmeA6Hpod7N85daNqWZD5w8jBCU6oaXcxxQFNZ6ox245ci:identifier-reg.trust-infra.swiyu-int.admin.ch:api:v1:did:5b1672d3-2805-4752-b364-2f87013bc5c3"
+accepted_issuer_did: "did:webvh:QmczHUBCTQHXmakx8KsnMzZRHPrUGJiS5cy6CGgzgNyy3t:identifier-reg.trust-infra.swiyu-int.admin.ch:api:v1:did:f2f700f5-39a2-4a82-b895-dfa3d4b8ca94"
 
 users:
   # Example root user — replace GLN with actual values

@@ -12,10 +12,10 @@ module ODDB
       "Content-Type" => "application/json"
     }.freeze
 
-    # Format, in dem der Issuer die Arztausweise ausstellt. Der Verifier
-    # akzeptiert waehrend der Migrationsphase weiterhin "vc+sd-jwt";
-    # "dc+sd-jwt" ist der kanonische Typ nach draft-ietf-oauth-sd-jwt-vc-09.
-    CREDENTIAL_FORMAT = "vc+sd-jwt"
+    # Format, in dem der Issuer die Arztausweise ausstellt. Ab swiyu-issuer
+    # 5.0 gibt es nur noch "dc+sd-jwt" (draft-ietf-oauth-sd-jwt-vc-09);
+    # das alte "vc+sd-jwt" wurde entfernt.
+    CREDENTIAL_FORMAT = "dc+sd-jwt"
 
     # ID der DCQL-Abfrage. Der Verifier gruppiert die zurueckgelieferten Claims
     # unter diesem Schluessel, siehe SwiyuMiddleware#extract_claims.
