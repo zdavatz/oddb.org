@@ -21,6 +21,22 @@ module ODDB
     # unter diesem Schluessel, siehe SwiyuMiddleware#extract_claims.
     DCQL_CREDENTIAL_ID = "doctor_credential"
 
+    VERIFICATION_PURPOSE = {
+      scope: "org.oddb.doctor_login",
+      purpose_name: {
+        default: "ODDB Arzt-Login",
+        en: "ODDB doctor login",
+        "de-CH": "ODDB Arzt-Login",
+        "fr-CH": "Connexion médecin ODDB"
+      },
+      purpose_description: {
+        default: "ywesee GmbH prüft Name und GLN Ihres Arztausweises für die Anmeldung bei ch.oddb.org.",
+        en: "ywesee GmbH checks the name and GLN on your doctor credential to log you in to ch.oddb.org.",
+        "de-CH": "ywesee GmbH prüft Name und GLN Ihres Arztausweises für die Anmeldung bei ch.oddb.org.",
+        "fr-CH": "ywesee GmbH vérifie le nom et le GLN de votre carte de médecin pour la connexion à ch.oddb.org."
+      }
+    }.freeze
+
     def create_verification
       uri = URI("#{BASE_URL}/verifications")
       req = Net::HTTP::Post.new(uri)
@@ -63,7 +79,12 @@ module ODDB
               ]
             }
           ]
-        }
+        },
+        # Trust Protocol 2.0: der Verifier registriert damit ein Verification
+        # Query Public Statement (vqPS) beim Trust Registry. Ohne vqPS zeigt
+        # die Wallet "This request is not registered in the Confederation's
+        # system". Wirkt nur, wenn im Verifier SWIYU_TMS_* gesetzt ist.
+        verification_purpose: VERIFICATION_PURPOSE
       }
     end
 
