@@ -10,6 +10,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require "minitest/autorun"
 require "mail"
 require "base64"
+require "flexmock/minitest"
 require "util/gmail_api_delivery"
 
 class TestGmailApiDelivery < Minitest::Test
@@ -56,5 +57,14 @@ class TestGmailApiDelivery < Minitest::Test
     mail = Mail.new(from: "a@b.ch", to: "c@d.ch", subject: "x", body: "y")
     mail.delivery_method ODDB::GmailApiDelivery, mailbox: "m", api_factory: ->(_) { failing.new }
     assert_raises(RuntimeError) { mail.deliver }
+  end
+
+  def test_a_send_token_is_handed_to_the_api
+    api = FakeApi.new("admin@oddb.org")
+    flexmock(ODDB::GmailApi).should_receive(:new).with("admin@oddb.org", nil, nil, "send-token").once.and_return(api)
+    mail = Mail.new(from: "admin@oddb.org", to: "c@d.ch", subject: "x", body: "y")
+    mail.delivery_method ODDB::GmailApiDelivery, mailbox: "admin@oddb.org", refresh_token: "send-token"
+    mail.deliver
+    assert(api.raw)
   end
 end

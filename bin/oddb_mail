@@ -4,6 +4,10 @@
 #   bin/oddb_mail authorize
 #       einmalig: Adresse ausgeben, Zustimmung einholen, Refresh-Token merken
 #
+#   bin/oddb_mail authorize --send=admin@oddb.org
+#       dasselbe fuer das Postfach, aus dem die App ihre Reports sendet
+#       (eigener Token, der Entwurfs-Token bleibt unberuehrt)
+#
 #   bin/oddb_mail draft --to=jemand@example.com \
 #                       --subject="Betreff" \
 #                       --body=datei.txt [--cc=...] [--mailbox=...]
@@ -79,10 +83,15 @@ command = ARGV.shift
 
 case command
 when "authorize"
+  # --send=<adresse> holt einen eigenen Token fuer das Postfach, aus dem die
+  # Report-Mails der App gehen (gmail_send_refresh_token/gmail_send_mailbox),
+  # und laesst den Entwurfs-Token von gmail_draft_mailbox in Ruhe.
+  send_mailbox = option("send")
   oauth = ODDB::GoogleOAuth.new
-  puts "1. Diese Adresse im Browser oeffnen und als #{ODDB.config.gmail_draft_mailbox} zustimmen:"
+  account = send_mailbox || ODDB.config.gmail_draft_mailbox
+  puts "1. Diese Adresse im Browser oeffnen und als #{account} zustimmen:"
   puts
-  puts "   " + oauth.authorization_url(ODDB::GmailApi::SCOPES)
+  puts "   " + oauth.authorization_url(ODDB::GmailApi::SCOPES, login_hint: account)
   puts
   puts "2. Der Browser landet danach auf #{ODDB::GoogleOAuth::REDIRECT_URI} und"
   puts "   zeigt einen Fehler - das ist richtig so, hier laeuft kein Server."
@@ -94,8 +103,14 @@ when "authorize"
   code = Regexp.last_match(1) if code =~ /[?&]code=([^&]+)/
   code = URI.decode_www_form_component(code)
   abort "kein Code eingegeben" if code.empty?
-  remember("gmail_oauth_refresh_token", oauth.exchange(code))
-  puts "Fertig. bin/oddb_mail draft legt jetzt Entwuerfe an."
+  if send_mailbox
+    remember("gmail_send_refresh_token", oauth.exchange(code))
+    remember("gmail_send_mailbox", send_mailbox)
+    puts "Fertig. Die Report-Mails gehen jetzt aus #{send_mailbox}."
+  else
+    remember("gmail_oauth_refresh_token", oauth.exchange(code))
+    puts "Fertig. bin/oddb_mail draft legt jetzt Entwuerfe an."
+  end
   exit 0
 
 when "draft"

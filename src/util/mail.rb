@@ -75,8 +75,16 @@ module ODDB
             # SMTP with a password stopped working on 11.11.2026; see
             # src/util/gmail_api_delivery.rb.
             require "util/gmail_api_delivery"
-            mailbox = cfg["gmail_send_mailbox"] || cfg["gmail_draft_mailbox"]
-            Mail.defaults { delivery_method ODDB::GmailApiDelivery, mailbox: mailbox }
+            # Own mailbox and token for sending when both are set, else the
+            # drafts mailbox with its token.
+            if cfg["gmail_send_mailbox"] && cfg["gmail_send_refresh_token"]
+              mailbox = cfg["gmail_send_mailbox"]
+              token = cfg["gmail_send_refresh_token"]
+            else
+              mailbox = cfg["gmail_draft_mailbox"]
+              token = nil
+            end
+            Mail.defaults { delivery_method ODDB::GmailApiDelivery, mailbox: mailbox, refresh_token: token }
           else
           Mail.defaults do
             delivery_method :smtp, {

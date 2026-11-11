@@ -59,7 +59,7 @@ module ODDB
     end
 
     # Die Adresse, die der Postfachinhaber im Browser oeffnet.
-    def authorization_url(scope)
+    def authorization_url(scope, login_hint: nil)
       params = {
         "client_id" => @client_id,
         "redirect_uri" => REDIRECT_URI,
@@ -70,6 +70,8 @@ module ODDB
         "access_type" => "offline",
         "prompt" => "consent"
       }
+      # schlaegt im Browser gleich das richtige Konto vor
+      params["login_hint"] = login_hint if login_hint
       "#{AUTH_URI}?" + URI.encode_www_form(params)
     end
 

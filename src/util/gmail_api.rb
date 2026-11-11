@@ -46,11 +46,13 @@ module ODDB
 
     attr_reader :mailbox
 
-    def initialize(mailbox = nil, key_file = nil, client_email = nil)
+    # refresh_token: a token for another mailbox than gmail_draft_mailbox,
+    # e.g. gmail_send_refresh_token for the application's report mails.
+    def initialize(mailbox = nil, key_file = nil, client_email = nil, refresh_token = nil)
       @mailbox = mailbox || GoogleOAuth.config(:gmail_draft_mailbox)
       raise Error, "no mailbox given and gmail_draft_mailbox is not configured" unless @mailbox
       @oauth = begin
-        GoogleOAuth.new
+        GoogleOAuth.new(nil, nil, refresh_token)
       rescue GoogleOAuth::Error
         nil
       end
