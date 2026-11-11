@@ -87,7 +87,16 @@ when "authorize"
   # Report-Mails der App gehen (gmail_send_refresh_token/gmail_send_mailbox),
   # und laesst den Entwurfs-Token von gmail_draft_mailbox in Ruhe.
   send_mailbox = option("send")
-  oauth = ODDB::GoogleOAuth.new
+  # Der Sende-Postfach kann in einer anderen Google-Organisation liegen
+  # (admin@oddb.org, nicht ywesee.com); deren OAuth-Client ist "intern" und
+  # laesst nur eigene Konten zu. Dafuer der eigene Client aus
+  # gmail_send_oauth_client_id/-secret, sonst der gemeinsame.
+  send_client = ODDB::GoogleOAuth.config(:gmail_send_oauth_client_id)
+  oauth = if send_mailbox && send_client
+    ODDB::GoogleOAuth.new(send_client, ODDB::GoogleOAuth.config(:gmail_send_oauth_client_secret))
+  else
+    ODDB::GoogleOAuth.new
+  end
   account = send_mailbox || ODDB.config.gmail_draft_mailbox
   puts "1. Diese Adresse im Browser oeffnen und als #{account} zustimmen:"
   puts

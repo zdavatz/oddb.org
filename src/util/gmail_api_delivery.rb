@@ -28,7 +28,9 @@ module ODDB
     end
 
     def deliver!(mail)
-      api = (settings[:api_factory] || ->(box) { GmailApi.new(box, nil, nil, settings[:refresh_token]) }).call(settings[:mailbox])
+      api = (settings[:api_factory] || ->(box) {
+        GmailApi.new(box, nil, nil, settings[:refresh_token], settings[:client_id], settings[:client_secret])
+      }).call(settings[:mailbox])
       id = api.send_raw(mail.encoded)
       mail.message_id ||= id
       id

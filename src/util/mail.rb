@@ -80,11 +80,16 @@ module ODDB
             if cfg["gmail_send_mailbox"] && cfg["gmail_send_refresh_token"]
               mailbox = cfg["gmail_send_mailbox"]
               token = cfg["gmail_send_refresh_token"]
+              client_id = cfg["gmail_send_oauth_client_id"]
+              client_secret = cfg["gmail_send_oauth_client_secret"]
             else
               mailbox = cfg["gmail_draft_mailbox"]
-              token = nil
+              token = client_id = client_secret = nil
             end
-            Mail.defaults { delivery_method ODDB::GmailApiDelivery, mailbox: mailbox, refresh_token: token }
+            Mail.defaults {
+              delivery_method ODDB::GmailApiDelivery, mailbox: mailbox, refresh_token: token,
+                client_id: client_id, client_secret: client_secret
+            }
           else
           Mail.defaults do
             delivery_method :smtp, {

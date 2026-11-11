@@ -61,9 +61,10 @@ class TestGmailApiDelivery < Minitest::Test
 
   def test_a_send_token_is_handed_to_the_api
     api = FakeApi.new("admin@oddb.org")
-    flexmock(ODDB::GmailApi).should_receive(:new).with("admin@oddb.org", nil, nil, "send-token").once.and_return(api)
+    flexmock(ODDB::GmailApi).should_receive(:new).with("admin@oddb.org", nil, nil, "send-token", "cid", "csecret").once.and_return(api)
     mail = Mail.new(from: "admin@oddb.org", to: "c@d.ch", subject: "x", body: "y")
-    mail.delivery_method ODDB::GmailApiDelivery, mailbox: "admin@oddb.org", refresh_token: "send-token"
+    mail.delivery_method ODDB::GmailApiDelivery, mailbox: "admin@oddb.org", refresh_token: "send-token",
+      client_id: "cid", client_secret: "csecret"
     mail.deliver
     assert(api.raw)
   end
