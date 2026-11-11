@@ -4,7 +4,7 @@
 #   bin/oddb_mail authorize
 #       einmalig: Adresse ausgeben, Zustimmung einholen, Refresh-Token merken
 #
-#   bin/oddb_mail authorize --send=admin@oddb.org
+#   bin/oddb_mail authorize --send=admin@oddb.org [--code=<code>]
 #       dasselbe fuer das Postfach, aus dem die App ihre Reports sendet
 #       (eigener Token, der Entwurfs-Token bleibt unberuehrt)
 #
@@ -98,8 +98,13 @@ when "authorize"
   puts "   Aus der Adresszeile den Wert hinter code= abschreiben (bis zum"
   puts "   naechsten & oder Zeilenende) und hier einfuegen."
   puts
-  print "code: "
-  code = $stdin.gets.to_s.strip
+  # --code=... fuer Umgebungen ohne interaktive Eingabe (z.B. "!" in Claude
+  # Code): erst ohne --code die Adresse holen, dann mit --code nochmals.
+  code = option("code")
+  unless code
+    print "code: "
+    code = $stdin.gets.to_s.strip
+  end
   code = Regexp.last_match(1) if code =~ /[?&]code=([^&]+)/
   code = URI.decode_www_form_component(code)
   abort "kein Code eingegeben" if code.empty?
