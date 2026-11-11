@@ -389,13 +389,6 @@ Line 3\x06;\bT"
       @app = ODDB::App.new
       @plugin = TextInfoPlugin.new(@app, @opts)
       @plugin.init_agent
-      File.open(ODDB::TextInfoPlugin::Override_file, "w+") do |file|
-        file.puts %(---
-7680437880197_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe.'
-7680437880197_pi_it: 'Tramal® gocce, soluzione orale con pompetta dosatrice'
-7680437880869_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe.'
-)
-      end
       @parser = flexmock "parser (simulates ext/fiparse for swissmedicinfo_xml)"
       @plugin.parser = @parser
     end

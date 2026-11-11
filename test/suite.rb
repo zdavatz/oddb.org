@@ -6,7 +6,6 @@
 # yusd and meddatad is needed to run.
 $: << File.dirname(__FILE__)
 require "helpers"
-res = system("git checkout --quiet etc/barcode_to_text_info.yml") # needed for test/suite.rb
 suites = []
 suites << "test_state/suite.rb"
 suites << "../ext/suite.rb"

@@ -29,9 +29,12 @@ class OddbTestRunner
     }
   end
 
+  # A test must not change a tracked file under etc/. This used to look for
+  # etc/barcode_to_text_info.yml only, which the text info import rewrote;
+  # that file is gone since 11.11.2026, so any tracked change now counts.
   def check_etc(path)
-    res = `git status etc`
-    if /barcode_to_text_info/.match?(res)
+    res = `git status --porcelain --untracked-files=no etc`
+    if !res.strip.empty?
       puts "#{path} changed etc"
       exit 5
     elsif $VERBOSE

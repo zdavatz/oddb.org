@@ -23,11 +23,10 @@ require "yaml"
 module ODDB
   SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder,
     :substances, :type, :lang, :informationUpdate, :refdata,
-    :html_file, :cache_file, :cache_sha256, :download_url)
+    :html_file, :cache_file, :cache_sha256, :download_url, :package_codes)
   class TextInfoPlugin < Plugin
     Languages = [:de, :fr] # TODO: , :it
     CharsNotAllowedInBasename = /[^A-z0-9\-\.]/
-    Override_file = File.join(Dir.pwd, "etc", defined?(Minitest) ? "barcode_minitest.yml" : "barcode_to_text_info.yml")
     DEBUG_FI_PARSE = !!ENV["DEBUG_FI_PARSE"]
     def initialize app, opts = {newest: true}
       super(app)
@@ -72,9 +71,7 @@ module ODDB
       @fi_atc_code_missmatch = []
       @target_keys = Util::COLUMNS_FEBRUARY_2019
       @iksnrs_meta_info = {}
-      @specify_barcode_to_text_info ||= {}
-      @skipped_override ||= []
-      @missing_override ||= {}
+      @unassigned_packages ||= []
       @multiple_entries ||= {}
       @invalid_html_url ||= []
       @already_imported ||= []
@@ -531,20 +528,19 @@ module ODDB
             msg = "#{meta_info.iksnr} #{meta_info.lang}: #{meta_info.title}"
             @updated_pis << "  #{msg}"
           else # more than 1 PI for iksnr found
+            # Each document names its packages (package_codes); a package
+            # gets the document that names it. A document without package
+            # codes cannot be placed: the package keeps its Patinfo and the
+            # report lists it.
+            codes = (meta_info.package_codes || {})[meta_info.iksnr]
             reg.packages.each do |package|
-              barcode_override = "#{package.barcode}_#{meta_info.type}_#{lang}"
               msg = "#{meta_info.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang}: #{meta_info.title}"
-              name = @specify_barcode_to_text_info[barcode_override]
-              if meta_info.title.eql?(name)
+              if codes.nil? || codes.empty?
+                @unassigned_packages << msg
+              elsif codes.include?(package.ikscd.to_s)
                 res = store_package_patinfo(package, lang, textinfo_pi)
-                LogFile.debug "barcode_override #{barcode_override} #{name} #{package.ikscd} #{msg} res = #{res.to_s[0..40]}"
+                LogFile.debug "package_codes #{codes} #{msg} res = #{res.to_s[0..40]}"
                 @updated_pis << msg
-              elsif name
-                LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
-                @skipped_override << barcode_override
-              else
-                LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
-                @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
               end
             end
           end
@@ -722,18 +718,11 @@ module ODDB
         res << "\n#{@nonconforming_content.size} non conforming contents:\n"
         res << @nonconforming_content.join("\n")
       end
-      if @skipped_override.size > 0
-        res << "\n#{Override_file}: The #{@skipped_override.size} has skipped entries for\n"
-        res << @skipped_override.join("\n")
-      end
-      if @missing_override.size == 0
-        res << "\nNo need to add anything to #{Override_file}\n"
-      else
-        res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
-        res << @missing_override.collect { |key, value| "#{key} #{value}" }.join("\n")
+      if @unassigned_packages.size > 0
+        res << "\n#{@unassigned_packages.size} packages kept their Patinfo: their registration has several, and the AIPS download names no packages for this one\n"
+        res << @unassigned_packages.uniq.join("\n")
       end
       res << "\nHaving free #{getFreeMemoryInMB} MB\n"
-      File.open(Override_file, "w+") { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out, line_width: -1) }
       res
     end
 
@@ -1514,7 +1503,16 @@ end
       else
         return meta_infos
       end
-      meta_info.authNrs = doc.search("RegulatedAuthorization/Identifier").children.collect { |x| x.text[0, 5] }.uniq
+      identifiers = doc.search("RegulatedAuthorization/Identifier").children.collect { |x| x.text.strip }
+      meta_info.authNrs = identifiers.collect { |x| x[0, 5] }.uniq
+      # Since the Refdata/SIMIS format a document that covers only some packages
+      # of a registration lists them as 8 digits, iksnr + ikscd ("70455001").
+      # Until 11.11.2026 only the first five were kept, and which package got
+      # which of several Patinfos came from etc/barcode_to_text_info.yml, a
+      # hand-kept map keyed on the document title that broke whenever
+      # Swissmedic renamed a document.
+      meta_info.package_codes = identifiers.select { |x| x.size == 8 }
+        .group_by { |x| x[0, 5] }.transform_values { |codes| codes.collect { |x| x[5, 3] } }
       meta_info.informationUpdate = doc.at("Date").text
       meta_info.authHolder = doc.at("Holder/Name").text
       languages = {}
@@ -1650,8 +1648,6 @@ end
     def import_swissmedicinfo(options = nil)
       @options = options if options
       $stdout.sync = true
-      @specify_barcode_to_text_info = {}
-      @specify_barcode_to_text_info = YAML.load_file(Override_file) if File.exist?(Override_file)
       read_packages
       @options[:target] ||= :both
       threads = []
