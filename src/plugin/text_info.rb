@@ -1656,11 +1656,23 @@ end
       end
       LogFile.debug "Parsing @options[:newest] #{@options[:newest]} #{@options[:newest] != false}"
       @to_parse = []
+      cached = nil
       if FileUtils.uptodate?(@meta_yml, [@aips_xml, @zip_file])
         startTime = Time.now
-        @iksnrs_meta_info = YAML.load_file(@meta_yml, aliases: true, permitted_classes: [OpenStruct, Struct::SwissmedicMetaInfo, Symbol])
+        cached = YAML.load_file(@meta_yml, aliases: true, permitted_classes: [OpenStruct, Struct::SwissmedicMetaInfo, Symbol])
         duration = Time.now - startTime
-        LogFile.debug "Loaded #{@iksnrs_meta_info.size} items from #{@meta_yml}, took #{sprintf("%5.2f", duration)} seconds"
+        LogFile.debug "Loaded #{cached.size} items from #{@meta_yml}, took #{sprintf("%5.2f", duration)} seconds"
+        # A cache written before package_codes existed (11.11.2026) has nil
+        # there for every entry - the field is {} when a document names no
+        # packages. Using it would leave every package of a registration with
+        # several Patinfos unassigned, so it is rebuilt instead.
+        if cached.values.flatten.none? { |info| info.respond_to?(:package_codes) && info.package_codes }
+          LogFile.debug "#{@meta_yml} predates package_codes, rebuilding it"
+          cached = nil
+        end
+      end
+      if cached
+        @iksnrs_meta_info = cached
       else
         get_aips_download_xml(@aips_xml)
         parse_aips_download(@aips_xml) # to get all meta information
