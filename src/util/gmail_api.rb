@@ -92,6 +92,15 @@ module ODDB
 
     # Sucht mit der ueblichen Gmail-Syntax (from:, newer_than:, in:anywhere)
     # und liefert Kopfzeilen, nicht Rumpf - der kostet einen Aufruf je Mail.
+    # Sends an already encoded RFC 822 message (Mail::Message#encoded) from
+    # this mailbox. gmail.compose covers messages.send. Used by
+    # ODDB::GmailApiDelivery for the application's own report mails since
+    # 11.11.2026, when Gmail stopped accepting the SMTP password.
+    def send_raw(raw)
+      response = post_json("#{MESSAGES_URI}/send", {"raw" => base64url(raw)})
+      response.dig("id") or raise Error, "no message id in response: #{response.inspect}"
+    end
+
     def search(query, limit = 10)
       response = get_json("#{MESSAGES_URI}?" + URI.encode_www_form(
         "q" => query, "maxResults" => limit

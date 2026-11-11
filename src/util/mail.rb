@@ -71,6 +71,13 @@ module ODDB
           @cfg = YAML.load_file(@mailing_list_configuration)
           @cfg["smtp_auth"] ||= "plain"
           cfg = @cfg.clone
+          if cfg["mail_delivery"].to_s == "gmail_api"
+            # SMTP with a password stopped working on 11.11.2026; see
+            # src/util/gmail_api_delivery.rb.
+            require "util/gmail_api_delivery"
+            mailbox = cfg["gmail_send_mailbox"] || cfg["gmail_draft_mailbox"]
+            Mail.defaults { delivery_method ODDB::GmailApiDelivery, mailbox: mailbox }
+          else
           Mail.defaults do
             delivery_method :smtp, {
               address: cfg["smtp_server"],
@@ -82,11 +89,12 @@ module ODDB
               content_transfer_encoding: "UTF-8"
             }
           end
+          end
         else
           @cfg = nil
         end
       end
-      msg = "#{__FILE__}: Configured email using #{@mailing_list_configuration} @cfg is now #{@cfg ? @cfg["smtp_server"].inspect : "nil"} #{@cfg ? @cfg["smtp_port"].inspect : ""} #{@cfg ? @cfg["smtp_user"].inspect : ""}"
+      msg = "#{__FILE__}: Configured email using #{@mailing_list_configuration} @cfg is now #{@cfg ? (@cfg["mail_delivery"].to_s == "gmail_api" ? "gmail_api" : @cfg["smtp_server"].inspect) : "nil"} #{@cfg ? @cfg["smtp_port"].inspect : ""} #{@cfg ? @cfg["smtp_user"].inspect : ""}"
       Util.debug_msg(msg)
       @mail_configured
     end
