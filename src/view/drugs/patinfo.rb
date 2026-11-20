@@ -172,9 +172,17 @@ module ODDB
               Drugs.change_log_size(description) > 0
             link = HtmlGrid::Link.new(key, model, session, self)
             link.set_attribute("title", @lookandfeel.lookup(:change_log))
+            # compact, und das ist der ganze Punkt: get_args verkuerzt fuer
+            # eine Sequenz ohne Packung bewusst auf [:reg, reg, :seq, seq]
+            # (der August-Fix gegen die 529 haeufigsten 500er dieser
+            # Datei), aber args[5] blieb trotzdem stehen. Das nil ergab
+            # .../59160/01//diff/ - ein leeres Segment, hinter dem die
+            # Route 404 gab. 2106 Sequenzen betroffen, 22384
+            # change_log-Eintraege unerreichbar.
             args = Drugs.get_args(model, @session)
-            args += [:diff]
-            link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], args[5], :diff])
+            link.href = @lookandfeel._event_url(
+              [:show, :patinfo, args[1], args[3], args[5], :diff].compact
+            )
             link
           end
         end

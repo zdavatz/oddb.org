@@ -306,7 +306,14 @@ module ODDB
     end
     # we expect a european date in the format tt.dd.yyyy
     FI_DIFF_REGEXP = /show\/fachinfo\/(\d{5})\/diff(?:\/(\d{2}\.\d{1,2}\.\d{1,4}))*/
-    PI_DIFF_REGEXP = /show\/patinfo\/(\d{5})\/(\d{2})\/(\d{3})\/diff(?:\/(\d{1,2}\.\d{1,2}\.\d{1,4}))*/
+    # Die Packungsnummer ist optional, und der Schraegstrich davor darf
+    # fehlen oder doppelt sein. 2106 Sequenzen haben keine Packung, aber
+    # eine Patinfo mit change_log; der Link auf ihrer Seite lautet
+    # .../59160/01//diff/, weil View::Drugs.get_args fuer eine Sequenz ohne
+    # Packung bewusst auf vier Elemente verkuerzt. Bis zum 20.11.2026
+    # verlangte das Muster hier drei Ziffern - 22384 change_log-Eintraege
+    # lagen hinter einem 404, obwohl die Dokumente sie tragen.
+    PI_DIFF_REGEXP = /show\/patinfo\/(\d{5})\/(\d{2})\/(?:(\d{3})\/)?\/?diff(?:\/(\d{1,2}\.\d{1,2}\.\d{1,4}))*/
     def choosen_info_diff
       FI_DIFF_REGEXP.match(request_path)
       found = log = date = nil
@@ -322,12 +329,18 @@ module ODDB
       elsif m = PI_DIFF_REGEXP.match(request_path)
         return [] unless (reg = app.registration(m[1]))
         return [] unless (seq = reg.sequence(m[2]))
-        return [] unless (found = seq.package(m[3]))
+        # Ohne Packungsnummer die Sequenz selbst nehmen. Sequence#patinfo
+        # und Package#patinfo heissen gleich, der Rest der Methode merkt
+        # den Unterschied nicht; die Views kennen den Fall seit heute.
+        found = m[3] ? seq.package(m[3]) : seq
         return [] unless found
-        log = found.patinfo.send(language).change_log.select { |item| 
-          item.respond_to?(:time) 
-        }.sort! { |x, y| 
-          y.time.to_s <=> x.time.to_s 
+        # Und erst fragen, dann senden: ohne diese Zeile endet eine Packung
+        # ohne Patinfo in nil.send(language), also einem 500.
+        return [] unless (document = found.patinfo)
+        log = document.send(language).change_log.select { |item|
+          item.respond_to?(:time)
+        }.sort! { |x, y|
+          y.time.to_s <=> x.time.to_s
         }
         date = m[4]
       end

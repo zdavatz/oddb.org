@@ -75,6 +75,15 @@ module ODDB
             pack_or_reg.seqnr,
             pack_or_reg.ikscd,
             :diff] + may_be_date)
+        elsif pack_or_reg.is_a?(ODDB::SequenceCommon)
+          # Ohne Packung, also ohne ikscd: 2106 Sequenzen haben keine
+          # Packung, aber eine Patinfo mit change_log. Fehlte dieser Zweig,
+          # kam href = nil zurueck und der Breadcrumb war stumm.
+          # http://ch.oddb.org/de/gcc/show/patinfo/59160/01/diff
+          lnf._event_url(:show, [:patinfo,
+            pack_or_reg.iksnr,
+            pack_or_reg.seqnr,
+            :diff] + may_be_date)
         end
       end
 
@@ -89,6 +98,11 @@ module ODDB
             :seq, pack_or_reg.seqnr,
             :pack, pack_or_reg.ikscd])
           value = lnf.lookup(:patinfo_name0) + pack_or_reg.name_base
+        elsif pack_or_reg.is_a?(ODDB::SequenceCommon)
+          # http://ch.oddb.org/de/gcc/patinfo/reg/59160/seq/01
+          href = lnf._event_url(:patinfo, [:reg, pack_or_reg.iksnr,
+            :seq, pack_or_reg.seqnr])
+          value = lnf.lookup(:patinfo_name0) + pack_or_reg.name_base.to_s
         end
         [href, value]
       end
@@ -112,7 +126,10 @@ module ODDB
           change_log_key = components.find { |x, y| y.eql?("th_change_log") }.first
           if @session.choosen_info_diff.first.is_a?(ODDB::Registration)
             components[change_log_key] = "th_change_log_FI"
-          elsif @session.choosen_info_diff.first.is_a?(ODDB::Package)
+          elsif @session.choosen_info_diff.first.is_a?(ODDB::Package) ||
+              @session.choosen_info_diff.first.is_a?(ODDB::SequenceCommon)
+            # Eine Sequenz steht hier, wenn sie keine Packung hat - die
+            # Ueberschrift ist dieselbe wie beim Package.
             components[change_log_key] = "th_change_log_PI"
           end
           super

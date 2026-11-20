@@ -318,6 +318,68 @@ module ODDB
       assert_equal(@@today.to_s, @session.choosen_info_diff[2].time.to_s)
     end
 
+    # Eine Sequenz ohne Packung: der Link auf ihrer Patinfo-Seite lautet
+    # .../59160/01//diff/ (leeres Packungssegment, weil
+    # View::Drugs.get_args bewusst verkuerzt). Bis zum 20.11.2026 verlangte
+    # PI_DIFF_REGEXP drei Ziffern, und 22384 change_log-Eintraege von 2106
+    # Sequenzen lagen hinter einem 404.
+    def test_change_log_patinfo_without_a_package
+      reg_nr = "59160"
+      @session = ODDB::Session.new(app: @app)
+      doc = flexmock("patinfo_document", ODDB::PatinfoDocument.new, odba_store: nil)
+      pi = flexmock("patinfo", ODDB::Patinfo.new, de: doc)
+      seq = flexmock("sequence", ODDB::Sequence.new("01"), patinfo: pi, packages: {})
+      reg = flexmock("registration", ODDB::Registration.new(reg_nr), sequence: seq)
+      @app.should_receive(:registration).with(reg_nr).and_return(reg)
+      doc.add_change_log_item("alt", "neu")
+      heute = @@today.strftime("%d.%m.%Y")
+
+      ["/de/gcc/show/patinfo/#{reg_nr}/01//diff/#{heute}",
+        "/de/gcc/show/patinfo/#{reg_nr}/01/diff/#{heute}"].each { |path|
+        @session.instance_eval("@request_path = '#{path}'", __FILE__, __LINE__)
+        found = @session.choosen_info_diff
+        assert_equal(3, found.size, "kein Treffer fuer #{path}")
+        assert_equal(seq, found[0], "ohne Packung muss die Sequenz selbst kommen")
+        assert_equal(@@today.to_s, found[2].time.to_s)
+      }
+    end
+
+    # Mit Packung muss es unveraendert die Packung sein, nicht die Sequenz.
+    def test_change_log_patinfo_with_a_package_is_unchanged
+      reg_nr = "39271"
+      @session = ODDB::Session.new(app: @app)
+      doc = flexmock("patinfo_document", ODDB::PatinfoDocument.new, odba_store: nil)
+      pi = flexmock("patinfo", ODDB::Patinfo.new, de: doc)
+      pack = flexmock("package", ODDB::Package.new("061"), patinfo: pi)
+      seq = flexmock("sequence", ODDB::Sequence.new("01"), package: pack)
+      reg = flexmock("registration", ODDB::Registration.new(reg_nr), sequence: seq)
+      @app.should_receive(:registration).with(reg_nr).and_return(reg)
+      doc.add_change_log_item("alt", "neu")
+      heute = @@today.strftime("%d.%m.%Y")
+      @session.instance_eval(
+        "@request_path = '/de/gcc/show/patinfo/#{reg_nr}/01/061/diff/#{heute}'",
+        __FILE__, __LINE__
+      )
+      found = @session.choosen_info_diff
+      assert_equal(3, found.size)
+      assert_equal(pack, found[0])
+    end
+
+    # Eine Packung ohne Patinfo endete vorher in nil.send(language).
+    def test_change_log_patinfo_without_a_document_is_no_500
+      reg_nr = "39271"
+      @session = ODDB::Session.new(app: @app)
+      pack = flexmock("package", ODDB::Package.new("061"), patinfo: nil)
+      seq = flexmock("sequence", ODDB::Sequence.new("01"), package: pack)
+      reg = flexmock("registration", ODDB::Registration.new(reg_nr), sequence: seq)
+      @app.should_receive(:registration).with(reg_nr).and_return(reg)
+      @session.instance_eval(
+        "@request_path = '/de/gcc/show/patinfo/#{reg_nr}/01/061/diff/'",
+        __FILE__, __LINE__
+      )
+      assert_equal([], @session.choosen_info_diff)
+    end
+
     def test_is_mobile
       @session = ODDB::Session.new(app: SBSM::App.new)
       assert_equal(false, @session.is_mobile_app?)
