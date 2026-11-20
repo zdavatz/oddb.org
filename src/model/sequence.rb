@@ -497,21 +497,52 @@ module ODDB
     attr_accessor :patinfo_shadow
     ACTIVE_AGENT = ActiveAgent
     ODBA_PREFETCH = true
+    # Den alten Wert vor super festhalten, in allen drei Settern. super ist
+    # der von define_check_class_methods erzeugte Setter und weist das Ivar
+    # zu - danach sind target und value in replace_observer dasselbe Objekt,
+    # also ruft es remove_sequence auf dem *neuen* Beobachter und der alte
+    # erfaehrt nie, dass er die Sequenz abgeben soll. Er behaelt sie fuer
+    # immer, und die Sequenz haengt in zwei Listen.
+    #
+    # Eingefuehrt von 719b266a (27.02.2012, "Check accessor classes of
+    # Sequence"), das super(atc_class) und super(patinfo) ergaenzte, um den
+    # neuen typpruefenden Setter zu benutzen. indication= zwei Methoden
+    # weiter oben wurde nicht angefasst und ist deshalb das einzige der
+    # vier, das stimmt - es ist die Vorlage.
+    #
+    # Gemessen am 20.11.2026: der WHO-Import repariert das seit Jahren jeden
+    # Monat nach (23 / 24 / 15 Sequenzen in September / Oktober / November),
+    # immer in denselben Klassen, weil jede ATC-Umbuchung im Monat einen
+    # Eintrag zurueckliess.
+    #
+    # Auch der nil-Fall muss die alte Klasse benachrichtigen. Das frueher
+    # hier stehende `unless atc_class.nil?` stammt aus der Zeit vor 2012, als
+    # es kein super gab und eine nil-Zuweisung deshalb gar nichts tat. Mit
+    # super loescht sie das Ivar sofort, und der Guard liess die alte Klasse
+    # ungefragt - wer erst auf nil und dann auf B setzte, verlor A fuer
+    # immer. replace_observer(previous, nil) ruft A.remove_sequence und gibt
+    # nil zurueck, also genau das, was super schon gesetzt hat.
+    #
+    # AtcClass#checkout setzt die atc_class jeder Sequenz auf nil und wird
+    # von nichts aufgerufen (geprueft 20.11.2026, src/ und jobs/) - die
+    # Falle aus Package#checkout, wo ein odba_isolated_store das gerade
+    # geloeschte Objekt wieder anlegt, greift hier also nicht.
     def atc_class=(atc_class)
+      previous = @atc_class
       super
-      unless atc_class.nil?
-        @atc_class = replace_observer(@atc_class, atc_class)
-      end
+      @atc_class = replace_observer(previous, atc_class)
     end
 
     def patinfo=(patinfo)
+      previous = @patinfo
       super
-      @patinfo = replace_observer(@patinfo, patinfo)
+      @patinfo = replace_observer(previous, patinfo)
     end
 
     def division=(division)
+      previous = @division
       super
-      @division = replace_observer(@division, division)
+      @division = replace_observer(previous, division)
     end
 
     def replace_observer(target, value)

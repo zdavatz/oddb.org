@@ -1,0 +1,82 @@
+#!/usr/local/bin/ruby
+# Raeumt ATC-Klassen auf, die Sequenzen fuehren, deren eigene atc_class
+# woandershin zeigt - ohne den ganzen WHO-Import dafuer laufen zu lassen.
+#
+#   bundle exec ruby jobs/repair_atc_sequences            # nur zaehlen
+#   bundle exec ruby jobs/repair_atc_sequences --apply
+#
+# Die Ursache sass in Sequence#atc_class=: `super` wies @atc_class zu, bevor
+# replace_observer es las, also waren target und value dasselbe Objekt und
+# die alte Klasse erfuhr nie ein remove_sequence. Behoben am 20.11.2026;
+# dieser Job ist fuer das, was seit 2012 liegengeblieben ist.
+#
+# ODDB::WhoPlugin ruft AtcClass#repair_needed? schon seit Jahren jeden 20.
+# des Monats und hat es nie leergeraeumt: bis zum 20.11.2026 loeschte
+# repair_needed? aus der Liste, ueber die es iterierte, und uebersprang
+# damit jeden zweiten von zwei benachbarten Treffern. Der Lauf von 08:50
+# meldete 15 reparierte Sequenzen und liess 10 liegen. Mit beiden Fixes
+# raeumt ein Lauf auf null.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+      wrong = {}
+      app.atc_classes.each { |code, atc|
+        next unless atc
+        # Versuch statt Frage: ein Stub, der Array deklariert, antwortet
+        # is_a?(Array) daraus, ohne aufzuloesen, und erst der Zugriff wirft.
+        list = begin
+          l = atc.sequences
+          (l.length >= 0) ? l : nil
+        rescue
+          nil
+        end
+        next unless list
+        bad = list.select { |seq|
+          own = begin
+            seq.atc_class&.code
+          rescue
+            nil
+          end
+          own && own != code
+        }
+        wrong[code] = bad unless bad.empty?
+      }
+
+      puts "ATC-Klassen mit fremden Sequenzen: #{wrong.size}"
+      puts "Sequenzen insgesamt:               #{wrong.values.sum(&:size)}"
+      wrong.sort_by { |_, b| -b.size }.each { |code, bad|
+        puts format("  %-12s %3d  %s", code, bad.size,
+          bad.first(4).collect { |s| "#{s.iksnr}/#{s.seqnr}->#{s.atc_class.code}" }.join(" "))
+      }
+
+      if wrong.empty?
+        puts "nichts zu tun"
+        next
+      end
+      unless apply
+        puts
+        puts "ohne --apply nichts geaendert"
+        exit 1
+      end
+
+      repaired = 0
+      wrong.each_key { |code|
+        msg = app.atc_class(code).repair_needed?
+        if msg
+          puts msg
+          repaired += 1
+        end
+      }
+      app.atc_classes.odba_store
+      puts
+      puts "#{repaired} Klasse(n) bereinigt - zum Nachlesen einen frischen Prozess nehmen"
+    end
+  end
+end

@@ -71,23 +71,44 @@ module ODDB
       }
     end
 
+    # Raeumt Sequenzen weg, die hier gelistet sind, aber laut ihrer eigenen
+    # atc_class woandershin gehoeren. Die Ursache sitzt in
+    # Sequence#atc_class= (siehe dort); dies hier ist das Aufraeumen.
+    #
+    # Erst sammeln, dann loeschen. Bis zum 20.11.2026 lief ein
+    # @sequences.each, das aus derselben Liste loeschte: Array#each rueckt
+    # nach einem delete zum naechsten Index weiter, waehrend die Liste
+    # zusammengeschoben wurde, und uebersprang damit bei zwei benachbarten
+    # Treffern den zweiten. Der Lauf von 08:50 meldete "Repaired 15 wrong
+    # sequences" und liess 10 liegen, verteilt auf dieselben sieben Klassen,
+    # die seit Monaten wiederkehren (C 3, S 2, A, L, P, V01AA, L04AA13).
+    #
+    # Geloescht wird ueber object_id, nicht ueber den Wert: Array#delete
+    # vergleicht mit ==, und ein ODBA::Stub loest sich dabei auf - bei
+    # totem Ziel mit ODBA::OdbaError. object_id steht auf ODBAs
+    # no_override-Liste und loest nicht auf.
     def repair_needed?
       msg = "repair_needed? #{@code}: "
       unless @sequences
         return msg += "@sequences is nil for for #{inspect}"
       end
-      found = false
-      oldSize = @sequences.size
-      @sequences.each { |seq|
-        if seq.atc_class.code != @code
-          found = true
-          msg += "\n  Deleting #{seq.iksnr}/#{seq.seqnr} with #{seq.atc_class.code}"
-          @sequences.delete(seq)
+      old_size = @sequences.size
+      wrong = @sequences.select { |seq|
+        code = begin
+          seq.atc_class&.code
+        rescue
+          nil
         end
+        code && code != @code
       }
-      return false unless found
+      return false if wrong.empty?
+      wrong.each { |seq|
+        msg += "\n  Deleting #{seq.iksnr}/#{seq.seqnr} with #{seq.atc_class.code}"
+      }
+      wrong_ids = wrong.collect { |seq| seq.object_id }
+      @sequences.delete_if { |seq| wrong_ids.include?(seq.object_id) }
       @sequences.odba_store
-      msg += "\n  After odba_store having #{@sequences.size} sequences. Before we had #{oldSize} sequences."
+      msg += "\n  After odba_store having #{@sequences.size} sequences. Before we had #{old_size} sequences."
       msg
     end
 

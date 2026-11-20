@@ -225,6 +225,17 @@ class TestSequence < Minitest::Test
     assert_equal(expected, @seq.adjust_types(values, app))
   end
 
+  # Der Test stand seit Jahren hier, und die beiden Zeilen, die den Fehler
+  # gezeigt haetten, standen hinter einem skip("Niklaus has not time to
+  # debug this assertion"). Sie laufen jetzt: bis zum 20.11.2026 las
+  # Sequence#atc_class= das Ivar erst *nach* super, sodass target und value
+  # in replace_observer dasselbe Objekt waren - atc1 bekam nie :removed.
+  #
+  # Die eine Erwartung, die wirklich veraltet war, ist weg: das
+  # uebersprungene assert_equal(atc1, @seq.atc_class) nach einer
+  # nil-Zuweisung beschreibt die Zeit vor 2012, als es kein super gab und
+  # eine nil-Zuweisung das Ivar unberuehrt liess. Heute loescht sie es, und
+  # genau das wird geprueft.
   def test_atc_class_writer
     @seq.atc_class = nil
     atc1 = StubSequenceAtcClass.new
@@ -235,12 +246,25 @@ class TestSequence < Minitest::Test
     assert_equal(:added, atc1.state)
     assert_nil(atc2.state)
     @seq.atc_class = nil
-    assert_equal(:added, atc1.state)
-    assert_nil(atc2.state)
-    skip("Niklaus has not time to debug this assertion")
-    assert_equal(atc1, @seq.atc_class)
-    @seq.atc_class = atc2
     assert_equal(:removed, atc1.state)
+    assert_nil(atc2.state)
+    assert_nil(@seq.atc_class)
+    @seq.atc_class = atc2
+    assert_equal(:added, atc2.state)
+    assert_equal(atc2, @seq.atc_class)
+  end
+
+  # Der Fall aus der Produktion: direkt von einer Klasse auf eine andere,
+  # ohne nil dazwischen. Das ist, was jeder Import macht, und was 15 Jahre
+  # lang eine Sequenz in zwei Listen haengen liess.
+  def test_atc_class_writer_detaches_the_previous_class
+    atc1 = StubSequenceAtcClass.new
+    atc2 = StubSequenceAtcClass.new
+    @seq.atc_class = atc1
+    @seq.atc_class = atc2
+    assert_equal(:removed, atc1.state,
+      "die alte ATC-Klasse muss remove_sequence bekommen - sonst behaelt " \
+      "sie die Sequenz, und der WHO-Import raeumt sie Monat fuer Monat nach")
     assert_equal(:added, atc2.state)
   end
 

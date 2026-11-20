@@ -42,6 +42,60 @@ class TestAtcClass < Minitest::Test
     assert_equal("N02BA01", @atc_class.code)
   end
 
+  # repair_needed? raeumt Sequenzen weg, die hier gelistet sind, aber laut
+  # ihrer eigenen atc_class woandershin gehoeren.
+  class StubAtcSequence
+    attr_reader :iksnr, :seqnr, :atc_class
+    def initialize(iksnr, code)
+      @iksnr = iksnr
+      @seqnr = "01"
+      @atc_class = code.nil? ? nil : Struct.new(:code).new(code)
+    end
+  end
+
+  def with_sequences(*codes)
+    atc = ODDB::AtcClass.new("N02BA01")
+    atc.sequences = codes.each_with_index.collect { |code, i|
+      StubAtcSequence.new((10000 + i).to_s, code)
+    }
+    atc
+  end
+
+  # Der tragende Fall: zwei falsche *nebeneinander*. Bis zum 20.11.2026
+  # lief hier ein @sequences.each, das aus derselben Liste loeschte - nach
+  # dem ersten delete rutscht das naechste Element auf den Index, den each
+  # schon hinter sich hat, und wird nie besucht. In Produktion meldete der
+  # WHO-Lauf dadurch 15 reparierte Sequenzen und liess 10 liegen.
+  def test_repair_removes_two_adjacent_wrong_sequences
+    atc = with_sequences("N02BA01", "A10AB01", "C09XX01", "N02BA01")
+    assert(atc.repair_needed?)
+    assert_equal(%w[N02BA01 N02BA01], atc.sequences.collect { |s| s.atc_class.code },
+      "zwei benachbarte falsche Sequenzen muessen beide weg sein")
+  end
+
+  def test_repair_leaves_a_clean_class_alone
+    atc = with_sequences("N02BA01", "N02BA01")
+    refute(atc.repair_needed?)
+    assert_equal(2, atc.sequences.size)
+  end
+
+  # Eine Sequenz ohne atc_class ist nicht "falsch" - vorher warf
+  # seq.atc_class.code hier NoMethodError, und in ODDB::WhoPlugin#import
+  # faengt das niemand: ein einziges solches Objekt haette den ganzen
+  # WHO-Import abgebrochen.
+  def test_repair_survives_a_sequence_without_atc_class
+    atc = with_sequences("N02BA01", nil, "A10AB01")
+    assert(atc.repair_needed?)
+    codes = atc.sequences.collect { |s| s.atc_class&.code }
+    assert_equal(["N02BA01", nil], codes)
+  end
+
+  def test_repair_reports_nil_sequences
+    atc = ODDB::AtcClass.new("N02BA01")
+    atc.sequences = nil
+    assert_match(/@sequences is nil/, atc.repair_needed?)
+  end
+
   def test_origin
     assert_nil(@atc_class.origin)
   end
