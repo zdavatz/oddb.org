@@ -5,6 +5,7 @@
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com
 
 require "util/persistence"
+require "util/logfile"
 require "model/package"
 require "model/dose"
 require "model/division"
@@ -263,11 +264,41 @@ module ODDB
       }.compact.uniq
     end
 
+    # Faengt Verweise ab, unter deren odba_id statt einer Patinfo ein
+    # PatinfoDocument liegt - die odba_id-Kollision, Issue #280.
+    #
+    # Probieren, nicht fragen. Hier stand `@patinfo.respond_to?(:odba_instance)`
+    # ungeschuetzt, und `respond_to?` ist eine der Methoden, die ein
+    # ODBA::Stub aufloest: bei totem Ziel wirft es ODBA::OdbaError, und das
+    # mitten in einem Reader, der bei jedem Seitenaufbau laeuft.
+    #
+    # Und die odba_id wird festgehalten, bevor der Verweis faellt. Sie ist
+    # die einzige Spur in dieser Richtung. Was daran haengt, ist nicht nur
+    # die Seite: die PI-Diffs laufen ueber
+    # `reg.sequence(..).package(..).patinfo.<lang>.change_log`, also ueber
+    # genau diesen Verweis - ohne ihn ist die change_log-History
+    # unerreichbar, obwohl das Dokument sie noch traegt. Gemessen am
+    # 20.11.2026 an 10 gestrandeten Sequenzen: 59160/01 haelt de=5 fr=5
+    # it=5 Einträge, 62115/01 de=2 fr=1 it=2, 53929/02 de=3 fr=3 - alle
+    # hinter einem 404. Die Gegenrichtung (`patinfo.sequences`) ueberlebt,
+    # und jobs/repair_stranded_patinfos stellt den Verweis daraus her.
     def has_patinfo?
-      # There are bad records in the database, that despite odba's class saying it's a Patinfo,
-      # it's actually a PatinfoDocument. Probably a bug in ODBA.
-      # https://github.com/zdavatz/oddb.org/issues/280
-      if !@patinfo.nil? && @patinfo.respond_to?(:odba_instance) && !@patinfo.odba_instance.is_a?(ODDB::Patinfo)
+      broken = begin
+        !@patinfo.nil? && !@patinfo.odba_instance.is_a?(ODDB::Patinfo)
+      rescue => error
+        LogFile.debug("Sequence #{iksnr}/#{seqnr}: @patinfo nicht aufloesbar, " \
+                      "#{error.class}: #{error.message.to_s[0, 60]}")
+        true
+      end
+      if broken
+        lost = begin
+          @patinfo.odba_id
+        rescue
+          nil
+        end
+        LogFile.debug("Sequence #{iksnr}/#{seqnr}: @patinfo #{lost.inspect} ist keine " \
+                      "Patinfo, Verweis entfernt - Wiederherstellung ueber " \
+                      "jobs/repair_stranded_patinfos")
         @patinfo = nil
         odba_store
         return false

@@ -1,0 +1,173 @@
+#!/usr/local/bin/ruby
+# Stellt den Verweis Sequenz -> Patinfo wieder her, wo er fehlt, eine
+# Patinfo die Sequenz aber noch fuehrt.
+#
+#   bundle exec ruby jobs/repair_stranded_patinfos            # nur zaehlen
+#   bundle exec ruby jobs/repair_stranded_patinfos --apply
+#
+# Warum das geht: `patinfo.sequences` ist die ueberlebende Haelfte einer
+# Zuweisung, die einmal `seq.patinfo = pi` war - `add_sequence` lief immer
+# auf der richtigen Patinfo (siehe jobs/repair_patinfo_observers: von 577
+# fremden Sequenzen standen 577 in der Patinfo, auf die sie zeigten). Ein
+# Halter, der die Sequenz fuehrt, ist deshalb Beleg fuer den verlorenen
+# Verweis, nicht bloss ein Kandidat.
+#
+# Woher die Luecke kommt: Sequence#has_patinfo? setzt @patinfo auf nil,
+# wenn unter der odba_id ein PatinfoDocument statt einer Patinfo liegt
+# (Issue #280). Bis zum 20.11.2026 geschah das still und ohne die id zu
+# notieren.
+#
+# Was daran haengt, ist die **History**: die PI-Diffs laufen ueber
+# `reg.sequence(..).package(..).patinfo.<lang>.change_log` - also ueber
+# genau diesen Verweis, nicht ueber patinfo.sequences. Fehlt er, ist die
+# Seite 404 und die change_log-History unerreichbar, obwohl das Dokument
+# sie noch traegt. Gemessen am 20.11.2026: 59160/01 de=5 fr=5 it=5,
+# 62115/01 de=2 fr=1 it=2, 53929/02 de=3 fr=3.
+#
+# Nur bei **genau einem** Halter wird geschrieben. Mehrere Halter heissen,
+# dass der 2012er-Setter (Sequence#atc_class=/patinfo=, behoben am
+# 20.11.2026) die Sequenz in mehreren Listen angehaeuft hat und keiner
+# davon belegt ist - solche Faelle werden nur gemeldet.
+#
+# Tote Sequenzen werden uebergangen: wer von keiner Registrierung aus
+# erreichbar ist, braucht keinen Verweis. Am 20.11.2026 waren das 12 von
+# 22, darunter elfmal dasselbe 55829/00 - Muell alter Reparses, Sache von
+# jobs/delete_unreachable_objects.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+
+      # Die lebende Menge entsteht durch Laufen ueber die Objekte,
+      # Registrierung -> Sequenz, nicht durch einen Join ueber
+      # object_connection.
+      live = {}
+      app.registrations.each { |iksnr, reg|
+        seqs = begin
+          reg.sequences
+        rescue
+          nil
+        end
+        next unless seqs.respond_to?(:each_value)
+        # rescue in einem { }-Block geht nicht, nur in do..end oder mit
+        # explizitem begin.
+        seqs.each_value { |seq|
+          begin
+            live[seq.odba_id] = true
+          rescue
+            nil
+          end
+        }
+      }
+      puts "lebende Sequenzen: #{live.size}"
+
+      holders = Hash.new { |hash, key| hash[key] = [] }
+      tot = 0
+      db = ODBA.storage.dbi
+      ids = db.select_all(
+        "select odba_id from object where extent = 'ODDB::Patinfo' order by odba_id"
+      ).collect { |row| row.first.to_i }
+      ids.each_with_index { |oid, i|
+        pi = begin
+          ODBA.cache.fetch(oid, nil)
+        rescue
+          next
+        end
+        # Versuch statt Frage: ein Stub, der Array deklariert, antwortet
+        # is_a?(Array) daraus, ohne aufzuloesen.
+        list = begin
+          l = pi.sequences
+          (l.length >= 0) ? l : nil
+        rescue
+          nil
+        end
+        next unless list
+        list.each { |seq|
+          own = begin
+            seq.patinfo
+          rescue
+            next
+          end
+          next unless own.nil?
+          if live.key?(seq.odba_id)
+            holders[seq.odba_id] << oid
+          else
+            tot += 1
+          end
+        }
+        $stderr.print "\r  #{i + 1}/#{ids.size}" if (i % 250).zero?
+      }
+      $stderr.print "\r"
+
+      einer, mehrere = holders.partition { |_, h| h.size == 1 }
+      puts
+      puts "Sequenzen ohne @patinfo, die eine Patinfo noch fuehrt: #{holders.size}"
+      puts "  genau ein Halter (wiederherstellbar): #{einer.size}"
+      puts "  mehrere Halter (nur gemeldet):        #{mehrere.size}"
+      puts "  tote Sequenzen (uebergangen):         #{tot}"
+      mehrere.each { |sid, h| puts "    Sequenz #{sid}: Halter #{h.join(", ")}" }
+
+      if einer.empty?
+        puts "nichts wiederherzustellen"
+        next
+      end
+
+      undo = File.expand_path("../log/repair_stranded_patinfos-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      restored = 0
+      failed = []
+      fh = apply ? File.open(undo, "w") : nil
+      einer.each { |sid, h|
+        pi_id = h.first
+        begin
+          seq = ODBA.cache.fetch(sid, nil)
+          pi = ODBA.cache.fetch(pi_id, nil)
+          logs = %w[de fr it].collect { |lang|
+            n = begin
+              pi.send(lang).change_log.count { |item| item.respond_to?(:time) }
+            rescue
+              0
+            end
+            "#{lang}=#{n}"
+          }.join(" ")
+          puts "  #{seq.iksnr}/#{seq.seqnr} -> Patinfo #{pi_id}  change_log #{logs}"
+          if apply
+            fh.puts([sid, "#{seq.iksnr}/#{seq.seqnr}", pi_id].join("\t"))
+            fh.flush
+            # Ueber den Setter, nicht ueber das Ivar: er ruft
+            # replace_observer(nil, pi), und add_sequence sieht die Sequenz
+            # schon in der Liste und laesst sie dort. Seit dem 20.11.2026
+            # haelt der Setter den alten Wert vor super fest.
+            seq.patinfo = pi
+            seq.odba_isolated_store
+            restored += 1
+          end
+        rescue => error
+          failed << "#{sid}: #{error.class}: #{error.message.to_s[0, 70]}"
+        end
+      }
+      fh&.close
+
+      unless apply
+        puts
+        puts "ohne --apply nichts geaendert"
+        exit 1
+      end
+      puts
+      puts "#{restored} Verweis(e) wiederhergestellt"
+      unless failed.empty?
+        puts "Fehler: #{failed.size}"
+        failed.first(10).each { |f| puts "  #{f}" }
+      end
+      puts "alte Zustaende in #{undo} (Spalten: sequence_id, iksnr/seqnr, patinfo_id)"
+      puts "zurueecknehmen: seq.patinfo = nil; seq.odba_isolated_store"
+      puts "nachlesen bitte in einem frischen Prozess"
+    end
+  end
+end

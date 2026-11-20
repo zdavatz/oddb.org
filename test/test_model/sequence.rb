@@ -553,6 +553,51 @@ class TestSequence < Minitest::Test
     assert_equal false, @seq.has_patinfo?
   end
 
+  # Ein @patinfo, dessen Ziel sich nicht aufloesen laesst, darf nicht
+  # werfen. Bis zum 20.11.2026 fragte has_patinfo? ungeschuetzt
+  # `@patinfo.respond_to?(:odba_instance)` - und respond_to? ist eine der
+  # Methoden, die ein ODBA::Stub aufloest, bei totem Ziel mit
+  # ODBA::OdbaError. Das in einem Reader, der bei jedem Seitenaufbau laeuft.
+  def test_has_patinfo_survives_an_unresolvable_reference
+    @seq.registration = flexmock(company: flexmock(disable_patinfo: false))
+    kaputt = Object.new
+    def kaputt.odba_instance
+      raise ODBA::OdbaError, "Unknown odba_id 4711"
+    end
+
+    def kaputt.odba_id
+      4711
+    end
+    @seq.instance_variable_set(:@patinfo, kaputt)
+    flexmock(@seq).should_receive(:odba_store)
+    assert_equal(false, @seq.has_patinfo?)
+    assert_nil(@seq.instance_variable_get(:@patinfo))
+  end
+
+  # Der Verweis darf nicht still fallen. Er ist die einzige Spur in dieser
+  # Richtung, und die PI-Diffs laufen ueber
+  # reg.sequence(..).package(..).patinfo.<lang>.change_log - ohne ihn ist
+  # die change_log-History unerreichbar, obwohl das Dokument sie traegt.
+  def test_has_patinfo_logs_the_lost_odba_id
+    @seq.registration = flexmock(company: flexmock(disable_patinfo: false))
+    fremd = TestSequence::StubPatinfo.new
+    def fremd.odba_instance
+      self
+    end
+
+    def fremd.odba_id
+      98765
+    end
+    @seq.instance_variable_set(:@patinfo, fremd)
+    flexmock(@seq).should_receive(:odba_store)
+    gelogt = []
+    flexmock(ODDB::LogFile).should_receive(:debug).and_return { |msg| gelogt << msg }
+    assert_equal(false, @seq.has_patinfo?)
+    assert(gelogt.any? { |m| m.include?("98765") },
+      "die verlorene odba_id muss im Log stehen, sonst ist nicht mehr " \
+      "feststellbar, welche Patinfo die Sequenz hatte: #{gelogt.inspect}")
+  end
+
   def test_has_public_packages
     @seq.packages.store "002", flexmock(public?: false)
     assert_equal false, @seq.has_public_packages?
