@@ -5,6 +5,11 @@
 must_be_run_isolated = [
   "config.rb",
   "http.rb",
+  # Laeuft einzeln gruen, im gemeinsamen Durchlauf nicht: ConfigStub aus
+  # test/stub/config.rb wird dort von einer anderen Datei ueberschrieben,
+  # und TestGoogleSearchConsoleAuth bekommt
+  # "undefined method 'gsc_service_account_email='" (20.11.2026).
+  "indexing_check.rb",
   "ipn.rb",
   "latest.rb",
   "oddbapp.rb",

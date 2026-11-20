@@ -1,0 +1,143 @@
+#!/usr/local/bin/ruby
+# Entfernt aus @sequences einer Patinfo die Sequenzen, deren eigenes
+# patinfo auf eine andere Patinfo zeigt.
+#
+#   bundle exec ruby jobs/repair_patinfo_observers              # nur zaehlen
+#   bundle exec ruby jobs/repair_patinfo_observers --apply
+#   bundle exec ruby jobs/repair_patinfo_observers --apply --limit=500
+#
+# Herkunft: Sequence#patinfo= rief `super` (den typpruefenden Setter aus
+# define_check_class_methods, der @patinfo zuweist) und danach
+# replace_observer(@patinfo, patinfo) - target und value waren dasselbe
+# Objekt, also bekam die *neue* Patinfo das remove_sequence und die alte
+# erfuhr nie, dass sie abgeben soll. Jeder Reparse legt eine neue Patinfo
+# an, und die Sequenz blieb zusaetzlich in der Liste der alten stehen.
+# Eingefuehrt von 719b266a (27.02.2012), behoben am 20.11.2026; dieser Job
+# ist fuer das, was in dreizehn Jahren liegengeblieben ist.
+#
+# Warum Entfernen genuegt und nichts nachgetragen werden muss: add_sequence
+# lief immer auf der richtigen Patinfo, nur remove_sequence auf der
+# falschen. Zufallsstichprobe ueber 1500 Patinfos am 20.11.2026: von 577
+# fremden Sequenzen stehen **577** bereits in der Patinfo, auf die sie
+# selbst zeigen, und 0 fehlen dort.
+#
+# Warum es nicht bloss Kosmetik ist: Patinfo#name_base und #company_name
+# gehen ueber _sequence_delegate an @sequences.first. Patinfo 640 fuehrt
+# 35797/06, deren patinfo 853 ist, und gibt deshalb "Isoket retard 20 mg"
+# aus - einen Namen, der zur Patinfo 853 gehoert. Das ist die Form der
+# Patinfo-Fremdtexte von der Schreibseite her.
+#
+# Sequenzen, deren patinfo nil ist, werden nur gezaehlt und nicht
+# angefasst: dass die Sequenz niemanden nennt, beweist nicht, dass diese
+# Liste falsch ist.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+      limit = ARGV.find { |a| a =~ /^--limit=(\d+)/ } && $1.to_i
+
+      db = ODBA.storage.dbi
+      # Die ids aus der Datenbank, nicht ueber app.patinfos: das ginge durch
+      # App#method_missing und haelt die @cache_mutex, auf die jeder Request
+      # wartet.
+      ids = db.select_all(
+        "select odba_id from object where extent = 'ODDB::Patinfo' order by odba_id"
+      ).collect { |row| row.first.to_i }
+      puts "#{ids.size} Patinfos"
+
+      undo = File.expand_path("../log/repair_patinfo_observers-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      holders = 0
+      removed = 0
+      ohne_patinfo = 0
+      unlesbar = 0
+      failed = []
+      fh = apply ? File.open(undo, "w") : nil
+
+      ids.each_with_index { |oid, i|
+        begin
+          pi = ODBA.cache.fetch(oid, nil)
+          # Versuch statt Frage: ein ODBA::Stub, der Array deklariert,
+          # antwortet is_a?(Array) daraus, ohne aufzuloesen - erst der
+          # Zugriff wirft.
+          list = begin
+            l = pi.sequences
+            (l.length >= 0) ? l : nil
+          rescue
+            unlesbar += 1
+            nil
+          end
+          next unless list
+          wrong = list.select { |seq|
+            own = begin
+              seq.patinfo
+            rescue
+              nil
+            end
+            if own.nil?
+              ohne_patinfo += 1
+              false
+            else
+              own.odba_id != oid
+            end
+          }
+          next if wrong.empty?
+          holders += 1
+          removed += wrong.size
+          if apply
+            wrong.each { |seq|
+              fh.puts([oid, seq.odba_id, "#{seq.iksnr}/#{seq.seqnr}"].join("\t"))
+            }
+            fh.flush
+            # Ueber object_id loeschen, nicht ueber den Wert: Array#delete
+            # vergleicht mit ==, und ein Stub loest sich dabei auf - bei
+            # totem Ziel mit ODBA::OdbaError.
+            ids_to_drop = wrong.collect { |seq| seq.object_id }
+            list.delete_if { |seq| ids_to_drop.include?(seq.object_id) }
+            # Die Liste zuerst und fuer sich, dann den Halter. Sie ist ein
+            # eigenes ODBA-Objekt mit eigener odba_id; hier entsteht keine
+            # neue, weil in place geloescht wird.
+            list.odba_isolated_store
+            pi.odba_isolated_store
+          end
+        rescue => error
+          failed << "#{oid}: #{error.class}: #{error.message[0, 70]}"
+        end
+        begin
+          ODBA.cache.fetch_cache_entry(oid)&.odba_retire(force: true)
+        rescue
+          nil
+        end
+        $stderr.print "\r  #{i + 1}/#{ids.size}" if (i % 250).zero?
+        break if limit && holders >= limit
+      }
+      $stderr.print "\r"
+      fh&.close
+
+      puts
+      puts "Patinfos mit fremder Sequenz: #{holders}"
+      puts "Sequenzen #{apply ? "entfernt" : "zu entfernen"}:     #{removed}"
+      puts "Sequenzen ohne patinfo (unberuehrt): #{ohne_patinfo}"
+      puts "Listen unlesbar:              #{unlesbar}"
+      unless failed.empty?
+        puts "Fehler: #{failed.size}"
+        failed.first(10).each { |f| puts "  #{f}" }
+      end
+      if apply
+        puts "alte Zuordnungen in #{undo} (Spalten: patinfo_id, sequence_id, iksnr/seqnr)"
+        puts "zurueckholen: pi.sequences.push(seq); pi.sequences.odba_isolated_store; pi.odba_isolated_store"
+        puts "nachlesen bitte in einem frischen Prozess"
+      elsif holders > 0
+        puts
+        puts "ohne --apply nichts geaendert"
+        exit 1
+      end
+    end
+  end
+end
