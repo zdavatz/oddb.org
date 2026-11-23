@@ -33,6 +33,10 @@ gem "ydiffy"
 gem "deprecated"
 gem "flickraw"
 gem "nokogiri"
+gem "webauthn"
+# webauthn zieht sonst openssl 4.x nach, das die mit Ruby gelieferte
+# OpenSSL-Bibliothek fuer die ganze App ersetzen wuerde.
+gem "openssl", "~> 3.1"
 gem 'htmlbeautifier'
 gem "sax-machine"
 gem "headless"

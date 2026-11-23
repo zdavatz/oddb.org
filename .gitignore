@@ -54,3 +54,4 @@ ext/fiparse/test/dumps/
 
 # Claude Code: persoenliche Berechtigungen, nicht teilen
 .claude/settings.local.json
+data/swiyu/

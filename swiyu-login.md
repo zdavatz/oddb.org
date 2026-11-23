@@ -62,6 +62,23 @@ Browser → GET /swiyu (login page)
        → Normal SBSM request flow picks up SwiyuUser via Session#login
 ```
 
+## Passkeys (since November 2026)
+
+After a successful swiyu login the user can register a **passkey** (WebAuthn) on the current device and log in with it later without the wallet. A passkey login stores exactly the same auth data as a swiyu login (`SwiyuMiddleware.store_auth`), so `Session#login` does not see a difference except for `swiyu_passkey => "true"`.
+
+- **Validity:** a passkey is valid as long as the swiyu credential it was registered with — the `exp` claim of the SD-JWT, i.e. `credential_valid_until` at issuance. Every new swiyu login sets `valid_until` of all passkeys of that GLN to the `exp` of the credential just presented, so a re-issued credential extends them and a shorter one shortens them. Without `exp` in the presented claims no passkey is offered. A revoked credential is **not** noticed by the passkey until `exp`.
+- **Routes** (all `POST`, JSON, bound to the `_session_id` cookie):
+  - `/swiyu/passkey/register/options` and `/swiyu/passkey/register` — only with an active swiyu login in the same session
+  - `/swiyu/passkey/login/options` and `/swiyu/passkey/login` — discoverable credentials, no GLN needed
+- **Challenges** live in memory for 5 minutes and can be used once.
+- **Relying party:** `rp_id` is the request host (`ch.oddb.org`), origin `https://<host>`. A passkey made on `ch.oddb.org` does not work on another subdomain.
+- **Storage:** `data/swiyu/passkeys.json` (`SwiyuPasskeys`, chmod 600, gitignored). It holds the public key, sign counter, GLN, name, `valid_until`, the user agent at registration and the last use. Expired passkeys are purged on the next registration.
+- **Lost device:** delete all passkeys of a GLN with
+  `bundle exec ruby -Isrc -e 'require "util/swiyu_passkeys"; p ODDB::SwiyuPasskeys.instance.delete_gln("7601000000000")'`
+- **Login page:** shows "Mit Passkey anmelden" when the browser supports WebAuthn and offers to register a passkey right after the swiyu login ("Später" hides the offer for 30 days on that browser).
+- **Gems:** `webauthn` (cedarcode). `openssl` is pinned to `~> 3.1`, otherwise `webauthn` would pull in openssl 4.x for the whole app.
+- **Tests:** `test/test_util/swiyu_passkeys.rb` runs registration and login end to end against `WebAuthn::FakeClient`.
+
 ## Navigation
 
 In `state/global.rb`, the user navigation shows `:swiyu_logout` for authenticated `SwiyuUser` instances and `:swiyu_login` for unauthenticated visitors. The old Yus authentication system was replaced entirely.

@@ -2,11 +2,15 @@ require "rack"
 require "json"
 require "util/swiyu_client"
 require "util/swiyu_roles"
+require "util/swiyu_passkeys"
+require "webauthn"
 
 module ODDB
   class SwiyuMiddleware
     SESSION_ID = "_session_id"
     GLN_PATTERN = /\A760\d{10}\z/
+    # Wie lange eine Passkey-Challenge gueltig ist.
+    CHALLENGE_TTL = 300
 
     def initialize(app)
       @app = app
@@ -28,6 +32,14 @@ module ODDB
         handle_create_session(request)
       when "/swiyu/logout"
         handle_logout(request)
+      when "/swiyu/passkey/register/options"
+        handle_passkey_register_options(request)
+      when "/swiyu/passkey/register"
+        handle_passkey_register(request)
+      when "/swiyu/passkey/login/options"
+        handle_passkey_login_options(request)
+      when "/swiyu/passkey/login"
+        handle_passkey_login(request)
       else
         @app.call(env)
       end
@@ -116,18 +128,26 @@ module ODDB
         return json_response({"status" => "error", "message" => "No session"}, 400)
       end
 
+      # Passkeys gelten so lange wie der zuletzt vorgelegte Nachweis.
+      valid_until = credential_valid_until(claims)
+      SwiyuPasskeys.instance.renew(gln, valid_until) if valid_until
+
       SwiyuMiddleware.store_auth(session_id, {
         "swiyu_auth" => "true",
         "swiyu_gln" => gln,
         "swiyu_firstName" => first_name,
-        "swiyu_lastName" => last_name
+        "swiyu_lastName" => last_name,
+        "swiyu_valid_until" => valid_until&.utc&.iso8601
       })
 
       json_response({
         "status" => "ok",
         "redirect" => "/",
         "name" => "#{first_name} #{last_name}",
-        "gln" => gln
+        "gln" => gln,
+        # Ohne exp im Nachweis keine Passkeys - sie haetten kein Ablaufdatum.
+        "passkey_offer" => !valid_until.nil?,
+        "valid_until" => valid_until&.utc&.iso8601
       })
     rescue JSON::ParserError
       json_response({"status" => "error", "message" => "Invalid JSON"}, 400)
@@ -140,6 +160,152 @@ module ODDB
       session_id = request.cookies[SESSION_ID]
       SwiyuMiddleware.clear_auth(session_id) if session_id
       [302, {"Location" => "/"}, []]
+    end
+
+    # exp des SD-JWT, also credential_valid_until beim Ausstellen.
+    def credential_valid_until(claims)
+      exp = Integer(claims["exp"], exception: false)
+      exp && Time.at(exp)
+    end
+
+    # ── Passkeys (WebAuthn) ──────────────────────────────────────────────
+    # Einrichten nur mit bestehender swiyu-Anmeldung in derselben Session.
+    # Ein Passkey-Login legt dieselben Auth-Daten an wie der swiyu-Login,
+    # Session#login merkt keinen Unterschied.
+
+    def handle_passkey_register_options(request)
+      return method_not_allowed unless request.post?
+      session_id, auth = swiyu_session(request)
+      return json_response({"status" => "error", "message" => "Not logged in"}, 401) unless auth
+      unless auth["swiyu_valid_until"]
+        return json_response({"status" => "error", "message" => "No credential expiry"}, 409)
+      end
+
+      gln = auth["swiyu_gln"]
+      store = SwiyuPasskeys.instance
+      options = relying_party(request).options_for_registration(
+        user: {
+          id: store.user_handle(gln),
+          name: gln,
+          display_name: "#{auth["swiyu_firstName"]} #{auth["swiyu_lastName"]}"
+        },
+        exclude: store.for_gln(gln).keys,
+        authenticator_selection: {resident_key: "required", user_verification: "required"}
+      )
+      SwiyuMiddleware.store_challenge(session_id, :register, options.challenge)
+      json_response(options.as_json)
+    rescue => e
+      SBSM.logger.error("Swiyu passkey register_options error: #{e.message}")
+      json_response({"status" => "error", "message" => "Server error"}, 500)
+    end
+
+    def handle_passkey_register(request)
+      return method_not_allowed unless request.post?
+      session_id, auth = swiyu_session(request)
+      return json_response({"status" => "error", "message" => "Not logged in"}, 401) unless auth
+      challenge = SwiyuMiddleware.take_challenge(session_id, :register)
+      return json_response({"status" => "error", "message" => "No challenge"}, 400) unless challenge
+
+      credential = relying_party(request).verify_registration(
+        JSON.parse(request.body.read), challenge, user_verification: true
+      )
+      SwiyuPasskeys.instance.purge_expired
+      SwiyuPasskeys.instance.add(
+        credential_id: credential.id,
+        public_key: credential.public_key,
+        sign_count: credential.sign_count,
+        gln: auth["swiyu_gln"],
+        first_name: auth["swiyu_firstName"],
+        last_name: auth["swiyu_lastName"],
+        valid_until: Time.parse(auth["swiyu_valid_until"]),
+        label: request.user_agent.to_s[0, 120]
+      )
+      json_response({"status" => "ok", "valid_until" => auth["swiyu_valid_until"]})
+    rescue WebAuthn::Error, JSON::ParserError => e
+      SBSM.logger.warn("Swiyu passkey register rejected: #{e.class}: #{e.message}")
+      json_response({"status" => "error", "message" => "Passkey rejected"}, 400)
+    rescue => e
+      SBSM.logger.error("Swiyu passkey register error: #{e.message}")
+      json_response({"status" => "error", "message" => "Server error"}, 500)
+    end
+
+    def handle_passkey_login_options(request)
+      return method_not_allowed unless request.post?
+      session_id = request.cookies[SESSION_ID]
+      return json_response({"status" => "error", "message" => "No session"}, 400) if session_id.to_s.empty?
+
+      # Ohne allowCredentials: der Browser bietet alle Passkeys fuer diese
+      # Domain an (discoverable credentials).
+      options = relying_party(request).options_for_authentication(user_verification: "required")
+      SwiyuMiddleware.store_challenge(session_id, :login, options.challenge)
+      json_response(options.as_json)
+    rescue => e
+      SBSM.logger.error("Swiyu passkey login_options error: #{e.message}")
+      json_response({"status" => "error", "message" => "Server error"}, 500)
+    end
+
+    def handle_passkey_login(request)
+      return method_not_allowed unless request.post?
+      session_id = request.cookies[SESSION_ID]
+      return json_response({"status" => "error", "message" => "No session"}, 400) if session_id.to_s.empty?
+      challenge = SwiyuMiddleware.take_challenge(session_id, :login)
+      return json_response({"status" => "error", "message" => "No challenge"}, 400) unless challenge
+
+      store = SwiyuPasskeys.instance
+      record = nil
+      credential, = relying_party(request).verify_authentication(
+        JSON.parse(request.body.read), challenge, user_verification: true
+      ) do |webauthn_credential|
+        record = store.find(webauthn_credential.id)
+        raise WebAuthn::Error, "unknown passkey" unless record
+        Struct.new(:public_key, :sign_count).new(record["public_key"], record["sign_count"])
+      end
+
+      unless store.valid?(record)
+        return json_response({"status" => "error", "message" => "Passkey expired",
+                              "expired" => true}, 401)
+      end
+      store.touch(credential.id, credential.sign_count)
+
+      SwiyuMiddleware.store_auth(session_id, {
+        "swiyu_auth" => "true",
+        "swiyu_gln" => record["gln"],
+        "swiyu_firstName" => record["first_name"],
+        "swiyu_lastName" => record["last_name"],
+        "swiyu_valid_until" => record["valid_until"],
+        "swiyu_passkey" => "true"
+      })
+      json_response({"status" => "ok", "name" => "#{record["first_name"]} #{record["last_name"]}"})
+    rescue WebAuthn::Error, JSON::ParserError => e
+      SBSM.logger.warn("Swiyu passkey login rejected: #{e.class}: #{e.message}")
+      json_response({"status" => "error", "message" => "Passkey rejected"}, 401)
+    rescue => e
+      SBSM.logger.error("Swiyu passkey login error: #{e.message}")
+      json_response({"status" => "error", "message" => "Server error"}, 500)
+    end
+
+    def swiyu_session(request)
+      session_id = request.cookies[SESSION_ID]
+      return [nil, nil] if session_id.to_s.empty?
+      auth = SwiyuMiddleware.get_auth(session_id)
+      auth && auth["swiyu_auth"] == "true" ? [session_id, auth] : [session_id, nil]
+    end
+
+    # Passkeys sind an den Hostnamen gebunden (rp_id). Hinter dem Apache
+    # kommt die Anfrage per http an, die Seite laeuft aber unter https.
+    def relying_party(request)
+      host = request.host
+      origin = if %w[localhost 127.0.0.1].include?(host)
+        request.base_url
+      else
+        "https://#{host}"
+      end
+      WebAuthn::RelyingParty.new(
+        id: host,
+        name: "ODDB.org",
+        allowed_origins: [origin],
+        algorithms: %w[ES256 RS256]
+      )
     end
 
     def extract_claims(result)
@@ -165,6 +331,8 @@ module ODDB
     # Thread-safe auth store
     @auth_store = {}
     @auth_mutex = Mutex.new
+    @challenges = {}
+    @challenge_mutex = Mutex.new
 
     class << self
       def store_auth(session_id, data)
@@ -177,6 +345,22 @@ module ODDB
 
       def clear_auth(session_id)
         @auth_mutex.synchronize { @auth_store.delete(session_id) }
+      end
+
+      def store_challenge(session_id, purpose, challenge)
+        @challenge_mutex.synchronize do
+          now = Time.now
+          @challenges.delete_if { |_, c| now - c[:at] > CHALLENGE_TTL }
+          @challenges[[session_id, purpose]] = {challenge: challenge, at: now}
+        end
+      end
+
+      # Einmal verwendbar: holt die Challenge und loescht sie.
+      def take_challenge(session_id, purpose)
+        @challenge_mutex.synchronize do
+          entry = @challenges.delete([session_id, purpose])
+          entry[:challenge] if entry && Time.now - entry[:at] <= CHALLENGE_TTL
+        end
       end
 
       def clear_expired(max_age_seconds = 1800)

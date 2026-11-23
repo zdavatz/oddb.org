@@ -69,6 +69,27 @@
     #retry-btn:hover {
       background: #00507a;
     }
+    .passkey-btn {
+      margin: 0.5em auto;
+      padding: 0.6em 1.5em;
+      background: #003d73;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .passkey-btn.secondary {
+      background: #fff;
+      color: #003d73;
+      border: 1px solid #003d73;
+    }
+    #passkey-login, #passkey-offer {
+      display: none;
+      margin: 1em 0;
+      padding: 1em;
+      border: 1px solid #ddd;
+      background: #f8f8f8;
+    }
     .footer {
       margin-top: 2em;
       font-size: 0.8em;
@@ -81,7 +102,23 @@
 <body>
   <div class="container">
     <h1>Login via Swiyu Wallet</h1>
-    <p>Scannen Sie den QR-Code mit Ihrer Swiyu Wallet App.</p>
+
+    <div id="passkey-login">
+      <button class="passkey-btn" onclick="passkeyLogin()">Mit Passkey anmelden</button>
+      <p class="hint">Haben Sie auf diesem Ger&auml;t einen Passkey eingerichtet,
+      melden Sie sich ohne Wallet an.</p>
+    </div>
+
+    <div id="passkey-offer">
+      <p><strong>Passkey einrichten?</strong></p>
+      <p class="hint">Mit einem Passkey melden Sie sich auf diesem Ger&auml;t
+      k&uuml;nftig per Fingerabdruck, Gesichtserkennung oder Ger&auml;te-PIN an,
+      ohne swiyu Wallet. Der Passkey gilt so lange wie Ihr Arztausweis<span id="passkey-until"></span>.</p>
+      <button class="passkey-btn" onclick="passkeyRegister()">Passkey einrichten</button>
+      <button class="passkey-btn secondary" onclick="declinePasskey()">Sp&auml;ter</button>
+    </div>
+
+    <p id="scan-hint">Scannen Sie den QR-Code mit Ihrer Swiyu Wallet App.</p>
 
     <div id="qrcode"></div>
     <div id="deeplink"></div>
@@ -107,6 +144,145 @@
     // Validate it's a safe relative path (prevent open redirect)
     if (!returnUrl.startsWith('/') || returnUrl.startsWith('//')) {
       returnUrl = '/';
+    }
+
+    // ── Passkeys (WebAuthn) ───────────────────────────────────────────────
+    var passkeysSupported = !!(window.PublicKeyCredential && navigator.credentials);
+
+    function b64urlToBuffer(value) {
+      var b64 = value.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    function bufferToB64url(buffer) {
+      var bytes = new Uint8Array(buffer);
+      var bin = '';
+      for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function credentialToJSON(cred) {
+      var r = cred.response;
+      var response = { clientDataJSON: bufferToB64url(r.clientDataJSON) };
+      if (r.attestationObject) {
+        response.attestationObject = bufferToB64url(r.attestationObject);
+        if (r.getTransports) response.transports = r.getTransports();
+      } else {
+        response.authenticatorData = bufferToB64url(r.authenticatorData);
+        response.signature = bufferToB64url(r.signature);
+        if (r.userHandle) response.userHandle = bufferToB64url(r.userHandle);
+      }
+      return {
+        type: cred.type,
+        id: cred.id,
+        rawId: bufferToB64url(cred.rawId),
+        authenticatorAttachment: cred.authenticatorAttachment,
+        response: response,
+        clientExtensionResults: cred.getClientExtensionResults()
+      };
+    }
+
+    function postJSON(url, body) {
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      }).then(function(resp) { return resp.json(); });
+    }
+
+    function passkeyLogin() {
+      var statusEl = document.getElementById('status');
+      statusEl.textContent = 'Passkey wird gepr\u00fcft...';
+      statusEl.className = 'pending';
+      postJSON('/swiyu/passkey/login/options')
+        .then(function(options) {
+          options.challenge = b64urlToBuffer(options.challenge);
+          (options.allowCredentials || []).forEach(function(c) { c.id = b64urlToBuffer(c.id); });
+          return navigator.credentials.get({ publicKey: options });
+        })
+        .then(function(cred) { return postJSON('/swiyu/passkey/login', credentialToJSON(cred)); })
+        .then(function(result) {
+          if (result.status === 'ok') {
+            clearTimers();
+            statusEl.textContent = 'Angemeldet als ' + result.name + '.';
+            statusEl.className = 'success';
+            window.location.href = returnUrl;
+          } else if (result.expired) {
+            statusEl.textContent = 'Ihr Passkey ist abgelaufen, weil Ihr Arztausweis abgelaufen ist. Bitte melden Sie sich mit der swiyu Wallet an.';
+            statusEl.className = 'error';
+          } else {
+            statusEl.textContent = 'Passkey-Anmeldung fehlgeschlagen. Bitte mit der swiyu Wallet anmelden.';
+            statusEl.className = 'error';
+          }
+        })
+        .catch(function() {
+          statusEl.textContent = 'Passkey-Anmeldung abgebrochen. Sie k\u00f6nnen sich mit der swiyu Wallet anmelden.';
+          statusEl.className = 'pending';
+        });
+    }
+
+    function offerPasskey(validUntil) {
+      // Nach "Sp\u00e4ter" 30 Tage nicht mehr fragen.
+      var declinedAt = 0;
+      try { declinedAt = parseInt(localStorage.getItem('oddb_passkey_declined') || '0', 10); } catch (e) {}
+      var registered = null;
+      try { registered = localStorage.getItem('oddb_passkey_registered'); } catch (e) {}
+      if (!passkeysSupported || registered || Date.now() - declinedAt < 30 * 86400000) return false;
+      clearTimers();
+      document.getElementById('qrcode').innerHTML = '';
+      document.getElementById('deeplink').innerHTML = '';
+      document.getElementById('scan-hint').style.display = 'none';
+      document.getElementById('passkey-login').style.display = 'none';
+      if (validUntil) {
+        document.getElementById('passkey-until').textContent =
+          ' (bis ' + new Date(validUntil).toLocaleDateString('de-CH') + ')';
+      }
+      document.getElementById('passkey-offer').style.display = 'block';
+      return true;
+    }
+
+    function passkeyRegister() {
+      var statusEl = document.getElementById('status');
+      statusEl.textContent = 'Passkey wird eingerichtet...';
+      statusEl.className = 'pending';
+      postJSON('/swiyu/passkey/register/options')
+        .then(function(options) {
+          options.challenge = b64urlToBuffer(options.challenge);
+          options.user.id = b64urlToBuffer(options.user.id);
+          (options.excludeCredentials || []).forEach(function(c) { c.id = b64urlToBuffer(c.id); });
+          return navigator.credentials.create({ publicKey: options });
+        })
+        .then(function(cred) { return postJSON('/swiyu/passkey/register', credentialToJSON(cred)); })
+        .then(function(result) {
+          if (result.status === 'ok') {
+            try { localStorage.setItem('oddb_passkey_registered', '1'); } catch (e) {}
+            statusEl.textContent = 'Passkey eingerichtet.';
+            statusEl.className = 'success';
+          }
+          finishLogin();
+        })
+        .catch(function(err) {
+          // InvalidStateError: auf diesem Ger\u00e4t gibt es schon einen Passkey.
+          finishLogin();
+        });
+    }
+
+    function declinePasskey() {
+      try { localStorage.setItem('oddb_passkey_declined', String(Date.now())); } catch (e) {}
+      finishLogin();
+    }
+
+    function finishLogin() {
+      window.location.href = returnUrl;
+    }
+
+    function clearTimers() {
+      if (pollTimer) clearInterval(pollTimer);
+      if (timeoutTimer) clearTimeout(timeoutTimer);
     }
 
     function startLogin() {
@@ -172,7 +348,10 @@
                     .then(function(resp) { return resp.json(); })
                     .then(function(sessionData) {
                       if (sessionData.status === 'ok') {
-                        window.location.href = returnUrl;
+                        statusEl.textContent = 'Angemeldet.';
+                        if (!(sessionData.passkey_offer && offerPasskey(sessionData.valid_until))) {
+                          finishLogin();
+                        }
                       } else {
                         statusEl.textContent = 'Anmeldung fehlgeschlagen: ' + (sessionData.message || 'Unbekannter Fehler');
                         statusEl.className = 'error';
@@ -221,6 +400,9 @@
     }
 
     // Start automatically
+    if (passkeysSupported) {
+      document.getElementById('passkey-login').style.display = 'block';
+    }
     startLogin();
   </script>
 </body>
