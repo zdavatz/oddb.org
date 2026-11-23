@@ -120,7 +120,7 @@ Die Vorfall-Historie je Teilsystem liegt unter `.claude/skills/<name>/SKILL.md` 
 - `frontend-css`: Frontend: Dark mode, Responsive, Result list
 - `bsv-import`: BSV-Import und Med-Drugs-Export
 - `rss-feeds`: RSS-Feeds
-- `swiyu-login`: Swiyu-Login und Anfragelimit
+- `swiyu-login`: Swiyu-Login, Passkeys und Anfragelimit
 - `sdif-interactions`: SDIF-Interaktionen
 - `drug-shortage`: Lieferengpass-Import
 - `linkedin`: LinkedIn
