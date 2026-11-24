@@ -99,31 +99,18 @@ module ODDB
 
       undo = File.expand_path("../log/repair_vanished_doctors-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
         File.dirname(__FILE__))
-      entfernt = 0
-      failed = []
       File.open(undo, "w") { |fh|
-        # rescue in einem { }-Block geht nicht, nur in do..end oder mit
-        # explizitem begin.
-        verschwunden.each { |oid, ean, name|
-          begin
-            fh.puts([oid, ean, name].join("\t"))
-            fh.flush
-            if app.delete_doctor(oid)
-              entfernt += 1
-            else
-              failed << "#{oid} (#{ean}): delete_doctor gab nil"
-            end
-          rescue => error
-            failed << "#{oid} (#{ean}): #{error.class}: #{error.message.to_s[0, 60]}"
-          end
-        }
+        verschwunden.each { |oid, ean, name| fh.puts([oid, ean, name].join("\t")) }
       }
+      # In einem Durchgang, und die Liste einmal speichern. delete_doctor je
+      # Arzt schreibt die Liste mit ihren 127779 Eintraegen so oft wie
+      # geloescht wird: 262 Loeschungen brauchten am 24.11.2026 dreizehn
+      # Minuten, die vollen 6873 waeren 5,7 Stunden gewesen - mit gehaltenem
+      # log/job.pid, das um 01:19 rebuild_indices blockiert haette.
+      start = Time.now
+      entfernt = app.system.delete_doctors(verschwunden.collect(&:first))
       puts
-      puts "#{entfernt} aus @doctors entfernt"
-      unless failed.empty?
-        puts "Fehler: #{failed.size}"
-        failed.first(10).each { |f| puts "  #{f}" }
-      end
+      puts "#{entfernt.size} von #{verschwunden.size} aus @doctors entfernt in #{(Time.now - start).round(1)} s"
       puts "Liste in #{undo} (Spalten: oid, gln, name)"
       puts "nachlesen bitte in einem frischen Prozess"
     end

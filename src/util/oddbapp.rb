@@ -643,6 +643,22 @@ class OddbPrevalence
     end
   end
 
+  # Loescht mehrere Aerzte in einem Durchgang und schreibt die Liste
+  # **einmal**. delete_doctor ruft odba_isolated_store je Arzt, und das
+  # heisst die Liste mit ihren 127779 Eintraegen so oft speichern wie
+  # geloescht wird: 262 Loeschungen brauchten am 24.11.2026 dreizehn
+  # Minuten, die vollen 6873 waeren 5,7 Stunden gewesen - mit gehaltenem
+  # log/job.pid, das um 01:19 den rebuild_indices blockiert haette.
+  #
+  # Gibt die entfernten Aerzte zurueck, nicht ihre Anzahl, damit ein
+  # Aufrufer sie protokollieren kann. odba_delete bleibt aussen vor: die
+  # Objekte sollen erhalten bleiben, damit eine Undo-Liste genuegt.
+  def delete_doctors(oids)
+    entfernt = oids.collect { |oid| @doctors.delete(oid.to_i) }.compact
+    @doctors.odba_isolated_store unless entfernt.empty?
+    entfernt
+  end
+
   def delete_fachinfo(oid)
     if (fi = @fachinfos.delete(oid))
       @fachinfos.odba_isolated_store

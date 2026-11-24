@@ -165,6 +165,41 @@ class TestOddbApp < Minitest::Test
   # richtig war. recount_vaccines rechnet nach und schreibt fest, und zwar
   # synchron: recount macht einen Thread auf, und ein Importjob waere
   # vorbei, bevor der fertig ist.
+  # delete_doctor ruft odba_isolated_store je Arzt, und das heisst die Liste
+  # mit ihren 127779 Eintraegen so oft schreiben wie geloescht wird: 262
+  # Loeschungen brauchten am 24.11.2026 dreizehn Minuten, die vollen 6873
+  # waeren 5,7 Stunden gewesen - mit gehaltenem log/job.pid, das um 01:19
+  # rebuild_indices blockiert haette.
+  def test_delete_doctors_stores_the_list_only_once
+    system = @app.system
+    liste = system.instance_variable_get(:@doctors)
+    drei = 3.times.collect { |i|
+      doc = ODDB::Doctor.new
+      liste.store(1000 + i, doc)
+      doc
+    }
+    # Nicht flexmock(liste): ein Hash als Argument wird dort als Liste von
+    # Methodennamen gelesen ("Ill-formed method name '1000'").
+    rufe = 0
+    liste.define_singleton_method(:odba_isolated_store) { rufe += 1 }
+    entfernt = system.delete_doctors([1000, 1001, 1002])
+    assert_equal(1, rufe, "die Liste darf nur einmal geschrieben werden")
+    assert_equal(drei, entfernt, "die entfernten Aerzte muessen zurueckkommen")
+    assert_nil(liste[1000])
+    assert_nil(liste[1002])
+  end
+
+  # Unbekannte oids duerfen nicht als entfernt gelten, und ohne Treffer
+  # wird nichts geschrieben.
+  def test_delete_doctors_without_a_hit_writes_nothing
+    system = @app.system
+    liste = system.instance_variable_get(:@doctors)
+    rufe = 0
+    liste.define_singleton_method(:odba_isolated_store) { rufe += 1 }
+    assert_empty(system.delete_doctors([999_001, 999_002]))
+    assert_equal(0, rufe, "ohne Treffer darf nichts geschrieben werden")
+  end
+
   def test_recount_vaccines_replaces_a_stale_value
     system = @app.system
     system.instance_variable_set(:@vaccine_count, 417)
