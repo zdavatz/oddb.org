@@ -185,6 +185,48 @@ module ODDB
       $stdout = STDOUT
     end
 
+    # Swissmedic hat die Werte in production_science von Plural auf Singular
+    # umgestellt. Der Code suchte den Plural, traf damit 0 von 18137 Zeilen
+    # in Packungen-latest.xlsx, und /de/mobile/vaccines/ war leer: der Index
+    # sequence_vaccine stand auf 0 Zeilen, 123 aktive Impfstoffe und
+    # Blutprodukte hatten vaccine=false (gemessen 24.11.2026).
+    #
+    # Beide Schreibweisen muessen zaehlen - das Fixture dieser Datei ist von
+    # 2019 und traegt noch den Plural, die Datenbank beides.
+    def test_vaccine_takes_both_spellings
+      {"Impfstoff" => true, "Impfstoffe" => true,
+       "Blutprodukt" => true, "Blutprodukte" => true,
+       "Synthetikum" => false, "Phytoarzneimittel" => false,
+       "" => false, nil => false}.each { |science, expected|
+        assert_equal(expected, @plugin.vaccine?(science),
+          "vaccine? #{science.inspect} muss #{expected} sein")
+      }
+    end
+
+    # Dieselbe Umbenennung: "Homöopathika" -> "Homöopathisches Arzneimittel",
+    # "Phytotherapeutika" -> "Phytoarzneimittel", "Anthroposophika" ->
+    # "Anthroposophisches Arzneimittel". Der exakte Vergleich traf nichts
+    # mehr, und complementary_type blieb leer.
+    def test_complementary_type_takes_both_spellings
+      {"Homöopathisches Arzneimittel" => "homeopathy",
+       "Homöopathische Arzneimittel" => "homeopathy",
+       "Homöopathika" => "homeopathy",
+       "Phytoarzneimittel" => "phytotherapy",
+       "Phytotherapeutika" => "phytotherapy",
+       "Anthroposophisches Arzneimittel" => "anthroposophy",
+       "Anthroposophika" => "anthroposophy",
+       # Diese stehen auch in der Spalte und haben absichtlich keinen Typ.
+       "Anderes Komplementärarzneimittel" => nil,
+       "Tibetisches Arzneimittel" => nil,
+       "Synthetikum" => nil,
+       nil => nil}.each { |science, expected|
+        got = @plugin.complementary_type_for(science)
+        msg = "complementary_type_for #{science.inspect} muss #{expected.inspect} sein"
+        # assert_equal(nil, ...) ist in Minitest deprecated und faellt in 6 um.
+        expected.nil? ? assert_nil(got, msg) : assert_equal(expected, got, msg)
+      }
+    end
+
     def test_update_registration__error
       registration = flexmock("registration", pointer: "pointer")
       company = flexmock("company", pointer: "pointer")

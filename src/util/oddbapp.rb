@@ -1778,8 +1778,13 @@ class OddbPrevalence
     generate_dictionary("german")
   end
 
+  # Zieht das vaccine-Flag fuer alle Impfstoffe und Blutprodukte nach.
+  # Der Stamm statt der Pluralform, aus demselben Grund wie in
+  # SwissmedicPlugin: Swissmedic schreibt heute "Impfstoff" und
+  # "Blutprodukt", und /Impfstoffe|Blutprodukte/ fand deshalb nur die
+  # Altbestaende. Siehe den Kommentar dort.
   def update_ibflag
-    @registrations.values.select { |r| r.production_science =~ /Blutprodukte/ or r.production_science =~ /Impfstoffe/ }.sort_by { |r| r.iksnr }.each do |reg|
+    @registrations.values.select { |r| r.production_science =~ /Blutprodukt/ or r.production_science =~ /Impfstoff/ }.sort_by { |r| r.iksnr }.each do |reg|
       unless reg.vaccine
         ptr = reg.pointer
         args = {vaccine: true}

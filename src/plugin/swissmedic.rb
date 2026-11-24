@@ -105,6 +105,39 @@ module ODDB
       $stdout.puts "#{Time.now} #{File.basename(caller(1..1).first)}: #{msg}"
     end
 
+    # Impfstoff oder Blutprodukt? Auf den Stamm pruefen, nicht auf die
+    # Pluralform. Swissmedic hat die Werte in production_science von Plural
+    # auf Singular umgestellt: Packungen-latest.xlsx fuehrt 163
+    # "Blutprodukt" und 124 "Impfstoff", und /Blutprodukte|Impfstoffe/ traf
+    # damit 0 von 18137 Zeilen. Das Flag wurde seither nie mehr gesetzt -
+    # gemessen am 24.11.2026: 123 aktive Registrierungen mit dem neuen Wert
+    # hatten vaccine=false, waehrend die 149 mit Flag die alten
+    # Plural-Eintraege waren, von denen noch 4 lebten. Der Index
+    # sequence_vaccine stand deshalb auf 0 Zeilen (im September 263) und
+    # /de/mobile/vaccines/ war leer. Der Stamm erfasst beide Schreibweisen,
+    # die alten Daten eingeschlossen, und braucht keine Migration.
+    def vaccine?(science)
+      !!(science.to_s =~ /Blutprodukt|Impfstoff/)
+    end
+
+    # Dieselbe Umbenennung, dieselbe Folge: aus "Homöopathika" wurde
+    # "Homöopathisches Arzneimittel", aus "Phytotherapeutika"
+    # "Phytoarzneimittel", aus "Anthroposophika" "Anthroposophisches
+    # Arzneimittel". Der exakte Vergleich traf nichts mehr, und
+    # complementary_type blieb leer - am 24.11.2026 bei 397 aktiven
+    # homoeopathischen und 319 aktiven Phyto-Registrierungen.
+    #
+    # "Anderes Komplementärarzneimittel" und "Tibetisches Arzneimittel"
+    # stehen ebenfalls in der Spalte und fallen absichtlich durch: fuer sie
+    # gibt es keinen complementary_type.
+    def complementary_type_for(science)
+      case science.to_s
+      when /Anthroposoph/ then "anthroposophy"
+      when /Homöopath/ then "homeopathy"
+      when /Phyto/ then "phytotherapy"
+      end
+    end
+
     def mustcheck(iksnr, opts = {})
       res = true
       if opts[:update_compositions]
@@ -1271,9 +1304,7 @@ module ODDB
           end
         end
         reg_date = row[@target_keys.keys.index(:registration_date)]
-        vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
-          true
-        end
+        vaccine = vaccine?(science) || nil
         args = {
           ith_swissmedic: cell(row, @target_keys.keys.index(:index_therapeuticus)),
           production_science: science,
@@ -1289,13 +1320,8 @@ module ODDB
           args.store :renewal_flag, true
           args.store :renewal_flag_swissmedic, true
         end
-        case science
-        when "Anthroposophika"
-          args.store :complementary_type, "anthroposophy"
-        when "Homöopathika"
-          args.store :complementary_type, "homeopathy"
-        when "Phytotherapeutika"
-          args.store :complementary_type, "phytotherapy"
+        if (type = complementary_type_for(science))
+          args.store :complementary_type, type
         end
         if (company = update_company(row))
           args.store :company, company.pointer

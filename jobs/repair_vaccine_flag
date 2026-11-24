@@ -1,0 +1,113 @@
+#!/usr/local/bin/ruby
+# Zieht das vaccine-Flag fuer Impfstoffe und Blutprodukte nach.
+#
+#   bundle exec ruby jobs/repair_vaccine_flag            # nur zaehlen
+#   bundle exec ruby jobs/repair_vaccine_flag --apply
+#
+# Swissmedic hat die Werte in production_science von Plural auf Singular
+# umgestellt: Packungen-latest.xlsx fuehrt "Blutprodukt" und "Impfstoff",
+# waehrend SwissmedicPlugin auf /Blutprodukte|Impfstoffe/ prueefte und damit
+# 0 von 18137 Zeilen traf. Behoben am 24.11.2026 (SwissmedicPlugin#vaccine?
+# prueft jetzt den Stamm), aber der Import besucht unveraenderte
+# Registrierungen nicht erneut - deshalb dieser Nachzieher.
+#
+# Gemessen am 24.11.2026, bevor etwas geaendert wurde:
+#
+#   "Impfstoff"     66 total,  66 aktiv,   0 mit vaccine=true
+#   "Blutprodukt"   57 total,  57 aktiv,   0 mit vaccine=true
+#   "Impfstoffe"    74 total,   1 aktiv,  74 mit vaccine=true   (Altbestand)
+#   "Blutprodukte"  34 total,   3 aktiv,  34 mit vaccine=true   (Altbestand)
+#
+# Alle 123 aktiven haben eine oeffentliche Packung, erfuellen also die
+# Bedingung des Index sequence_vaccine
+# ('name_base if(origin.vaccine && origin.sequences.values.any? { |seq|
+# seq.has_public_packages? })'). Der Index stand auf 0 Zeilen, im September
+# auf 263, und /de/mobile/vaccines/ war leer.
+#
+# Danach noch den Index bauen, sonst bleibt die Seite leer:
+#   bundle exec ruby jobs/rebuild_indices sequence_vaccine
+#
+# OddbPrevalence#update_ibflag macht dasselbe, hat aber keinen Aufrufer und
+# keinen Trockenlauf.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+      fehlend = []
+      app.registrations.each { |iksnr, reg|
+        science = begin
+          reg.production_science.to_s
+        rescue
+          next
+        end
+        next unless science.match?(/Blutprodukt|Impfstoff/)
+        next if begin
+          reg.vaccine
+        rescue
+          false
+        end
+        oeffentlich = begin
+          seqs = reg.sequences
+          seqs.respond_to?(:each_value) &&
+            seqs.each_value.any? { |seq| seq.has_public_packages? }
+        rescue
+          false
+        end
+        lebt = begin
+          reg.active?
+        rescue
+          false
+        end
+        fehlend << [iksnr, science, lebt, oeffentlich]
+      }
+
+      aktiv = fehlend.count { |_, _, a, _| a }
+      indexfaehig = fehlend.count { |_, _, a, o| a && o }
+      puts "Registrierungen ohne vaccine-Flag: #{fehlend.size}"
+      puts "  davon aktiv:                     #{aktiv}"
+      puts "  davon mit oeffentlicher Packung:  #{indexfaehig}  <- diese fuellen den Index"
+      fehlend.select { |_, _, a, o| a && o }.first(8).each { |iksnr, s, _, _|
+        puts "    #{iksnr}  #{s}"
+      }
+
+      if fehlend.empty?
+        puts "nichts zu tun"
+        next
+      end
+      unless apply
+        puts
+        puts "ohne --apply nichts geaendert"
+        exit 1
+      end
+
+      gesetzt = 0
+      failed = []
+      # rescue in einem { }-Block geht nicht, nur in do..end oder mit
+      # explizitem begin.
+      fehlend.each { |iksnr, _, _, _|
+        begin
+          reg = app.registration(iksnr)
+          next unless reg
+          app.update reg.pointer, {vaccine: true}, :swissmedic
+          gesetzt += 1
+        rescue => error
+          failed << "#{iksnr}: #{error.class}: #{error.message.to_s[0, 70]}"
+        end
+      }
+      puts
+      puts "#{gesetzt} Flag(s) gesetzt"
+      unless failed.empty?
+        puts "Fehler: #{failed.size}"
+        failed.first(10).each { |f| puts "  #{f}" }
+      end
+      puts "jetzt noch: bundle exec ruby jobs/rebuild_indices sequence_vaccine"
+      puts "nachlesen bitte in einem frischen Prozess"
+    end
+  end
+end
