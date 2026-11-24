@@ -453,6 +453,22 @@ end
           log = @app.update(pointer.creator, values)
           log.notify("Swissmedic XLS")
         end
+        # Der Impfstoff-Zaehler der Startseite haengt an production_science
+        # und am vaccine-Flag, die genau dieser Import schreibt - also hier
+        # nachrechnen, statt auf recount zu warten. Das ruft nur
+        # Updater#run_random zu zufaelliger Tageszeit, und weil die App
+        # mehrmals taeglich neu startet, erreicht der seinen Termin oft nie:
+        # am 24.11.2026 stand 417 auf der Startseite statt 287.
+        #
+        # Ueber @app.system und nicht ueber @app: App#method_missing haelt
+        # die @cache_mutex, und count_vaccines laeuft ueber
+        # @registrations.values. Im Job kostet das nichts, im Server waere
+        # es eine Sperre fuer jeden Request.
+        #
+        # Der laufende Server sieht den neuen Wert erst beim naechsten
+        # Start - der Zaehler ist persistiert, nicht gemeldet. Dieselbe
+        # Klasse wie @rss_updates.
+        @app.system.recount_vaccines
       }
       return_value_plug_update
     end

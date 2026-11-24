@@ -997,6 +997,28 @@ class OddbPrevalence
     @recent_registration_count ||= count_recent_registrations
   end
 
+  # Rechnet den Impfstoff- und Blutprodukte-Zaehler nach und schreibt ihn
+  # fest. Synchron, im Gegensatz zu recount, das einen Thread aufmacht: ein
+  # Importjob waere vorbei, bevor der fertig ist.
+  #
+  # Warum es das braucht: @vaccine_count ist ein Ivar von OddbPrevalence und
+  # damit in der Datenbank, und vaccine_count liest es mit ||= - ein
+  # Neustart laedt den alten Wert und rechnet nie nach. Nachgerechnet wird
+  # sonst nur in recount, und das ruft einzig Updater#run_random, ein Thread
+  # zu zufaelliger Tageszeit; weil die App mehrmals taeglich neu startet,
+  # erreicht der seinen Termin oft nie. Am 24.11.2026 stand deshalb 417 auf
+  # der Startseite, waehrend 287 richtig war (163 Blutprodukt- und 124
+  # Impfstoff-Packungen, genau die Zeilenzahlen in Packungen-latest.xlsx).
+  #
+  # Nicht ueber App#method_missing aufrufen: count_vaccines laeuft ueber
+  # @registrations.values, und method_missing haelt die @cache_mutex, auf
+  # die jeder Request wartet. Aufrufer nehmen @app.system.recount_vaccines.
+  def recount_vaccines
+    @vaccine_count = count_vaccines
+    odba_isolated_store
+    @vaccine_count
+  end
+
   def recount
     again = true
     if @bean_counter.is_a?(Thread) && @bean_counter.status

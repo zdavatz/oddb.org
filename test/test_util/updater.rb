@@ -149,6 +149,60 @@ module ODDB
     end
   end
 
+  # Der Impfstoff-Zaehler der Startseite haengt am vaccine-Flag und an
+  # production_science, die genau dieser Import schreibt. Nachgerechnet wurde
+  # er aber nur in recount, und das ruft einzig Updater#run_random zu
+  # zufaelliger Tageszeit - weil die App mehrmals taeglich neu startet,
+  # erreicht der seinen Termin oft nie. Am 24.11.2026 stand 417 auf der
+  # Startseite, richtig waren 287.
+  class TestSwissmedicRecountsVaccines < Minitest::Test
+    def teardown
+      ODBA.storage = nil
+      super
+    end
+
+    def setup
+      @system = flexmock("prevalence")
+      @app = flexmock("app", system: @system)
+      @updater = Updater.new(@app)
+      @log = flexmock("log", notify: nil)
+      @logs = flexmock("logs", pointer: Persistence::Pointer.new([:log_group, :swissmedic]))
+      @app.should_receive(:create).and_return(@logs)
+      @app.should_receive(:update).and_return(@log)
+      @app.should_receive(:recount).by_default
+    end
+
+    def run_with(plugin_result)
+      plugin = flexmock("plugin", update: plugin_result, log_info: {})
+      flexmock(SwissmedicPlugin).should_receive(:new).and_return(plugin)
+      flexmock(@updater).should_receive(:wrap_update).and_return { |*_, &block| block.call }
+      flexmock(@updater).should_receive(:merge_previous_change_flags).and_return({})
+      @updater.update_swissmedic
+    end
+
+    def test_a_successful_import_recounts_the_vaccines
+      @system.should_receive(:recount_vaccines).once
+      run_with(true)
+    end
+
+    # Auch wenn das Plugin nichts geaendert hat: production_science kann sich
+    # geaendert haben, ohne dass der Diff etwas meldet - genau so ist der
+    # Zaehler stehengeblieben.
+    def test_an_import_without_changes_recounts_as_well
+      @system.should_receive(:recount_vaccines).once
+      run_with(false)
+    end
+
+    # Nicht ueber @app: App#method_missing haelt die @cache_mutex, auf die
+    # jeder Request wartet, und count_vaccines laeuft ueber
+    # @registrations.values.
+    def test_the_recount_goes_through_system_not_through_the_app
+      @system.should_receive(:recount_vaccines).once
+      @app.should_receive(:recount_vaccines).never
+      run_with(true)
+    end
+  end
+
   class TestSwissmedicDegenerateDiff < Minitest::Test
     def teardown
       ODBA.storage = nil

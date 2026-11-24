@@ -159,6 +159,23 @@ class TestOddbApp < Minitest::Test
     assert_equal(0, @app.vaccine_count)
   end
 
+  # vaccine_count liest @vaccine_count mit ||=, und das Ivar ist in der
+  # Datenbank - ein Neustart laedt den alten Wert und rechnet nie nach.
+  # Am 24.11.2026 stand deshalb 417 auf der Startseite, waehrend 287
+  # richtig war. recount_vaccines rechnet nach und schreibt fest, und zwar
+  # synchron: recount macht einen Thread auf, und ein Importjob waere
+  # vorbei, bevor der fertig ist.
+  def test_recount_vaccines_replaces_a_stale_value
+    system = @app.system
+    system.instance_variable_set(:@vaccine_count, 417)
+    assert_equal(417, @app.vaccine_count)
+    flexmock(system).should_receive(:count_vaccines).and_return(287)
+    flexmock(system).should_receive(:odba_isolated_store).once
+    assert_equal(287, system.recount_vaccines)
+    assert_equal(287, @app.vaccine_count,
+      "der nachgerechnete Wert muss auch durch vaccine_count kommen")
+  end
+
   def setup_create_commercial_forms
     flexstub(@app) do |app|
       app.should_receive(:system).and_return(@app.instance_eval("@system", __FILE__, __LINE__))
