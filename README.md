@@ -175,6 +175,18 @@ Nine documents stay lost, and the guard is not to blame. Their `@change_log` is 
 
 Two things worth keeping from the measuring. **Never call `change_log` to count it** — the method writes while reading and destroys exactly what you are counting; read the instance variable and probe it yourself. And a route or view change is invisible until the restart, so the status code before it proves nothing: the diff overview of 59160/01 counts five diff links reaching back to 2018 afterwards, and answered 404 before.
 
+### Impfstoffe/Blutprodukte went empty, twice over
+
+`/de/mobile/vaccines/` showed no products, and two separate faults had to be cleared before it would.
+
+Swissmedic renamed the values in `production_science`. Until the October 2026 file the column read "Impfstoffe" and "Blutprodukte"; since the November file it reads **"Impfstoff" and "Blutprodukt"**, singular. `SwissmedicPlugin` tested for the plural and matched 0 of 18137 rows, so the `sequence_vaccine` index fell from 263 rows to **none** and the page had nothing to list.
+
+It is worse than a rule that stops firing. The import always passes `vaccine: vaccine`, and that is `nil` when the expression misses — so every vaccine it touched had its existing `true` **overwritten**. Measured before the fix: of 66 registrations reading "Impfstoff" all 66 were active and none carried the flag, likewise 57 of 57 reading "Blutprodukt", while the plural leftovers kept theirs and had all but died out. The same rename broke `complementary_type` through three exact comparisons, costing 397 active homeopathic and 319 active phytotherapeutic registrations their type. Both rules now sit in named methods and test the **stem**, which covers either spelling and needs no migration. `OddbPrevalence#update_ibflag` carried the same plural, and no caller at all, so the backfill it exists for had never run.
+
+The second fault was in the measuring. Repeated requests to the page kept returning a Swiyu login wall, which looked like the page being gated — until the rendered text gave it away: *"Bei Ihrer IP-Adresse `<>` haben wir innerhalb von einem Tag mehr als 5 Abfragen gemessen."* The IP is empty. `SBSM::Session#remote_ip` reads `@request.remote_host`, which **Rack 2.2.24 does not have**, so `remote_ip` is always `nil` and every anonymous visitor shares one counter of five queries a day. Our own `curl` calls had spent it. Measuring over `localhost:8012` avoids Anubis but not this. Left as it is for now: how many queries an anonymous visitor should get is a product decision, not a technical one.
+
+After `jobs/repair_vaccine_flag` set the 123 flags and the index was rebuilt, it holds 253 rows — abrysvo, adacel, albumin, arexvy and the rest, across 23 initial letters.
+
 ### Bot load on the crawler backend
 
 On 31.08.2026 port 8212 took **98 913 requests**, of which **54 021 came from `meta-externalagent`** — Meta's AI training crawler, 55 % and more than every other bot together (Applebot 2250, Baiduspider 631, Sogou 313). They land on the expensive pages: `/fr/gcc/patinfo` 9588, `/de/gcc/fachinfo` 5236, `/en/mobile/show` 4853, `/de/generika/show` 4323, `/fr/gcc/price_history` 3482. A Fach- or Patinfo render pulls a document and its twenty chapters into memory, so the process walks up to `MEMORY_LIMIT_CRAWLER` and exits — **108 restarts that day against 7 to 12 on each of the other three backends**, countable as "silent on port" lines in `log/cron/healthcheck-*.log`.
