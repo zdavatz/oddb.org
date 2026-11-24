@@ -232,6 +232,88 @@ class TestRefdataNatPlugin < Minitest::Test
     assert_equal(0, skipped.size)
   end
 
+  # Eine Person kann mehrere Rollen haben, und dann liefert Ox fuer <ROLE>
+  # ein Array statt eines Hash - 22731 der 508451 Eintraege im Export vom
+  # 11.10.2026. Vorher stand hier
+  # `item[:ROLE].is_a?(Hash) ? item[:ROLE] : item[:ROLE].values.first`:
+  # Array#values gibt es nicht, und selbst wenn, waere nur die erste Rolle
+  # geprueft worden. Bei 932 Personen ist DoctMed nicht die erste.
+  def nat_xml(rollen)
+    inner = rollen.collect { |typ, zip, city|
+      "<ROLE><TYPE>#{typ}</TYPE><ZIP>#{zip}</ZIP><CITY>#{city}</CITY></ROLE>"
+    }.join
+    # Zwei ITEM, nicht eines: bei einem einzigen klappt Ox das wiederholte
+    # Element zu einem Hash zusammen, und parse_xml laeuft dann mit
+    # each_with_index ueber einen Hash - item ist ein [key, value]-Paar und
+    # item[:ROLE] wirft TypeError. In Produktion mit 508451 Eintraegen
+    # kommt das nie vor; hier wuerde es den Testaufbau unbrauchbar machen.
+    xml = <<~XML
+      <soap:Envelope xmlns:soap="x"><soap:Body><PARTNER><ITEM><PTYPE>NAT</PTYPE><GLN>7601000100276</GLN><STATUS>A</STATUS><DESCR1>Ammann</DESCR1><DESCR2>Alex</DESCR2><LANG>DE</LANG>#{inner}</ITEM><ITEM><PTYPE>NAT</PTYPE><GLN>7601000999999</GLN><STATUS>I</STATUS><DESCR1>Fueller</DESCR1><DESCR2>Franz</DESCR2><LANG>DE</LANG><ROLE><TYPE>Nurse</TYPE></ROLE></ITEM></PARTNER></soap:Body></soap:Envelope>
+    XML
+    file = Tempfile.new(["refdata_nat", ".xml"])
+    file.write(xml)
+    file.close
+    file
+  end
+
+  def parse_roles(rollen)
+    file = nat_xml(rollen)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(@app)
+    plugin.parse_xml(file.path)
+    plugin.instance_variable_get(:@info_to_gln)
+  ensure
+    file&.unlink
+  end
+
+  def test_doctmed_as_the_only_role_is_found
+    assert_equal([7601000100276], parse_roles([["DoctMed", "3074", "Muri"]]).keys)
+  end
+
+  def test_doctmed_as_the_second_role_is_found
+    found = parse_roles([["Psycho", "3074", "Muri"], ["DoctMed", "8001", "Zuerich"]])
+    assert_equal([7601000100276], found.keys,
+      "DoctMed muss auch zaehlen, wenn es nicht die erste Rolle ist")
+  end
+
+  def test_doctmed_as_the_third_role_is_found
+    found = parse_roles([["Nurse", "1", "A"], ["Dent", "2", "B"], ["DoctMed", "3", "C"]])
+    assert_equal([7601000100276], found.keys)
+  end
+
+  def test_without_doctmed_nothing_is_imported
+    assert_empty(parse_roles([["Psycho", "3074", "Muri"], ["Nurse", "8000", "Zuerich"]]))
+  end
+
+  # Die Adresse der aerztlichen Taetigkeit steht unter der DoctMed-Rolle,
+  # nicht unter der ersten.
+  def test_the_address_comes_from_the_doctmed_role
+    found = parse_roles([["Psycho", "3074", "Muri b. Bern"], ["DoctMed", "8001", "Zuerich"]])
+    info = found[7601000100276]
+    assert_equal("8001", info[:plz], "die PLZ muss aus der DoctMed-Rolle kommen")
+    assert_equal("Zuerich", info[:location])
+  end
+
+  # OddbPrevalence#doctor_by_gln durchsucht @doctors.values linear. Bei
+  # 127779 Aerzten und 121914 Eintraegen im Export sind das 1,5e10
+  # Vergleiche - daran haengen die sechseinhalb Stunden Laufzeit. Die
+  # Zuordnung wird jetzt einmal aufgebaut; doctor_by_gln bleibt der
+  # Rueckfall fuer Neuanlagen.
+  def test_an_existing_doctor_is_found_without_scanning
+    bekannt = ODDB::Doctor.new
+    bekannt.ean13 = 7601000100276
+    app = flexmock("app", config: @config, doctors: [bekannt], update: "update")
+    app.should_receive(:doctor_by_gln).never
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app)
+    assert_equal(bekannt, plugin.find_doctor(7601000100276))
+  end
+
+  def test_an_unknown_gln_falls_back_to_doctor_by_gln
+    app = flexmock("app", config: @config, doctors: [], update: "update")
+    app.should_receive(:doctor_by_gln).with(7601000100276).once.and_return(nil)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app)
+    assert_nil(plugin.find_doctor(7601000100276))
+  end
+
   def test_get_latest_file
     # Hits the live refdata Partner API, which requires an API key. Skip when
     # no key is configured (e.g. in CI) so the suite stays green without

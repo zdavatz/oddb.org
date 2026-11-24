@@ -243,15 +243,56 @@ module ODDB
         data[:addresses] = [addr] if data[:address] || !addr.location.empty?
       end
 
+      # Einmal eine Zuordnung GLN -> Arzt aufbauen, statt fuer jeden Eintrag
+      # @doctors.values zu durchsuchen. OddbPrevalence#doctor_by_gln macht
+      # genau das: einen linearen Scan ueber alle Aerzte. Bei 127779 Aerzten
+      # und 121914 DoctMed-Eintraegen im Export sind das 1,5e10 Vergleiche -
+      # daran haengen die sechseinhalb Stunden Laufzeit des Imports, gemessen
+      # am Oktober-Lauf mit 19 Minuten je 10000 Eintraegen.
+      #
+      # Nicht indexed_doctor_by_gln: der Index stammt vom naechtlichen
+      # rebuild_indices und kennt nicht, was dieser Lauf selbst anlegt. Diese
+      # Zuordnung wird dagegen mitgepflegt, siehe store_doctor.
+      def doctors_by_gln
+        @doctors_by_gln ||= begin
+          map = {}
+          # @app.doctors ist im Betrieb ein Hash, in den Tests eine Liste.
+          alle = @app.doctors
+          alle = alle.values if alle.respond_to?(:values)
+          alle.each { |doc|
+            ean = begin
+              doc.ean13.to_s
+            rescue
+              nil
+            end
+            map[ean.to_i] = doc if ean && !ean.empty?
+          }
+          log "built GLN map with #{map.size} of #{@app.doctors.size} doctors"
+          map
+        end
+      end
+
+      # Die Zuordnung zuerst, doctor_by_gln nur beim Fehltreffer. Ein
+      # Fehltreffer heisst "noch nicht vorhanden", und das sind die
+      # Neuanlagen: 1663 im Oktober-Lauf gegen 121914 Eintraege. Der teure
+      # lineare Scan laeuft damit 1663 mal statt 121914 mal, und
+      # doctor_by_gln bleibt die Nahtstelle, an der die Tests ansetzen.
+      def find_doctor(gln)
+        doctors_by_gln[gln] || @app.doctor_by_gln(gln)
+      end
+
       def store_doctor(data, gln)
         pointer = nil
-        if (doctor = @app.doctor_by_gln(gln))
+        if (doctor = find_doctor(gln))
           pointer = doctor.pointer
           action = "update"
         else
           doctor = @app.create_doctor
           pointer = doctor.pointer
           action = "create"
+          # Mitpflegen, sonst legt ein zweiter Lauf am selben Tag denselben
+          # Arzt noch einmal an.
+          doctors_by_gln[gln] = doctor
         end
         changes = {}
         [:name, :firstname, :language].each do |field|
@@ -318,9 +359,24 @@ module ODDB
         @info_to_gln = {}
         items.each_with_index do |item, index|
           log "At item #{index} of #{items.size}" if (index % 10000) == 0
-          role = item[:ROLE].is_a?(Hash) ? item[:ROLE] : item[:ROLE].values.first
-          type = role[:TYPE]
-          next unless type.eql?("DoctMed")
+          # Eine Person kann mehrere Rollen haben, und dann liefert Ox fuer
+          # <ROLE> ein **Array**, keinen Hash: 22731 der 508451 Eintraege im
+          # Export vom 11.10.2026. Vorher stand hier
+          # `item[:ROLE].is_a?(Hash) ? item[:ROLE] : item[:ROLE].values.first`
+          # - `values` gibt es auf einem Array nicht, und selbst wenn, waere
+          # nur die *erste* Rolle geprueft worden. Bei 932 Personen ist
+          # DoctMed nicht die erste (z.B. ["Psycho", "DoctMed"],
+          # ["Nurse", "DoctMed"], ["Dent", "DoctMed"]); die fehlten.
+          roles = case item[:ROLE]
+                  when Hash then [item[:ROLE]]
+                  when Array then item[:ROLE]
+                  when nil then []
+                  else item[:ROLE].values
+                  end
+          # Die DoctMed-Rolle selbst nehmen, nicht die erste: Adresse, PLZ
+          # und Ort darunter sind die der aerztlichen Taetigkeit.
+          role = roles.find { |one| one.is_a?(Hash) && one[:TYPE].eql?("DoctMed") }
+          next unless role
           gln = item[:GLN].to_i
           next if @glns_to_import.size > 0 && !@glns_to_import.index(gln)
           hash = {}

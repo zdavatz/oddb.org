@@ -1,0 +1,131 @@
+#!/usr/local/bin/ruby
+# Meldet Aerzte, die im aktuellen Refdata-Export nicht mehr als DoctMed
+# stehen, und entfernt sie auf Wunsch aus @doctors.
+#
+#   bundle exec ruby jobs/repair_vanished_doctors            # nur zaehlen
+#   bundle exec ruby jobs/repair_vanished_doctors --apply
+#
+# Der Import zaehlt solche Faelle in @doctors_inactive und schreibt sie in
+# den Bericht ("Number of inactive doctors"), ruft aber **nie**
+# OddbPrevalence#delete_doctor. Ueber acht Jahre monatlicher Importe sind
+# so Eintraege liegengeblieben: gemessen am 24.11.2026 fuehrte @doctors
+# 127779 Eintraege, davon 116847 mit einer GLN, die im Export vom
+# 11.10.2026 als DoctMed steht, und **6873 mit einer GLN, die dort nicht
+# mehr vorkommt**.
+#
+# Nicht angetastet werden die 4059 Eintraege **ohne** ean13. Das sind
+# Altbestaende aus der Zeit vor dem Refdata-Import (kleine laufende
+# Schluessel wie 12 oder 4135 statt der achtstelligen, letzte Aenderung
+# 2006-2014 oder keine); ohne GLN laesst sich nicht entscheiden, ob
+# Refdata sie kennt.
+#
+# Entfernt wird nur aus @doctors, nicht mit odba_delete: damit bleibt das
+# Objekt erhalten und die Undo-Datei genuegt, um es wieder einzuhaengen.
+# Was dann wirklich unerreichbar ist, ist Sache von
+# jobs/delete_unreachable_objects.
+#
+# Zur Vorsicht: "nicht mehr im Export" ist nicht dasselbe wie "von Refdata
+# geloescht". Faellt ein Import aus oder laedt eine unvollstaendige Datei,
+# sieht das gleich aus. Deshalb Trockenlauf als Standard, und die Zahl
+# gehoert angeschaut, bevor --apply laeuft.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "ox"
+
+module ODDB
+  module Util
+    Job.run do |app|
+      apply = ARGV.include?("--apply")
+      xml_path = File.join(ODDB::WORK_DIR, "xml/refdata_nat_latest.xml")
+      abort "kein Export unter #{xml_path}" unless File.exist?(xml_path)
+
+      puts "Export: #{xml_path} (#{File.size(xml_path)} Bytes, #{File.mtime(xml_path).strftime("%d.%m.%Y")})"
+      items = Ox.load(IO.read(xml_path), mode: :hash_no_attrs)
+        .dig(:"soap:Envelope", :"soap:Body", :PARTNER, :ITEM)
+      items = [items] unless items.is_a?(Array)
+      doctmed = {}
+      items.each { |item|
+        next unless item.is_a?(Hash)
+        roles = case item[:ROLE]
+        when Hash then [item[:ROLE]]
+        when Array then item[:ROLE]
+        else []
+        end
+        next unless roles.any? { |one| one.is_a?(Hash) && one[:TYPE].eql?("DoctMed") }
+        doctmed[item[:GLN].to_i] = item[:STATUS]
+      }
+      puts "DoctMed im Export: #{doctmed.size}"
+
+      verschwunden = []
+      ohne_gln = 0
+      app.doctors.each { |oid, doc|
+        ean = begin
+          doc.ean13.to_s
+        rescue
+          ""
+        end
+        if ean.empty?
+          ohne_gln += 1
+          next
+        end
+        next if doctmed.key?(ean.to_i)
+        name = begin
+          [doc.name, doc.firstname].compact.join(", ")
+        rescue
+          "?"
+        end
+        verschwunden << [oid, ean, name]
+      }
+
+      puts "Aerzte in @doctors:              #{app.doctors.size}"
+      puts "  ohne GLN (unberuehrt):         #{ohne_gln}"
+      puts "  nicht mehr im Export:          #{verschwunden.size}"
+      verschwunden.first(8).each { |oid, ean, name|
+        puts format("    oid %-10s gln %-14s %s", oid, ean, name[0, 34])
+      }
+
+      if verschwunden.empty?
+        puts "nichts zu tun"
+        next
+      end
+      unless apply
+        puts
+        puts "ohne --apply nichts geaendert"
+        exit 1
+      end
+
+      undo = File.expand_path("../log/repair_vanished_doctors-#{Time.now.strftime("%Y%m%d-%H%M%S")}.undo",
+        File.dirname(__FILE__))
+      entfernt = 0
+      failed = []
+      File.open(undo, "w") { |fh|
+        # rescue in einem { }-Block geht nicht, nur in do..end oder mit
+        # explizitem begin.
+        verschwunden.each { |oid, ean, name|
+          begin
+            fh.puts([oid, ean, name].join("\t"))
+            fh.flush
+            if app.delete_doctor(oid)
+              entfernt += 1
+            else
+              failed << "#{oid} (#{ean}): delete_doctor gab nil"
+            end
+          rescue => error
+            failed << "#{oid} (#{ean}): #{error.class}: #{error.message.to_s[0, 60]}"
+          end
+        }
+      }
+      puts
+      puts "#{entfernt} aus @doctors entfernt"
+      unless failed.empty?
+        puts "Fehler: #{failed.size}"
+        failed.first(10).each { |f| puts "  #{f}" }
+      end
+      puts "Liste in #{undo} (Spalten: oid, gln, name)"
+      puts "nachlesen bitte in einem frischen Prozess"
+    end
+  end
+end
