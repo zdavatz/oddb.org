@@ -129,6 +129,34 @@ module ODDB
       @flavor ||= @valid_input[:partner] || super
     end
 
+    # SBSM::Session#remote_ip liest @request.remote_host, und daran stimmen
+    # zwei Dinge nicht: @request wird in sbsm 1.6.1 **nirgends zugewiesen**
+    # (nur gelesen, in remote_addr, remote_ip, server_name und user_agent),
+    # und Rack::Request kennt remote_host ohnehin nicht. remote_ip war damit
+    # immer nil, @@requests[nil] ein gemeinsamer Eimer fuer alle anonymen
+    # Besucher der Welt, und nach fuenf Abfragen auf einen LIMITED-State sah
+    # jeder die Abfragebeschraenkung. Die Limit-Seite nannte es selbst:
+    # "Bei Ihrer IP-Adresse <> haben wir ... mehr als 5 Abfragen gemessen"
+    # (gemessen 24.11.2026).
+    #
+    # @rack_request ist die echte Anfrage - sbsm setzt sie in process_rack,
+    # bevor der State laeuft, also steht sie, wenn limit_queries greift.
+    # Rack::Request#ip ist die richtige Quelle und beruecksichtigt
+    # X-Forwarded-For, was hinter Apache noetig ist: es verwirft private und
+    # Loopback-Adressen als Proxy (REMOTE_ADDR ist hier immer 127.0.0.1) und
+    # nimmt dann den **letzten** nicht vertrauenswuerdigen Eintrag aus
+    # X-Forwarded-For - den, den Apache selbst angehaengt hat. Ein
+    # gefaelschter Header gewinnt damit nichts.
+    #
+    # sbsm selbst wird nicht angefasst: 1.6.3 hat die Sanitisierung in
+    # _validate_html verloren, siehe CLAUDE.md.
+    #
+    # remote_addr und user_agent haben dieselbe Ursache und sind weiter nil;
+    # server_name faellt in sbsm auf die Konstante zurueck und ist heil.
+    def remote_ip
+      @remote_ip ||= @rack_request&.ip
+    end
+
     def limit_queries
       requests = (@@requests[remote_ip] ||= [])
       # puts (msg = "limit_queries #{remote_ip} @state.limited? #{@state.limited? } has #{requests.size} entries #{request_path}")

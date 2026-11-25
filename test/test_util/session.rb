@@ -380,6 +380,56 @@ module ODDB
       assert_equal([], @session.choosen_info_diff)
     end
 
+    # SBSM::Session#remote_ip liest @request.remote_host - @request wird in
+    # sbsm nie zugewiesen, und Rack::Request kennt remote_host nicht. Die
+    # Folge war @@requests[nil]: ein gemeinsamer Eimer fuer alle anonymen
+    # Besucher, fuenf Abfragen pro Tag insgesamt, und die Limit-Seite zeigte
+    # "<>" als IP (gemessen 24.11.2026).
+    def test_remote_ip_comes_from_the_rack_request
+      @session = ODDB::Session.new(app: @app)
+      req = Rack::Request.new(Rack::MockRequest.env_for("/de/gcc/vaccines",
+        "REMOTE_ADDR" => "203.0.113.7"))
+      @session.instance_variable_set(:@rack_request, req)
+      assert_equal("203.0.113.7", @session.remote_ip)
+    end
+
+    # Hinter Apache ist REMOTE_ADDR immer 127.0.0.1. Rack::Request#ip
+    # verwirft Loopback und private Adressen als Proxy und nimmt den letzten
+    # nicht vertrauenswuerdigen Eintrag aus X-Forwarded-For.
+    def test_remote_ip_behind_a_proxy_uses_the_forwarded_client
+      @session = ODDB::Session.new(app: @app)
+      req = Rack::Request.new(Rack::MockRequest.env_for("/de/gcc/vaccines",
+        "REMOTE_ADDR" => "127.0.0.1",
+        "HTTP_X_FORWARDED_FOR" => "198.51.100.23, 10.0.0.1"))
+      @session.instance_variable_set(:@rack_request, req)
+      assert_equal("198.51.100.23", @session.remote_ip)
+    end
+
+    # Ohne Anfrage darf es nicht werfen - Tests und Hintergrundpfade bauen
+    # Sessions ohne rack_request.
+    def test_remote_ip_without_a_request_is_nil
+      @session = ODDB::Session.new(app: @app)
+      assert_nil(@session.remote_ip)
+    end
+
+    # Der Punkt der ganzen Uebung: zwei Besucher duerfen sich das Kontingent
+    # nicht teilen.
+    def test_two_addresses_get_their_own_quota
+      ODDB::Session.reset_query_limit
+      zaehler = ODDB::Session.class_variable_get(:@@requests)
+      %w[203.0.113.7 198.51.100.23].each { |ip|
+        session = ODDB::Session.new(app: @app)
+        req = Rack::Request.new(Rack::MockRequest.env_for("/", "REMOTE_ADDR" => ip))
+        session.instance_variable_set(:@rack_request, req)
+        session.instance_variable_set(:@process_start, Time.now)
+        session.instance_variable_set(:@state, flexmock("state", limited?: true))
+        6.times { session.send(:limit_queries) rescue nil }
+      }
+      assert_equal(%w[198.51.100.23 203.0.113.7], zaehler.keys.compact.sort,
+        "jede Adresse braucht ihren eigenen Eimer, nicht @@requests[nil]")
+      ODDB::Session.reset_query_limit
+    end
+
     def test_is_mobile
       @session = ODDB::Session.new(app: SBSM::App.new)
       assert_equal(false, @session.is_mobile_app?)
