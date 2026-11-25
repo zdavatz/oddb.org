@@ -1029,6 +1029,14 @@ class OddbPrevalence
   # Nicht ueber App#method_missing aufrufen: count_vaccines laeuft ueber
   # @registrations.values, und method_missing haelt die @cache_mutex, auf
   # die jeder Request wartet. Aufrufer nehmen @app.system.recount_vaccines.
+  # Wie recount_vaccines: synchron, sofort, und nur dieser eine Zaehler.
+  # @doctors.size ist ein Hash-Zugriff, da braucht es keinen Thread.
+  def recount_doctors
+    @doctor_count = @doctors.size
+    odba_isolated_store
+    @doctor_count
+  end
+
   def recount_vaccines
     @vaccine_count = count_vaccines
     odba_isolated_store

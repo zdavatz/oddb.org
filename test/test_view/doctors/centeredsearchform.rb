@@ -28,6 +28,7 @@ module ODDB
             app: @app,
             lookandfeel: @lnf,
             doctor_count: 0,
+            language: "de",
             zone: "zone",
             event: "event")
           @model = flexmock("model")
@@ -36,6 +37,36 @@ module ODDB
 
         def test_doctor_count
           assert_equal("0&nbsp;", @composite.doctor_count(@model, @session))
+        end
+
+        # Die Zahl zaehlt Aerzte mit aktiver Refdata-Registrierung, nicht
+        # praktizierende Aerzte in der Schweiz - die Beschriftung sagt es und
+        # verlinkt auf die Abfrageseite der Partner-refdatabase.
+        def test_refdata_registration_links_to_the_partner_database
+          link = @composite.refdata_registration(@model, @session)
+          assert_equal("https://www.refdata.ch/de/partner/abfrage/partner-refdatabase-gln",
+            link.href)
+          assert_equal("_blank", link.attributes["target"],
+            "der Verweis muss in einem neuen Reiter aufgehen")
+          assert_equal("noopener noreferrer", link.attributes["rel"],
+            "ohne noopener kommt die fremde Seite an window.opener")
+        end
+
+        def test_refdata_registration_in_french
+          @session = flexmock("session", app: @app, lookandfeel: @lnf,
+            doctor_count: 0, language: "fr", zone: "zone", event: "event")
+          composite = ODDB::View::Doctors::CenteredSearchComposite.new(@model, @session)
+          assert_equal("https://www.refdata.ch/fr/partenaires/requete/base-de-donnees-des-partenaires-gln",
+            composite.refdata_registration(@model, @session).href)
+        end
+
+        # Refdata hat kein englisches Angebot.
+        def test_refdata_registration_falls_back_to_the_german_page
+          @session = flexmock("session", app: @app, lookandfeel: @lnf,
+            doctor_count: 0, language: "en", zone: "zone", event: "event")
+          composite = ODDB::View::Doctors::CenteredSearchComposite.new(@model, @session)
+          assert_equal("https://www.refdata.ch/de/partner/abfrage/partner-refdatabase-gln",
+            composite.refdata_registration(@model, @session).href)
         end
       end
     end # Doctors

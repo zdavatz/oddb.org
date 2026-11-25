@@ -203,6 +203,50 @@ module ODDB
     end
   end
 
+  # Der Refdata-Import legt an, aktualisiert und entfernt seit 25.11.2026
+  # auch (prune_inactive) - danach stimmt @doctor_count nicht mehr. Er stand
+  # an dem Tag auf 34663 gegen 113431 tatsaechliche.
+  class TestUpdaterRecountsDoctors < Minitest::Test
+    def teardown
+      ODBA.storage = nil
+      super
+    end
+
+    def setup
+      @system = flexmock("prevalence")
+      @app = flexmock("app", system: @system)
+      @updater = Updater.new(@app)
+      @app.should_receive(:update).and_return(flexmock("log", notify: nil))
+      @app.should_receive(:recount).by_default
+    end
+
+    def run_import(report)
+      plugin = flexmock("plugin", update: true, report: report, log_info: {})
+      flexmock(ODDB::Doctors::RefdataNatPlugin).should_receive(:new).and_return(plugin)
+      flexmock(@updater).should_receive(:wrap_update).and_return { |*_, &block| block.call }
+      @updater.update_refdata_nat
+    end
+
+    def test_the_import_recounts_the_doctors
+      @system.should_receive(:recount_doctors).once
+      run_import([])
+    end
+
+    # Der leere Bericht beendet die Methode vorzeitig - nachgerechnet werden
+    # muss trotzdem, denn geloescht wurde vielleicht.
+    def test_an_empty_report_recounts_as_well
+      @system.should_receive(:recount_doctors).once
+      run_import([])
+    end
+
+    # Nicht ueber @app: App#method_missing haelt die @cache_mutex.
+    def test_the_recount_goes_through_system
+      @system.should_receive(:recount_doctors).once
+      @app.should_receive(:recount_doctors).never
+      run_import("Update of doctors")
+    end
+  end
+
   class TestSwissmedicDegenerateDiff < Minitest::Test
     def teardown
       ODBA.storage = nil

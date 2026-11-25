@@ -200,6 +200,21 @@ class TestOddbApp < Minitest::Test
     assert_equal(0, rufe, "ohne Treffer darf nichts geschrieben werden")
   end
 
+  # doctor_count stand am 25.11.2026 auf 34663, waehrend @doctors 113431
+  # Eintraege hatte - dasselbe ||= auf einem persistierten Ivar wie bei
+  # vaccine_count. Der Refdata-Import rechnet ihn jetzt nach.
+  def test_recount_doctors_replaces_a_stale_value
+    system = @app.system
+    liste = system.instance_variable_get(:@doctors)
+    liste.store(1000, ODDB::Doctor.new)
+    system.instance_variable_set(:@doctor_count, 34_663)
+    assert_equal(34_663, @app.doctor_count)
+    flexmock(system).should_receive(:odba_isolated_store).once
+    assert_equal(liste.size, system.recount_doctors)
+    assert_equal(liste.size, @app.doctor_count,
+      "der nachgerechnete Wert muss auch durch doctor_count kommen")
+  end
+
   def test_recount_vaccines_replaces_a_stale_value
     system = @app.system
     system.instance_variable_set(:@vaccine_count, 417)

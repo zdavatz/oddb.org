@@ -266,6 +266,13 @@ module ODDB
       wrap_update(klass, subj) {
         plug = klass.new(@app, opts)
         plug.update
+        # Der Import legt an, aktualisiert und entfernt jetzt auch
+        # (prune_inactive) - danach stimmt @doctor_count nicht mehr. Wie bei
+        # den Impfstoffen gleich nachrechnen, statt auf recount zu warten:
+        # das laeuft nur in Updater#run_random zu zufaelliger Tageszeit und
+        # kommt bei mehreren Neustarts am Tag oft nie dran. Nicht ueber
+        # @app - method_missing haelt die @cache_mutex.
+        @app.system.recount_doctors
         return if plug.report.empty?
         log = Log.new(@@today)
         log.update_values(log_info(plug))
