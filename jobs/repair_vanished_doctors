@@ -1,17 +1,24 @@
 #!/usr/local/bin/ruby
-# Meldet Aerzte, die im aktuellen Refdata-Export nicht mehr als DoctMed
-# stehen, und entfernt sie auf Wunsch aus @doctors.
+# Meldet Aerzte, die im aktuellen Refdata-Export kein aktiver DoctMed mehr
+# sind, und entfernt sie auf Wunsch aus @doctors. Zwei Faelle:
+# die GLN steht gar nicht mehr im Export, oder sie steht da mit
+# STATUS != A ("inaktiv").
 #
 #   bundle exec ruby jobs/repair_vanished_doctors            # nur zaehlen
 #   bundle exec ruby jobs/repair_vanished_doctors --apply
 #
-# Der Import zaehlt solche Faelle in @doctors_inactive und schreibt sie in
-# den Bericht ("Number of inactive doctors"), ruft aber **nie**
+# Den STATUS-Fall entfernt der Import seit 25.11.2026 selbst
+# (RefdataNatPlugin#prune_inactive); dieser Job raeumt den Rueckstand und
+# bleibt fuer die GLN, die ganz aus dem Export fallen. Vorher zaehlte der
+# Import solche Faelle nur in @doctors_inactive und schrieb sie in den
+# Bericht ("Number of inactive doctors"), rief aber **nie**
 # OddbPrevalence#delete_doctor. Ueber acht Jahre monatlicher Importe sind
 # so Eintraege liegengeblieben: gemessen am 24.11.2026 fuehrte @doctors
 # 127779 Eintraege, davon 116847 mit einer GLN, die im Export vom
 # 11.10.2026 als DoctMed steht, und **6873 mit einer GLN, die dort nicht
-# mehr vorkommt**.
+# mehr vorkommt**. Am 25.11.2026 kamen die **7475** dazu, die im Export
+# stehen, aber nicht mit STATUS=A: 120906 -> 113431 (= 109372 aktive im
+# Export + 4059 ohne GLN).
 #
 # Nicht angetastet werden die 4059 Eintraege **ohne** ean13. Das sind
 # Altbestaende aus der Zeit vor dem Refdata-Import (kleine laufende
@@ -60,6 +67,7 @@ module ODDB
       puts "DoctMed im Export: #{doctmed.size}"
 
       verschwunden = []
+      inaktiv = []
       ohne_gln = 0
       app.doctors.each { |oid, doc|
         ean = begin
@@ -71,21 +79,29 @@ module ODDB
           ohne_gln += 1
           next
         end
-        next if doctmed.key?(ean.to_i)
+        status = doctmed[ean.to_i]
+        next if status.eql?("A")
         name = begin
           [doc.name, doc.firstname].compact.join(", ")
         rescue
           "?"
         end
-        verschwunden << [oid, ean, name]
+        # Zwei verschiedene Faelle, beide kein aktiver DoctMed: die GLN steht
+        # gar nicht mehr im Export, oder sie steht da mit STATUS != A. Den
+        # zweiten Fall entfernt der Import seit 25.11.2026 selbst
+        # (RefdataNatPlugin#prune_inactive); dieser Lauf raeumt den Rueckstand
+        # aus acht Jahren, in denen nie geloescht wurde.
+        (status.nil? ? verschwunden : inaktiv) << [oid, ean, name]
       }
 
       puts "Aerzte in @doctors:              #{app.doctors.size}"
       puts "  ohne GLN (unberuehrt):         #{ohne_gln}"
       puts "  nicht mehr im Export:          #{verschwunden.size}"
-      verschwunden.first(8).each { |oid, ean, name|
+      puts "  im Export, aber STATUS != A:   #{inaktiv.size}"
+      (verschwunden.first(4) + inaktiv.first(4)).each { |oid, ean, name|
         puts format("    oid %-10s gln %-14s %s", oid, ean, name[0, 34])
       }
+      verschwunden += inaktiv
 
       if verschwunden.empty?
         puts "nichts zu tun"

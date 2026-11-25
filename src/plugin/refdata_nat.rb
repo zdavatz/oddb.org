@@ -86,6 +86,14 @@ module ODDB
 
     class RefdataNatPlugin < Plugin
       RECIPIENTS = []
+
+      # Wieviel des Bestandes ein Lauf hoechstens entfernen darf. "Nicht
+      # STATUS=A" und "Export unvollstaendig" sehen von hier aus gleich aus:
+      # faellt der Download auf eine Teildatei zurueck, stehen ploetzlich
+      # zehntausende Aerzte als inaktiv da. Der Anteil lag beim Aufraeumen
+      # am 25.11.2026 bei 6 % (7346 von 120906); ueber 15 % wird nichts
+      # geloescht und der Bericht sagt es.
+      MAX_PRUNE_RATIO = 0.15
       def log(msg)
         $stdout.puts "#{Time.now}:  RefdataNatPlugin #{msg}" unless defined?(Minitest)
         $stdout.flush
@@ -108,6 +116,8 @@ module ODDB
         @doctors_updated = {}
         @doctors_skipped = {}
         @doctors_inactive = {}
+        @doctors_deleted = {}
+        @inactive_oids = {}
         @archive = File.join ODDB::WORK_DIR, "xls"
         @@all_doctors = []
         @agent = Doctors.setup_default_agent
@@ -120,6 +130,7 @@ module ODDB
         return unless needs_update
         save_for_log "parse_xml #{latest} specified GLN ids #{saved.inspect}"
         parse_xml(latest)
+        prune_inactive
         (@glns_to_import.size > 0) ? @glns_to_import : @info_to_gln.keys
         [@doctors_created, @doctors_updated, @doctors_inactive, @doctors_skipped]
       end
@@ -215,12 +226,14 @@ module ODDB
       end
 
       def report
-        return [] if (@doctors_created.size + @doctors_updated.size) == 0
+        return [] if (@doctors_created.size + @doctors_updated.size + @doctors_deleted.size) == 0
         report =+ "Update of doctors\n\n"
         report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
         report << "Number of new doctors: " << @doctors_created.size.to_s << "\n"
         report << "Number of updated doctors: " << @doctors_updated.size.to_s << "\n"
         report << "Number of inactive doctors: " << @doctors_inactive.size.to_s << "\n"
+        report << "Number of deleted doctors: " << @doctors_deleted.size.to_s << "\n"
+        @@logInfo.grep(/prune_inactive/).each { |line| report << line << "\n" }
         report << "\nDetails of new doctors are: " << @doctors_created.size.to_s << "\n"
         @doctors_created.each { |gln, name| report << "#{gln}: #{name}\n" }
         report << "\nDetails of updated doctors are: " << @doctors_updated.size.to_s << "\n"
@@ -381,10 +394,23 @@ module ODDB
           next if @glns_to_import.size > 0 && !@glns_to_import.index(gln)
           hash = {}
           item.each { |key, value| hash[key.to_s.downcase.to_sym] = value if value.is_a?(String) }
+          # STATUS=A heisst aktiv. Alles andere ist eine GLN, die Refdata
+          # weiterfuehrt, aber nicht mehr als taetig: eine vergebene GLN wird
+          # nie neu zugeteilt, und "les enregistrements des personnes qui ne
+          # sont plus en activite ne sont pas effaces, mais marques comme
+          # <<inactifs>>" (Guide Partner-refdatabase, Kap. 6.6). Der Bestand
+          # ist damit kumulativ - 122846 DoctMed im Export vom 11.10.2026,
+          # davon 109501 mit STATUS=A.
           inactive = !item[:STATUS].eql?("A")
           if inactive
-            if @app.doctor_by_gln(gln)
-              @doctors_inactive[gln] = @app.doctor_by_gln(gln).fullname
+            # find_doctor, nicht @app.doctor_by_gln: letzteres ist ein
+            # linearer Scan ueber @doctors.values und lief hier fuer jeden
+            # der 13345 inaktiven Eintraege - 1,6e9 Vergleiche, der gleiche
+            # Fehler, der den aktiven Pfad sechseinhalb Stunden gekostet hat.
+            # Und zweimal gerufen fuer denselben Treffer.
+            if (doctor = find_doctor(gln))
+              @doctors_inactive[gln] = doctor.fullname
+              @inactive_oids[gln] = doctor.oid
             end
           else
             street = role[:STREET]
@@ -433,6 +459,49 @@ module ODDB
       end
 
       private
+
+      # Die Aerzte entfernen, die der Export als nicht mehr aktiv fuehrt.
+      # Vorher zaehlte der Import sie nur in @doctors_inactive und schrieb
+      # sie in den Bericht ("Number of inactive doctors"), ohne sie je
+      # auszuhaengen - nach acht Jahren lagen deshalb mehr Eintraege in
+      # @doctors als Refdata aktive DoctMed fuehrt.
+      #
+      # In **einem** Durchgang: delete_doctor speichert @doctors je Loeschung,
+      # und das hiess bei 127779 Eintraegen 262 Loeschungen in dreizehn
+      # Minuten. delete_doctors loescht alle und speichert einmal.
+      #
+      # Nicht ueber @app: ODDB::App#method_missing haelt die eine
+      # @cache_mutex, auf die jeder Request wartet.
+      def prune_inactive
+        @doctors_deleted = {}
+        return @doctors_deleted if @inactive_oids.empty?
+        if @glns_to_import.size > 0
+          save_for_log "prune_inactive: gezielter Lauf ueber #{@glns_to_import.size} GLN, nichts entfernt"
+          return @doctors_deleted
+        end
+        bestand = @app.doctors.size
+        anteil = (bestand > 0) ? @inactive_oids.size.to_f / bestand : 0
+        if anteil > MAX_PRUNE_RATIO
+          save_for_log "prune_inactive: #{@inactive_oids.size} von #{bestand} Aerzten (#{(anteil * 100).round(1)} %) waeren zu entfernen, mehr als MAX_PRUNE_RATIO #{(MAX_PRUNE_RATIO * 100).round} % - nichts geloescht, Export pruefen"
+          return @doctors_deleted
+        end
+        start = Time.now
+        entfernt = @app.system.delete_doctors(@inactive_oids.values)
+        entfernt.each { |doctor|
+          gln = begin
+            doctor.ean13.to_s
+          rescue
+            nil
+          end
+          @doctors_deleted[gln.to_s] = begin
+            doctor.fullname
+          rescue
+            "?"
+          end
+        }
+        save_for_log "prune_inactive: #{entfernt.size} von #{@inactive_oids.size} nicht aktiven Aerzten aus #{bestand} entfernt in #{(Time.now - start).round(1)} s"
+        @doctors_deleted
+      end
 
       def store_all_doctors
         startTime = Time.now

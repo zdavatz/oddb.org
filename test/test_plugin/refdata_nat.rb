@@ -314,6 +314,133 @@ class TestRefdataNatPlugin < Minitest::Test
     assert_nil(plugin.find_doctor(7601000100276))
   end
 
+  # Ein Export mit frei gesetztem STATUS. Immer mindestens zwei ITEM, sonst
+  # klappt Ox das wiederholte Element zu einem Hash zusammen.
+  def nat_xml_mit_status(eintraege)
+    items = eintraege.collect { |gln, status, typ|
+      "<ITEM><PTYPE>NAT</PTYPE><GLN>#{gln}</GLN><STATUS>#{status}</STATUS>" \
+      "<DESCR1>Muster</DESCR1><DESCR2>Max</DESCR2><LANG>DE</LANG>" \
+      "<ROLE><TYPE>#{typ}</TYPE><ZIP>8001</ZIP><CITY>Zuerich</CITY></ROLE></ITEM>"
+    }.join
+    file = Tempfile.new(["refdata_nat_status", ".xml"])
+    file.write("<soap:Envelope xmlns:soap=\"x\"><soap:Body><PARTNER>#{items}</PARTNER></soap:Body></soap:Envelope>")
+    file.close
+    file
+  end
+
+  def arzt_mit_gln(gln, oid)
+    doctor = ODDB::Doctor.new
+    doctor.ean13 = gln
+    doctor.name = "Muster"
+    doctor.firstname = "Max"
+    doctor.define_singleton_method(:oid) { oid }
+    doctor
+  end
+
+  # Zehn Aerzte im Bestand, damit eine einzelne Loeschung unter
+  # MAX_PRUNE_RATIO bleibt. Die Fueller haben keine GLN und stoeren die
+  # Zuordnung nicht.
+  def bestand_mit(doctor, groesse = 10)
+    alle = {doctor.oid => doctor}
+    (1..groesse - 1).each { |i| alle[1000 + i] = ODDB::Doctor.new }
+    alle
+  end
+
+  # Refdata loescht einen Eintrag nie, sondern markiert ihn als inaktiv
+  # (Guide Partner-refdatabase, Kap. 6.6). Der Import zaehlte solche Faelle
+  # nur in @doctors_inactive und liess sie in @doctors stehen; nach acht
+  # Jahren fuehrte @doctors 127779 Eintraege gegen 109501 aktive DoctMed.
+  def test_an_inactive_doctmed_is_removed_from_the_doctors
+    inaktiv = arzt_mit_gln(7601000100276, 4242)
+    system = flexmock("system")
+    system.should_receive(:delete_doctors).with([4242]).once.and_return([inaktiv])
+    app = flexmock("app", config: @config, doctors: bestand_mit(inaktiv),
+      update: "update", system: system)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app)
+    file = nat_xml_mit_status([[7601000100276, "I", "DoctMed"],
+      [7601000999999, "A", "Nurse"]])
+    flexmock(plugin, get_latest_file: [true, file.path])
+    created, updated, inactive, skipped = plugin.update
+    assert_empty(created)
+    assert_empty(updated)
+    assert_equal({7601000100276 => "Max Muster"}, inactive)
+    assert_equal(1, skipped.size)
+  ensure
+    file&.unlink
+  end
+
+  def test_an_active_doctmed_is_not_deleted
+    aktiv = arzt_mit_gln(7601000100276, 4242)
+    system = flexmock("system")
+    system.should_receive(:delete_doctors).never
+    app = flexmock("app", config: @config, doctors: bestand_mit(aktiv),
+      update: "update", system: system)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app)
+    file = nat_xml_mit_status([[7601000100276, "A", "DoctMed"],
+      [7601000999999, "A", "Nurse"]])
+    flexmock(plugin, get_latest_file: [true, file.path])
+    plugin.update
+    assert_empty(plugin.instance_variable_get(:@doctors_deleted))
+  ensure
+    file&.unlink
+  end
+
+  # Eine GLN, die wir nicht fuehren, gibt nichts zu loeschen - und darf den
+  # Lauf nicht mit einer leeren Loeschliste belaestigen.
+  def test_an_inactive_gln_we_do_not_hold_deletes_nothing
+    system = flexmock("system")
+    system.should_receive(:delete_doctors).never
+    app = flexmock("app", config: @config, doctors: {}, update: "update",
+      system: system)
+    app.should_receive(:doctor_by_gln).and_return(nil)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app)
+    file = nat_xml_mit_status([[7601000100276, "I", "DoctMed"],
+      [7601000999999, "A", "Nurse"]])
+    flexmock(plugin, get_latest_file: [true, file.path])
+    plugin.update
+    assert_empty(plugin.instance_variable_get(:@doctors_deleted))
+  ensure
+    file&.unlink
+  end
+
+  # Ein gezielter Lauf sieht nur die genannten GLN und darf daraus nie
+  # schliessen, dass alle anderen inaktiv sind.
+  def test_a_targeted_run_never_prunes
+    inaktiv = arzt_mit_gln(7601000100276, 4242)
+    system = flexmock("system")
+    system.should_receive(:delete_doctors).never
+    app = flexmock("app", config: @config, doctors: bestand_mit(inaktiv),
+      update: "update", system: system)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app, [7601000100276])
+    file = nat_xml_mit_status([[7601000100276, "I", "DoctMed"],
+      [7601000999999, "A", "Nurse"]])
+    flexmock(plugin, get_latest_file: [true, file.path])
+    plugin.update
+    assert_empty(plugin.instance_variable_get(:@doctors_deleted))
+  ensure
+    file&.unlink
+  end
+
+  # Faellt der Download auf eine Teildatei zurueck, stehen ploetzlich
+  # zehntausende Aerzte als inaktiv da. Ueber MAX_PRUNE_RATIO wird nichts
+  # geloescht.
+  def test_too_many_inactive_entries_abort_the_prune
+    inaktiv = arzt_mit_gln(7601000100276, 4242)
+    system = flexmock("system")
+    system.should_receive(:delete_doctors).never
+    app = flexmock("app", config: @config, doctors: bestand_mit(inaktiv, 2),
+      update: "update", system: system)
+    plugin = ODDB::Doctors::RefdataNatPlugin.new(app)
+    file = nat_xml_mit_status([[7601000100276, "I", "DoctMed"],
+      [7601000999999, "A", "Nurse"]])
+    flexmock(plugin, get_latest_file: [true, file.path])
+    plugin.update
+    assert_empty(plugin.instance_variable_get(:@doctors_deleted),
+      "50 %% Loeschanteil muss den Lauf stoppen")
+  ensure
+    file&.unlink
+  end
+
   def test_get_latest_file
     # Hits the live refdata Partner API, which requires an API key. Skip when
     # no key is configured (e.g. in CI) so the suite stays green without
