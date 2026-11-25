@@ -159,12 +159,6 @@ class TestOddbApp < Minitest::Test
     assert_equal(0, @app.vaccine_count)
   end
 
-  # vaccine_count liest @vaccine_count mit ||=, und das Ivar ist in der
-  # Datenbank - ein Neustart laedt den alten Wert und rechnet nie nach.
-  # Am 24.11.2026 stand deshalb 417 auf der Startseite, waehrend 287
-  # richtig war. recount_vaccines rechnet nach und schreibt fest, und zwar
-  # synchron: recount macht einen Thread auf, und ein Importjob waere
-  # vorbei, bevor der fertig ist.
   # delete_doctor ruft odba_isolated_store je Arzt, und das heisst die Liste
   # mit ihren 127779 Eintraegen so oft schreiben wie geloescht wird: 262
   # Loeschungen brauchten am 24.11.2026 dreizehn Minuten, die vollen 6873
@@ -215,15 +209,43 @@ class TestOddbApp < Minitest::Test
       "der nachgerechnete Wert muss auch durch doctor_count kommen")
   end
 
-  def test_recount_vaccines_replaces_a_stale_value
+  # Jeder der neun Zaehler ist ein persistiertes Ivar und wird mit `||=`
+  # gelesen - ein Neustart laedt den alten Wert und rechnet nie nach. Am
+  # 24.11.2026 stand 417 Impfstoffe statt 287 auf der Seite, am 25.11.2026
+  # lagen sieben der neun daneben. recount_all rechnet alle nach, synchron
+  # (recount macht einen Thread auf, und ein Importjob waere vorbei, bevor
+  # der fertig ist) und mit einem einzigen Schreibvorgang.
+  def test_recount_all_replaces_the_stale_values
     system = @app.system
     system.instance_variable_set(:@vaccine_count, 417)
+    system.instance_variable_set(:@package_count, 17_504)
     assert_equal(417, @app.vaccine_count)
     flexmock(system).should_receive(:count_vaccines).and_return(287)
+    flexmock(system).should_receive(:count_packages).and_return(18_204)
+    flexmock(system).should_receive(:count_patinfos).and_return(6267)
+    flexmock(system).should_receive(:count_atc_ddd).and_return(3544)
+    flexmock(system).should_receive(:count_limitation_texts).and_return(4176)
+    flexmock(system).should_receive(:count_recent_registrations).and_return(33)
     flexmock(system).should_receive(:odba_isolated_store).once
-    assert_equal(287, system.recount_vaccines)
+    diff = system.recount_all
+    assert_equal([417, 287], diff["vaccine_count"])
+    assert_equal([17_504, 18_204], diff["package_count"])
     assert_equal(287, @app.vaccine_count,
       "der nachgerechnete Wert muss auch durch vaccine_count kommen")
+    assert_equal(18_204, @app.package_count)
+  end
+
+  # Wer einen Zaehler hinzufuegt und COUNTER_NAMES vergisst, bekommt ihn nie
+  # nachgerechnet - deshalb muss die Liste zu den Ivars passen, die
+  # recount_all setzt.
+  def test_recount_all_covers_every_counter_name
+    system = @app.system
+    flexmock(system).should_receive(:odba_isolated_store)
+    diff = system.recount_all
+    assert_equal(OddbPrevalence::COUNTER_NAMES.sort, diff.keys.sort)
+    diff.each { |name, (_vorher, nachher)|
+      refute_nil(nachher, "#{name} wurde nicht nachgerechnet")
+    }
   end
 
   def setup_create_commercial_forms

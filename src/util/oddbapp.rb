@@ -1013,34 +1013,58 @@ class OddbPrevalence
     @recent_registration_count ||= count_recent_registrations
   end
 
-  # Rechnet den Impfstoff- und Blutprodukte-Zaehler nach und schreibt ihn
-  # fest. Synchron, im Gegensatz zu recount, das einen Thread aufmacht: ein
-  # Importjob waere vorbei, bevor der fertig ist.
-  #
-  # Warum es das braucht: @vaccine_count ist ein Ivar von OddbPrevalence und
-  # damit in der Datenbank, und vaccine_count liest es mit ||= - ein
-  # Neustart laedt den alten Wert und rechnet nie nach. Nachgerechnet wird
-  # sonst nur in recount, und das ruft einzig Updater#run_random, ein Thread
-  # zu zufaelliger Tageszeit; weil die App mehrmals taeglich neu startet,
-  # erreicht der seinen Termin oft nie. Am 24.11.2026 stand deshalb 417 auf
-  # der Startseite, waehrend 287 richtig war (163 Blutprodukt- und 124
-  # Impfstoff-Packungen, genau die Zeilenzahlen in Packungen-latest.xlsx).
-  #
-  # Nicht ueber App#method_missing aufrufen: count_vaccines laeuft ueber
-  # @registrations.values, und method_missing haelt die @cache_mutex, auf
-  # die jeder Request wartet. Aufrufer nehmen @app.system.recount_vaccines.
-  # Wie recount_vaccines: synchron, sofort, und nur dieser eine Zaehler.
-  # @doctors.size ist ein Hash-Zugriff, da braucht es keinen Thread.
+  # Nur den Arztzaehler, synchron und sofort: @doctors.size ist ein
+  # Hash-Zugriff und kostet nichts, waehrend recount_all vier Minuten ueber
+  # alle Registrierungen laeuft. @doctors aendert sich einzig im
+  # Refdata-Import, und der laeuft monatlich; die uebrigen acht frischt der
+  # Tagesimport.
   def recount_doctors
     @doctor_count = @doctors.size
     odba_isolated_store
     @doctor_count
   end
 
-  def recount_vaccines
+  # Die neun Zaehler der Startseite, in der Reihenfolge, in der sie dort
+  # stehen. Wer einen hinzufuegt, traegt ihn hier ein, sonst wird er nie
+  # nachgerechnet.
+  COUNTER_NAMES = %w[
+    atc_ddd_count company_count doctor_count limitation_text_count
+    package_count patinfo_count recent_registration_count substance_count
+    vaccine_count
+  ].freeze
+
+  # Alle neun nachrechnen, synchron und mit **einem** Schreibvorgang.
+  # Gibt je Zaehler [vorher, nachher] zurueck, damit ein Job sagen kann,
+  # was sich geaendert hat.
+  #
+  # Warum es das braucht: jeder der neun ist ein Ivar von OddbPrevalence und
+  # damit in der Datenbank, und jeder Leser nimmt `||=` - ein Neustart laedt
+  # den alten Wert und rechnet nie nach. Nachgerechnet wird sonst nur in
+  # recount, und das ruft einzig der Zufalls-Thread in ODDB::App: zufaellige
+  # Stunde und Minute, Endlosschleife, und weil die App mehrmals taeglich neu
+  # startet, kommt der oft nie dran. Am 25.11.2026 lagen sieben der neun
+  # daneben, package_count seit 17504 gegen 18204.
+  #
+  # Nicht aus einem Server-Thread rufen: count_packages,
+  # count_limitation_texts und count_vaccines laufen ueber
+  # @registrations.values, und in ODDB::App#method_missing haengt daran die
+  # eine @cache_mutex, auf die jeder Request wartet. Aufrufer nehmen
+  # @app.system.recount_all.
+  def recount_all
+    vorher = COUNTER_NAMES.to_h { |name| [name, instance_variable_get("@#{name}")] }
+    @atc_ddd_count = count_atc_ddd
+    @company_count = @companies.size
+    @doctor_count = @doctors.size
+    @limitation_text_count = count_limitation_texts
+    @package_count = count_packages
+    @patinfo_count = count_patinfos
+    @recent_registration_count = count_recent_registrations
+    @substance_count = @substances.size
     @vaccine_count = count_vaccines
     odba_isolated_store
-    @vaccine_count
+    COUNTER_NAMES.to_h { |name|
+      [name, [vorher[name], instance_variable_get("@#{name}")]]
+    }
   end
 
   def recount
@@ -1051,16 +1075,7 @@ class OddbPrevalence
     @bean_counter = Thread.new {
       while again
         again = false
-        @atc_ddd_count = count_atc_ddd
-        @doctor_count = @doctors.size
-        @company_count = @companies.size
-        @substance_count = @substances.size
-        @limitation_text_count = count_limitation_texts
-        @package_count = count_packages
-        @patinfo_count = count_patinfos
-        @recent_registration_count = count_recent_registrations
-        @vaccine_count = count_vaccines
-        odba_isolated_store
+        recount_all
       end
     }
   end

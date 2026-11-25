@@ -59,6 +59,22 @@ module ODDB
     # can be overriden by calling Util.configure_mail(:test)
     # return default_from address
     def self.configure_mail(deliver_using = :oddb_yml)
+      # Ein Test darf nie eine Mail nach draussen schicken. Am 25.11.2026
+      # hat ein Updater-Test genau das getan: er gab dem Plugin einen nicht
+      # leeren Bericht, damit lief update_refdata_nat bis Log#notify durch,
+      # und das ruft Util.send_mail - eine echte Report-Mail
+      # ("ch.ODDB.org Report - doctors (Refdata) - 11/2026") mit leerem
+      # Rumpf an die Empfaenger aus etc/oddb.yml. Kein Test hatte
+      # configure_mail(:test) gerufen, also lief die Zustellung ueber die
+      # Gmail-API der Produktion.
+      #
+      # ODDB_CI_SAVE_MAIL_IN schreibt in Dateien, setzt aber nur CI; der
+      # Riegel hier gilt immer. TestSendRealMail in test/test_util/mail.rb
+      # will die echte Zustellung pruefen und setzt ODDB_ALLOW_MAIL_IN_TESTS.
+      if defined?(Minitest) && deliver_using != :test && !ENV["ODDB_ALLOW_MAIL_IN_TESTS"]
+        LogFile.append("oddb/debug", " configure_mail: Minitest laeuft, Zustellung auf :test umgebogen", Time.now)
+        deliver_using = :test
+      end
       return if @mail_configured == deliver_using
       @mail_configured = deliver_using
       if deliver_using == :test

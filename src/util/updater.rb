@@ -460,22 +460,31 @@ end
           log = @app.update(pointer.creator, values)
           log.notify("Swissmedic XLS")
         end
-        # Der Impfstoff-Zaehler der Startseite haengt an production_science
-        # und am vaccine-Flag, die genau dieser Import schreibt - also hier
-        # nachrechnen, statt auf recount zu warten. Das ruft nur
-        # Updater#run_random zu zufaelliger Tageszeit, und weil die App
-        # mehrmals taeglich neu startet, erreicht der seinen Termin oft nie:
-        # am 24.11.2026 stand 417 auf der Startseite statt 287.
+        # Alle neun Zaehler der Startseite nachrechnen, nicht nur die
+        # Impfstoffe: sie sind persistierte Ivars, jeder Leser nimmt `||=`,
+        # und nachgerechnet wird sonst nur in recount - das ruft einzig der
+        # Zufalls-Thread in ODDB::App (zufaellige Stunde und Minute,
+        # Endlosschleife), und weil die App mehrmals taeglich neu startet,
+        # kommt der oft nie dran. Am 24.11.2026 stand 417 Impfstoffe statt
+        # 287 auf der Seite, am 25.11.2026 lagen sieben der neun daneben:
+        # package_count 17504 statt 18204, substance_count 9586 statt 18702,
+        # company_count 784 statt 6874.
+        #
+        # Hier und nicht im Monatsimport: dieser Job laeuft taeglich um
+        # 08:15, nach import_bsv um 08:00, also sind auch die BSV-Zahlen
+        # frisch. Die 236 s, die recount_all ueber alle Registrierungen
+        # braucht, fallen daneben nicht auf; nichts anderes ist bis 01:19
+        # eingeplant.
         #
         # Ueber @app.system und nicht ueber @app: App#method_missing haelt
-        # die @cache_mutex, und count_vaccines laeuft ueber
-        # @registrations.values. Im Job kostet das nichts, im Server waere
-        # es eine Sperre fuer jeden Request.
+        # die @cache_mutex, und count_packages, count_limitation_texts und
+        # count_vaccines laufen ueber @registrations.values. Im Job kostet
+        # das nichts, im Server waere es eine Sperre fuer jeden Request.
         #
-        # Der laufende Server sieht den neuen Wert erst beim naechsten
-        # Start - der Zaehler ist persistiert, nicht gemeldet. Dieselbe
+        # Der laufende Server sieht die neuen Werte erst beim naechsten
+        # Start - die Zaehler sind persistiert, nicht gemeldet. Dieselbe
         # Klasse wie @rss_updates.
-        @app.system.recount_vaccines
+        @app.system.recount_all
       }
       return_value_plug_update
     end

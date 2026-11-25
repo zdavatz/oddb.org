@@ -180,8 +180,8 @@ module ODDB
       @updater.update_swissmedic
     end
 
-    def test_a_successful_import_recounts_the_vaccines
-      @system.should_receive(:recount_vaccines).once
+    def test_a_successful_import_recounts_every_counter
+      @system.should_receive(:recount_all).once
       run_with(true)
     end
 
@@ -189,16 +189,16 @@ module ODDB
     # geaendert haben, ohne dass der Diff etwas meldet - genau so ist der
     # Zaehler stehengeblieben.
     def test_an_import_without_changes_recounts_as_well
-      @system.should_receive(:recount_vaccines).once
+      @system.should_receive(:recount_all).once
       run_with(false)
     end
 
     # Nicht ueber @app: App#method_missing haelt die @cache_mutex, auf die
-    # jeder Request wartet, und count_vaccines laeuft ueber
-    # @registrations.values.
+    # jeder Request wartet, und count_packages, count_limitation_texts und
+    # count_vaccines laufen ueber @registrations.values.
     def test_the_recount_goes_through_system_not_through_the_app
-      @system.should_receive(:recount_vaccines).once
-      @app.should_receive(:recount_vaccines).never
+      @system.should_receive(:recount_all).once
+      @app.should_receive(:recount_all).never
       run_with(true)
     end
   end
@@ -218,6 +218,12 @@ module ODDB
       @updater = Updater.new(@app)
       @app.should_receive(:update).and_return(flexmock("log", notify: nil))
       @app.should_receive(:recount).by_default
+      # update_refdata_nat baut sein Log mit Log.new, nicht ueber @app -
+      # ohne diesen Stub laeuft ein nicht leerer Bericht in Log#notify und
+      # damit in Util.send_mail. Genau so ist am 25.11.2026 eine echte
+      # Report-Mail hinausgegangen.
+      flexmock(ODDB::Log).should_receive(:new)
+        .and_return(flexmock("log", update_values: nil, notify: nil))
     end
 
     def run_import(report)

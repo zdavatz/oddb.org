@@ -143,8 +143,47 @@ module ODDB
     end
   end
 
+  # Der Riegel vom 25.11.2026: ein Test, der configure_mail nie gerufen
+  # hat, bekommt trotzdem die Testzustellung. Vorher ging die Zustellung
+  # ueber etc/oddb.yml und damit ueber die Gmail-API der Produktion.
+  class TestNoMailFromTests < Minitest::Test
+    def teardown
+      ENV.delete("ODDB_ALLOW_MAIL_IN_TESTS")
+      Util.instance_variable_set(:@mail_configured, false)
+      Util.configure_mail :test
+      super
+    end
+
+    def test_configure_mail_cannot_select_the_real_delivery
+      ENV.delete("ODDB_ALLOW_MAIL_IN_TESTS")
+      Util.use_mailing_list_configuration("dummy.txt")
+      Util.instance_variable_set(:@mail_configured, false)
+      Util.configure_mail(:oddb_yml)
+      assert_equal(ODDB::Util::MailingTestConfiguration,
+        Util.mailing_configuration_file,
+        "unter Minitest darf nie die echte Zustellung konfiguriert werden")
+    end
+
+    def test_an_explicit_permission_still_reaches_the_real_configuration
+      ENV["ODDB_ALLOW_MAIL_IN_TESTS"] = "1"
+      Util.instance_variable_set(:@mail_configured, false)
+      Util.configure_mail(:oddb_yml)
+      assert_equal(ODDB::Util::MailingDefaultConfiguration,
+        Util.mailing_configuration_file)
+    end
+  end
+
   class TestSendRealMail < Minitest::Test
+    def teardown
+      ENV.delete("ODDB_ALLOW_MAIL_IN_TESTS")
+      super
+    end
+
     def setup
+      # configure_mail biegt unter Minitest auf :test um, damit kein Test
+      # versehentlich nach draussen schickt. Diese Klasse will genau das
+      # pruefen und sagt es ausdruecklich.
+      ENV["ODDB_ALLOW_MAIL_IN_TESTS"] = "1"
       Util.configure_mail :oddb_yml
       # No Util.clear_sent_mails here, as this would throw away my e-mails!
       @config = ODDB.config
